@@ -14,3 +14,7 @@ Treble: https://en.wikipedia.org/wiki/File:GClef.svg
 Flat: https://commons.wikimedia.org/wiki/File:Flat.svg
 
 Sharp: https://commons.wikimedia.org/wiki/File:Sharp.svg
+
+Quarter note: https://commons.wikimedia.org/wiki/File:Treblea4.svg
+
+Whole note: https://commons.wikimedia.org/wiki/File:Whole_note.svg
