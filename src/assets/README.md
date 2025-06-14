@@ -1,0 +1,16 @@
+# Symbol SVGs
+
+This folder contains SVGs of clefs and sharps/flats.
+Sharps and flats are available as unicode characters, but they render a bit strangly when blown up. By using SVGs, this means the output of this library will be robust to changes in font size, typeface etc.
+
+These files came from Wikipedia (all public domain). For some I edited them to delete the stave lines.
+
+Alto: https://commons.wikimedia.org/wiki/File:Alto_clef.svg
+
+Bass: https://commons.wikimedia.org/wiki/File:Bass_clef.svg
+
+Treble: https://en.wikipedia.org/wiki/File:GClef.svg
+
+Flat: https://commons.wikimedia.org/wiki/File:Flat.svg
+
+Sharp: https://commons.wikimedia.org/wiki/File:Sharp.svg
