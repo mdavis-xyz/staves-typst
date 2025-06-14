@@ -2,30 +2,24 @@
 name = "staves"
 version = "0.1.0"
 entrypoint = "src/lib.typ"
-authors = ["Matthew Davis"]
+authors = [ "Matthew Davis" ]
+license = "MIT"
 description = "Draw musical clefs and key signatures."
-homepage = "https://github.com/mdavis-xyz/staves-typst"
-repository = "https://github.com/mdavis-xyz/staves-typst"
 keywords = [
-    "Music",
-    "Clef",
-    "Treble",
-    "Bass",
-    "Alto",
-    "Tenor",
-    "Flat",
-    "Sharp",
-    "Key",
-    "Accidental",
-    "Score",
-    "Stave",
-    "Chord",
+  "Music",
+  "Clef",
+  "Treble",
+  "Bass",
+  "Alto",
+  "Tenor",
+  "Flat",
+  "Sharp",
+  "Key",
+  "Accidental",
+  "Score",
+  "Stave",
+  "Chord"
 ]
-categories = [
-    "components",
-    "visualization",
-    "fun",
-]
-disciplines = ["music"]
-
-[tool]
+categories = [ "components", "visualization", "fun" ]
+disciplines = [ "music" ]
+exclude = [ "examples/", "examples/*", "docs/", "docs/*" ]

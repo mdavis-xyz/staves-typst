@@ -1,4 +1,4 @@
-#import "/lib.typ": key_signature, clef_data, symbol_data
+#import "/src/lib.typ": key-signature, clef-data, symbol-data
 
 
 = Staves
@@ -10,14 +10,14 @@ For now, it cannot be used to write any notes.
 
 #let examples = ()
 #examples.push(
- key_signature("treble", "flat", 3, fixed_width: false)
+ key-signature("treble", "Eb", fixed-width: false)
 )
 #examples.push(
- key_signature("alto", "sharp", 4, fixed_width: false)
+ key-signature("alto", "b", fixed-width: false)
 )
 
 #examples.push(
- key_signature("bass", "sharp", 7, fixed_width: false)
+ key-signature("bass", "7#", fixed-width: false)
 )
  
 
@@ -32,36 +32,39 @@ For now, it cannot be used to write any notes.
 
 == Usage
 
-The main function is called `key_signature`.
+The main function is called `key-signature`.
 
 The arguments are:
 
-/ clef: "#clef_data.keys().map(str).join("\", \"")"
-/ symbol_name: "#symbol_data.keys().map(str).join("\", \"")"
-/ num_symbols: 0 to 7
-/ fixed_width: (optional) `true` or `false` (default)
+/ clef: "#clef-data.keys().map(str).join("\", \"")"
+/ key: Two possible forms. 
+  - Letter based: Uppercase for major, lowercase for minor, with `#` or `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
+  - Number based, with a symbol: "5#" for 5 sharps, "2b" for 2 flats
+/ symbol-name: "#symbol-data.keys().map(str).join("\", \"")"
+/ num-symbols: 0 to 7
+/ fixed-width: (optional) `true` or `false` (default)
 / scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size
 
 Note that usage is based on the number of sharps/flats, not the key name.
 For example, D major, in the Treble clef, has 2 sharps (F♯, C♯), so this is created with:
 
-```example
-#import "./lib.typ": key_signature
+```typst
+#import "./lib.typ": key-signature
 
 #figure(
-  key_signature("treble", "sharp", 2),
+  key-signature("treble", "D"),
   caption: [D Major]
 )
 ```
 
 #figure(
-  key_signature("treble", "sharp", 2),
+  key-signature("treble", "D"),
   caption: [D Major]
 )
 
 Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
 
-The argument `fixed_width` is an optional argument, defaulting to `false`. If `false` (default), the stave lines will shrink/expand based on the number of sharps/flats.
+The argument `fixed-width` is an optional argument, defaulting to `false`. If `false` (default), the stave lines will shrink/expand based on the number of sharps/flats.
 
 
 #grid(
@@ -70,12 +73,12 @@ The argument `fixed_width` is an optional argument, defaulting to `false`. If `f
   row-gutter: 1em,
   align: center,
   figure(
-    key_signature("bass", "sharp", 1, fixed_width: true),
-    caption: [`fixed_width: true`]
+    key-signature("bass", "G", fixed-width: true),
+    caption: [`fixed-width: true`]
   ),
   figure(
-    key_signature("bass", "sharp", 1, fixed_width: false),
-    caption: [`fixed_width: false`]
+    key-signature("bass", "G", fixed-width: false),
+    caption: [`fixed-width: false`]
   )
 )
 
@@ -88,33 +91,15 @@ The `scale` argument can be used to adjust the size:
   row-gutter: 1em,
   align: horizon,
   figure(
-    key_signature("bass", "sharp", 1, scale: 2),
+    key-signature("bass", "F", scale: 2),
     caption: [`scale: 2`]
   ),
   figure(
-    key_signature("bass", "sharp", 1),
+    key-signature("bass", "F"),
     caption: [default (omitted `scale`)]
   ),
   figure(
-    key_signature("bass", "sharp", 1, scale: 0.5),
+    key-signature("bass", "F", scale: 0.5),
     caption: [`scale: 0.5`]
   )
-)
-
-== Full Reference
-
-#let canvases = ()
-#for symbol_name in symbol_data.keys() {
-  for clef in clef_data.keys() {
-    for num_symbols in range(0, 7) {
-      canvases.push(key_signature(clef, symbol_name, num_symbols, fixed_width: false))
-    }
-  }
-}
-
-#grid(
-  columns: 4,
-  column-gutter: 1em,
-  row-gutter: 1em,
-  ..canvases
 )

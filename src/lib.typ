@@ -4,12 +4,12 @@
 // sharps: https://music-theory-practice.com/images/order-of-sharps-key-signatures.png
 // flats: https://music-theory-practice.com/images/order-of-flats-key-signatures.jpeg
 
-#let clef_data = (
+#let clef-data = (
   treble: (
     clef: (
-      image: "assets/clefs/treble.svg",
-      y_offset: 2,
-      y_span: 50
+      image: "/assets/clefs/treble.svg",
+      y-offset: 2,
+      y-span: 50
       
     ),
     accidentals: (
@@ -19,9 +19,9 @@
   ),
   bass: (
     clef: (
-      image: "assets/clefs/bass.svg",
-      y_offset: 2.4,
-      y_span: 25
+      image: "/assets/clefs/bass.svg",
+      y-offset: 2.4,
+      y-span: 25
       
     ),
     accidentals: (
@@ -31,9 +31,9 @@
   ),
   alto: (
     clef: (
-      image: "assets/clefs/alto.svg",
-      y_offset: 2,
-      y_span: 31
+      image: "/assets/clefs/alto.svg",
+      y-offset: 2,
+      y-span: 31
       
     ),
     accidentals: (
@@ -43,9 +43,9 @@
   ),
   tenor: (
     clef: (
-      image: "assets/clefs/alto.svg",
-      y_offset: 3,
-      y_span: 31
+      image: "/assets/clefs/alto.svg",
+      y-offset: 3,
+      y-span: 31
       
     ),
     accidentals: (
@@ -55,72 +55,141 @@
   ),
 )
 
-#let symbol_data = (
+#let symbol-data = (
   sharp: (
-    image: "assets/accidental/sharp.svg",
-    y_offset: 0,
-    y_span: 20
+    image: "/assets/accidental/sharp.svg",
+    y-offset: 0,
+    y-span: 20
   ),
   flat: (
-    image: "assets/accidental/flat.svg",
-    y_offset: 0.4,
-    y_span: 15
+    image: "/assets/accidental/flat.svg",
+    y-offset: 0.4,
+    y-span: 15
   )
 )
 
-// clef is treble, bass, alto or teonr
-// symbol_type is sharp or flat
-// num_symbols is an integer 0 to 7: how many sharps/flats
-// scale is an optional float, e.g. 0.5 to halve the size compared to default
-// fixed_width: 
-//    true means the length of the stave will be constant regardless of the number of sharps/flats
-//    false means it is shorter for fewer sharps/flats (no wasted space)
-#let key_signature(clef, symbol_type, num_symbols, scale: 1, fixed_width: false) = {
+#let key-data = (
+  // write out the circle of fifths
+  // from 7 flats, to C (nothing) to 7 sharps
+  // correctness reference:
+  // https://www.music-theory-for-musicians.com/key-signatures.html
+  major: (
+    "Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F",
+    "C",
+    "G", "D", "A", "E", "B", "F#", "C#"
+  ),
+  minor: (
+    "ab", "eb", "bb", "f", "c", "g", "d", 
+    "a",
+    "e", "b", "f#", "c#", "g#", "d#", "a#"
+    
+  )
+)
+
+#let symbol-map = (
+ "#": "sharp",
+ "b": "flat"
+)
+
+
+#let is-integer(char) = {
+ let digits = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+ char in digits
+}
+
+// key can be:
+// C -> C Major
+// Bb -> Bb Major
+// a# -> A# Minor
+// bb -> Bb Minor
+// "" (empty) -> C Major
+// "3b" -> 3 flats (Eb Major)
+#let determine-key(key) = {
+ if key == none or key == "" {
+   // empty key
+   (
+     num-symbols: 0,
+     symbol-type: "sharp"
+   )
+ } else if is-integer(key.at(0)) {
+   // e.g. "5#"
+   let num-symbols = int(key.at(0))
+   let symbol-char = key.at(1)
+   assert(symbol-char in symbol-map.keys(), message: "number-based key argument must end with " + symbol-data.keys().map(str).join(" or "))
+   let symbol-type = symbol-map.at(symbol-char)
+   (
+     num-symbols: num-symbols,
+     symbol-type: symbol-type
+   )
+ } else {
+   // e.g. "Fb"
+   let this-key-index
+   let mid-index
+   
+   if key in key-data.major {
+     this-key-index = key-data.major.position(k => k == key)
+     mid-index = key-data.major.position(k => k == "C")
+   } else if key in key-data.minor {
+     this-key-index = key-data.minor.position(k => k == key)
+     mid-index = key-data.minor.position(k => k == "a")
+   } else {
+     panic("Invalid key: " + key)
+   }
+   
+   let num-symbols = calc.abs(this-key-index - mid-index)
+   let symbol-type = if this-key-index >= mid-index { "sharp" } else { "flat" }
+   
+   (
+     num-symbols: num-symbols,
+     symbol-type: symbol-type
+   )
+ }
+}
+
+
+#let key-signature(clef, key, scale: 1, fixed-width: false) = {
 
   // validate arguments
-  assert(clef in clef_data.keys(), 
-        message: "Invalid clef argument. Must be " + clef_data.keys().map(str).join(", "))
-  assert(symbol_type in symbol_data.keys(), 
-        message: "Invalid symbol_type argument. Must be " + symbol_data.keys().map(str).join(", "))
-  assert(type(num_symbols) == int, 
-         message: "num_symbols must be an integer")
-  assert(num_symbols >= 0 and num_symbols <= 7, 
-         message: "num_symbols must be between 0 and 7")
-    
+  assert(clef in clef-data.keys(), 
+        message: "Invalid clef argument. Must be " + clef-data.keys().map(str).join(", "))
+
+  let result = determine-key(key)
+  let num-symbols = result.num-symbols
+  let symbol-type = result.symbol-type
+  
   cetz.canvas(length: 3cm, {
     import cetz.draw: line, content
 
-    let line_sep = 0.1  * scale
+    let line-sep = 0.1  * scale
     
     let width = 1.2 * scale  
-    if not fixed_width {
+    if not fixed-width {
       width = 0.4 * scale
-      if num_symbols > 0 {
-        width = 0.4 * scale + (num_symbols + 1) * line_sep
+      if num-symbols > 0 {
+        width = 0.4 * scale + (num-symbols + 1) * line-sep
       }
     }
     
     
     // draw the 5 stave lines
     for i in range(5) {
-      line((0, i * line_sep), (width, i * line_sep))
+      line((0, i * line-sep), (width, i * line-sep))
     }
   
     // clef
-    content((2 * line_sep, clef_data.at(clef).at("clef").at("y_offset") * line_sep), [
-      #image(clef_data.at(clef).at("clef").at("image"), height: (clef_data.at(clef).at("clef").at("y_span") * line_sep) * 1em)
+    content((2 * line-sep, clef-data.at(clef).at("clef").at("y-offset") * line-sep), [
+      #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") * line-sep) * 1em)
     ], anchor: "center")
   
     // sharps or flats
-    for i in range(num_symbols) {
-      let y = clef_data.at(clef).at("accidentals").at(symbol_type).at(i)
-      content(((5 + i) * line_sep, (y + symbol_data.at(symbol_type).at("y_offset")) * line_sep), [
-        #image(symbol_data.at(symbol_type).at("image"), 
-               height: (symbol_data.at(symbol_type).at("y_span") * line_sep) * 1em)
+    for i in range(num-symbols) {
+      let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
+      content(((5 + i) * line-sep, (y + symbol-data.at(symbol-type).at("y-offset")) * line-sep), [
+        #image(symbol-data.at(symbol-type).at("image"), 
+               height: (symbol-data.at(symbol-type).at("y-span") * line-sep) * 1em)
       ])
     }
   
     
   })
 }
-  
