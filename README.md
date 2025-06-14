@@ -1,4 +1,4 @@
-= Staves (Typst Package)
+# Staves (Typst Package)
 
 This Typst package is used to draw musical key signatures.
 
