@@ -1,6 +1,6 @@
-#import "/src/lib.typ": key-signature
+#import "/src/lib.typ": stave
 
 #figure(
-  key-signature("treble", "D"),
+  stave("treble", "D"),
   caption: [D Major]
 )

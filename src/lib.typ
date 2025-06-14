@@ -1,17 +1,21 @@
 #import "@preview/cetz:0.3.4"
 
+// y height is defined as 0 = bottom line
+// y=1, second-bottom line
+// y=1.5 between 2nd-bottom and middle line
+
 // reference for key order:
-// sharps: https://music-theory-practice.com/images/order-of-sharps-key-signatures.png
-// flats: https://music-theory-practice.com/images/order-of-flats-key-signatures.jpeg
+// sharps: https://music-theory-practice.com/images/order-of-sharps-staves.png
+// flats: https://music-theory-practice.com/images/order-of-flats-staves.jpeg
 
 #let clef-data = (
   treble: (
     clef: (
       image: "/assets/clefs/treble.svg",
       y-offset: 2,
-      y-span: 50
-      
+      y-span: 50,
     ),
+    c4: -1, // where is middle C?
     accidentals: (
       sharp: (4, 2.5, 3.5, 2, 3, 1.5, 2.5),
       flat: (2, 3.5, 1.5, 3, 1, 2.5, 0.5)
@@ -21,9 +25,9 @@
     clef: (
       image: "/assets/clefs/bass.svg",
       y-offset: 2.4,
-      y-span: 25
-      
+      y-span: 25,
     ),
+    c4: 5, // where is middle C?
     accidentals: (
       sharp: (3, 1.5, 3.5, 2, 4, 2.5, 4.5),
       flat: (1, 2.5, 0.5, 2, 0, 1.5, -0.5)
@@ -33,9 +37,9 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 2,
-      y-span: 31
-      
+      y-span: 31,
     ),
+    c4: 2,
     accidentals: (
       sharp: (3.5, 2, 4, 2.5, 1, 3, 1.5),
       flat: (1.5, 3, 1, 2.5, 0.5, 2, 0)
@@ -45,9 +49,9 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 3,
-      y-span: 31
-      
+      y-span: 31,
     ),
+    c4: 3,
     accidentals: (
       sharp: (1, 3, 1.5, 3.5, 2, 4, 2.5),
       flat: (2.5, 4, 2, 3.5, 1.5, 3, 1)
@@ -72,7 +76,7 @@
   // write out the circle of fifths
   // from 7 flats, to C (nothing) to 7 sharps
   // correctness reference:
-  // https://www.music-theory-for-musicians.com/key-signatures.html
+  // https://www.music-theory-for-musicians.com/staves.html
   major: (
     "Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F",
     "C",
@@ -88,9 +92,19 @@
 
 #let symbol-map = (
  "#": "sharp",
- "b": "flat"
+ "s": "sharp",
+ "b": "flat",
 )
 
+
+#let note-symbol-data = (
+  whole: (
+    image: "/assets/notes/whole.svg",
+    y-offset: 0, 
+    y-span: 8,
+    width: 2,
+  )
+)
 
 #let is-integer(char) = {
  let digits = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
@@ -108,17 +122,17 @@
  if key == none or key == "" {
    // empty key
    (
-     num-symbols: 0,
+     num-accidentals: 0,
      symbol-type: "sharp"
    )
  } else if is-integer(key.at(0)) {
    // e.g. "5#"
-   let num-symbols = int(key.at(0))
+   let num-accidentals = int(key.at(0))
    let symbol-char = key.at(1)
    assert(symbol-char in symbol-map.keys(), message: "number-based key argument must end with " + symbol-data.keys().map(str).join(" or "))
    let symbol-type = symbol-map.at(symbol-char)
    (
-     num-symbols: num-symbols,
+     num-accidentals: num-accidentals,
      symbol-type: symbol-type
    )
  } else {
@@ -136,58 +150,171 @@
      panic("Invalid key: " + key)
    }
    
-   let num-symbols = calc.abs(this-key-index - mid-index)
+   let num-accidentals = calc.abs(this-key-index - mid-index)
    let symbol-type = if this-key-index >= mid-index { "sharp" } else { "flat" }
    
    (
-     num-symbols: num-symbols,
+     num-accidentals: num-accidentals,
      symbol-type: symbol-type
    )
  }
 }
 
+// takes in a string
+// returns a dictionary
+// e.g. "Cb5" => {"letter": "C", "accidental": "b", octave: 5}
+// e.g. "A6" => {"letter": "C", "accidental": "n", octave: 5}
+// accidental defaults to n, for "natural"
+#let parse-note-string(note) = {
+  if note.len() < 2 or note.len() > 3 {
+    panic("Invalid note format: " + note)
+  }
+  
+  let letter = note.at(0)
+  let octave-result = int(note.slice(-1))
+  if octave-result == none {
+    panic("Unable to parse octave integer from note: " + note)
+  }
+  let octave = octave-result
+  
+  let accidental = if note.len() == 3 {
+    note.at(1)
+  } else {
+    "n" // default to natural
+  }
+  
+  (
+    letter: letter,
+    accidental: accidental,
+    octave: octave
+  )
+}
 
-#let key-signature(clef, key, scale: 1, fixed-width: false) = {
+#let all-notes-from-c = ("C", "D", "E", "F", "G", "A", "B")
+
+// e.g. for clef: "treble", note-letter: "C4", height is -1
+// e.g. for clef: "treble", note-letter: "F4", height is +0.5
+// e.g. for clef: "treble", note-letter: "B4", height is +2
+// Note that the integer changes at C, not A
+// e.e.g B4, C5, D5 are consecutive
+#let calc-note-height(clef, note-str) = {
+  let note = parse-note-string(note-str)
+
+  // find difference in letters above/below C
+  // typst is zero-index based
+  let notes-above-c = all-notes-from-c.position(n => n == note.letter)
+  
+  let c4-height = clef-data.at(clef).at("c4")
+
+  // now calculate height
+  c4-height + (note.octave - 4) * all-notes-from-c.len() * 0.5 + notes-above-c * 0.5
+}
+
+// for some reason
+// x = x + 1
+// does not work in typst
+// so we define a function to calculate the x position of each element
+// calc-x(is-clef: true) gives the (center position of the clef)
+// calc-c(num-accidentals: n) gives the center position of the (n+1)th accidental
+// calc-c(num-accidentals: n, num-notes: m) gives the center position of the (m+1)th note
+#let calc-x(is-clef: false, num-accidentals: 0, num-notes: 0) = {
+  let clef-center-x = 2
+
+  if is-clef {
+    clef-center-x
+  } else {
+    let clef-width = clef-center-x * 2
+    let clef-key-space = 1
+    let accidental-space = 1
+    let note-space = 2.4
+
+    clef-width + clef-key-space + num-accidentals * accidental-space + num-notes * note-space
+  }
+}
+
+#let stave(clef, key, notes: (), scale: 1) = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
         message: "Invalid clef argument. Must be " + clef-data.keys().map(str).join(", "))
 
   let result = determine-key(key)
-  let num-symbols = result.num-symbols
+  let num-accidentals = result.num-accidentals
   let symbol-type = result.symbol-type
+
+  
   
   cetz.canvas(length: 3cm, {
     import cetz.draw: line, content
 
     let line-sep = 0.1  * scale
-    
-    let width = 1.2 * scale  
-    if not fixed-width {
-      width = 0.4 * scale
-      if num-symbols > 0 {
-        width = 0.4 * scale + (num-symbols + 1) * line-sep
-      }
-    }
-    
+
+    let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) * line-sep
+
+    let leger-line-width = 1.8
     
     // draw the 5 stave lines
     for i in range(5) {
       line((0, i * line-sep), (width, i * line-sep))
     }
+
+    let x = calc-x(is-clef: true)
+    let y = clef-data.at(clef).at("clef").at("y-offset")
   
     // clef
-    content((2 * line-sep, clef-data.at(clef).at("clef").at("y-offset") * line-sep), [
+    content((x * line-sep, y * line-sep), [
       #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") * line-sep) * 1em)
     ], anchor: "center")
   
     // sharps or flats
-    for i in range(num-symbols) {
+    for i in range(num-accidentals) {
       let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
-      content(((5 + i) * line-sep, (y + symbol-data.at(symbol-type).at("y-offset")) * line-sep), [
+      let x = calc-x(num-accidentals: i - 1)
+      content((x * line-sep, (y + symbol-data.at(symbol-type).at("y-offset")) * line-sep), [
         #image(symbol-data.at(symbol-type).at("image"), 
                height: (symbol-data.at(symbol-type).at("y-span") * line-sep) * 1em)
       ])
+    }
+
+    // only one option for now
+    let note-symbol = "whole"
+    
+    // draw our notes
+    for (i, note-str) in notes.enumerate() {
+      let note-height = calc-note-height(clef, note-str)
+
+
+      let image-path = note-symbol-data.at(note-symbol)
+    
+      let x = calc-x(num-accidentals: num-accidentals, num-notes: i)
+      let y = note-height + note-symbol-data.at(note-symbol).at("y-offset")
+      let y-span = note-symbol-data.at(note-symbol).at("y-span")
+
+
+      // leger lines
+      let left-x = x - leger-line-width / 2
+      let right-x = left-x + leger-line-width
+      if note-height <= -1 {
+        // leger lines below
+        let leger-start = calc.trunc(note-height)
+        let leger-end = -1
+        for h in range(leger-start, leger-end + 1) {
+          line((left-x * line-sep, h * line-sep), (right-x * line-sep, h * line-sep))
+        }
+      } else if note-height >= 5 {
+        // leger lines above
+        let leger-start = 5
+        let leger-end = calc.trunc(note-height)
+        for h in range(leger-start, leger-end + 1) {
+          line((left-x * line-sep, h * line-sep), (right-x * line-sep, h * line-sep))
+        }
+      }
+      
+      content((x * line-sep, y * line-sep), [
+        #image("../assets/notes/whole.svg", 
+               height: (y-span * line-sep) * 1em)
+      ])
+      
     }
   
     

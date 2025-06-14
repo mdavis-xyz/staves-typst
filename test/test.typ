@@ -1,41 +1,41 @@
-#import "/src/lib.typ": key-signature, clef-data, symbol-data, symbol-map, key-data
+#import "/src/lib.typ": stave, clef-data, symbol-data, symbol-map, key-data
 
-= Staves Tests
+= Key Signature Tests
 
 Generate some staves of each type
 
 No symbols
-#key-signature("treble", "C")
-#key-signature("treble", "")
-#key-signature("treble", none)
+#stave("treble", "C")
+#stave("treble", "")
+#stave("treble", none)
 
 Major vs minor
-#key-signature("treble", "F")
-#key-signature("treble", "f")
+#stave("treble", "F")
+#stave("treble", "f")
 
 All symbols
 #for clef in clef-data.keys() {
-  key-signature(clef, "C#")
-  key-signature(clef, "Cb")
+  stave(clef, "C#")
+  stave(clef, "Cb")
 }
 
 Using numbers
 
-#key-signature("treble", "1#")
-#key-signature("treble", "1b")
-#key-signature("treble", "7#")
-#key-signature("treble", "7b")
+#stave("treble", "1#")
+#stave("treble", "1b")
+#stave("treble", "7#")
+#stave("treble", "7b")
 
 == Full Reference
 
-== Numbers
+=== Numbers
 
 #let canvases = ()
 #for clef in clef-data.keys() {
   for num-symbols in range(0, 7) {
     for symbol-char in symbol-map.keys() {
       let key = str(num-symbols) + symbol-char
-      canvases.push(key-signature(clef, key))
+      canvases.push(stave(clef, key))
     }
   }
 }
@@ -48,14 +48,14 @@ Using numbers
 )
 
 
-== Letters
+=== Letters
 
 #let canvases = ()
 #for clef in clef-data.keys() {
   for tonality in ("major", "minor") {
     for key in key-data.at(tonality) {
         canvases.push([
-          #key-signature(clef, key)
+          #stave(clef, key)
           #clef #key #tonality
         ])
     }    
@@ -68,3 +68,14 @@ Using numbers
   row-gutter: 1em,
   ..canvases
 )
+
+= Notes too
+
+#stave("treble", "C", notes: ("C4", "Ds4", "E4", "F4", "G4", "A4", "B4", "C5"))
+
+#let canvases = ()
+
+#for clef in clef-data.keys() {
+  stave(clef, "C", notes: ("C2", "C3", "C4", "C5", "C6"))
+}
+
