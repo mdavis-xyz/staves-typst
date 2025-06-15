@@ -13,7 +13,7 @@
     clef: (
       image: "/assets/clefs/treble.svg",
       y-offset: 2,
-      y-span: 50,
+      y-span: 2,
     ),
     c4: -1, // where is middle C?
     accidentals: (
@@ -25,7 +25,7 @@
     clef: (
       image: "/assets/clefs/bass.svg",
       y-offset: 2.4,
-      y-span: 25,
+      y-span: 1,
     ),
     c4: 5, // where is middle C?
     accidentals: (
@@ -37,7 +37,7 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 2,
-      y-span: 31,
+      y-span: 1.2,
     ),
     c4: 2,
     accidentals: (
@@ -49,7 +49,7 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 3,
-      y-span: 31,
+      y-span: 1.2,
     ),
     c4: 3,
     accidentals: (
@@ -63,17 +63,17 @@
   sharp: (
     image: "/assets/accidental/sharp.svg",
     y-offset: 0,
-    y-span: 20
+    y-span: 0.8
   ),
   flat: (
     image: "/assets/accidental/flat.svg",
     y-offset: 0.4,
-    y-span: 15
+    y-span: 0.6
   ),
   natural: (
     image: "/assets/accidental/natural.svg",
     y-offset: 0,
-    y-span: 15
+    y-span: 0.8
   )
 )
 
@@ -107,14 +107,14 @@
   whole: (
     image: "/assets/notes/whole.svg",
     y-offset: 0, 
-    y-span: 8,
+    y-span: 0.3,
     stem: false
   ),
   quarter: (
     image: "/assets/notes/crotchet-head.svg",
     y-offset: 0, 
-    y-span: 8,
-    width: 1.1,
+    y-span: 0.3,
+    width: 1.08,
     stem: true
   )
 )
@@ -263,12 +263,10 @@
 
   
   
-  cetz.canvas(length: 3cm, {
+  cetz.canvas(length: geometric-scale * 0.3cm, {
     import cetz.draw: line, content, rect
 
-    let line-sep = 0.1  * geometric-scale
-
-    let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) * line-sep
+    let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) 
 
     let leger-line-width = 1.8
     let accidental-offset = leger-line-width / 2 + 0.35 // accidentals are this far left of notes
@@ -276,23 +274,23 @@
     
     // draw the 5 stave lines
     for i in range(5) {
-      line((0, i * line-sep), (width, i * line-sep))
+      line((0, i ), (width, i ))
     }
     if notes.len() > 0 {
       // double bar at end
-      let double-bar-sep = 0.05
-      let double-bar-thick = 0.01
-      line((width, 0), (width, 4 * line-sep))
-      line((width - double-bar-sep, 0), (width - double-bar-sep, 4 * line-sep))
-      rect((width, 0), (width - double-bar-thick, 4 * line-sep), fill: black)
+      let double-bar-sep = 0.5
+      let double-bar-thick = 0.15
+      line((width, 0), (width, 4 ))
+      line((width - double-bar-sep, 0), (width - double-bar-sep, 4 ))
+      rect((width, 0), (width - double-bar-thick, 4 ), fill: black)
     }
 
     let x = calc-x(is-clef: true)
     let y = clef-data.at(clef).at("clef").at("y-offset")
   
     // clef
-    content((x * line-sep, y * line-sep), [
-      #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") * line-sep) * 1em)
+    content((x , y ), [
+      #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") ) * geometric-scale * 1cm)
     ], anchor: "center")
   
     // sharps or flats
@@ -300,9 +298,9 @@
       assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-accidentals) + " " + symbol-type)
       let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
       let x = calc-x(num-accidentals: i - 1)
-      content((x * line-sep, (y + symbol-data.at(symbol-type).at("y-offset")) * line-sep), [
+      content((x , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
         #image(symbol-data.at(symbol-type).at("image"), 
-               height: (symbol-data.at(symbol-type).at("y-span") * line-sep) * 1em)
+               height: (symbol-data.at(symbol-type).at("y-span") ) * geometric-scale * 1cm)
       ])
     }
 
@@ -328,21 +326,21 @@
         let leger-start = calc.trunc(note-height)
         let leger-end = -1
         for h in range(leger-start, leger-end + 1) {
-          line((left-x * line-sep, h * line-sep), (right-x * line-sep, h * line-sep))
+          line((left-x , h ), (right-x , h ))
         }
       } else if note-height >= 5 {
         // leger lines above
         let leger-start = 5
         let leger-end = calc.trunc(note-height)
         for h in range(leger-start, leger-end + 1) {
-          line((left-x * line-sep, h * line-sep), (right-x * line-sep, h * line-sep))
+          line((left-x , h ), (right-x , h ))
         }
       }
 
       // note head
-      content((x * line-sep, y * line-sep), [
+      content((x , y ), [
         #image(image-path, 
-               height: (y-span * line-sep) * 1em)
+               height: (y-span ) * geometric-scale * 1cm)
       ])
 
       // stem
@@ -352,24 +350,24 @@
           // stem up on right
           line(
             (
-              (x + head-width * 0.5) * line-sep, 
-              y * line-sep
+              (x + head-width * 0.5) , 
+              y 
             ), 
             (
-              (x + head-width * 0.5)  * line-sep, 
-              (y + stem-length) * line-sep
+              (x + head-width * 0.5)  , 
+              (y + stem-length) 
             )
           )
         } else {
           // stem down on left
           line(
             (
-              (x - head-width * 0.5) * line-sep, 
-              y * line-sep
+              (x - head-width * 0.5) , 
+              y 
             ), 
             (
-              (x - head-width * 0.5)  * line-sep, 
-              (y - stem-length) * line-sep
+              (x - head-width * 0.5)  , 
+              (y - stem-length) 
             )
           )
         }
@@ -381,9 +379,9 @@
         let accidental = symbol-data.at(symbol-map.at(note.accidental))
         let a-x = x - accidental-offset
 
-        content(((x - accidental-offset) * line-sep, (y + accidental.y-offset) * line-sep), [
+        content(((x - accidental-offset) , (y + accidental.y-offset) ), [
             #image(accidental.image, 
-                   height: (accidental.y-span * line-sep) * 1em)
+                   height: (accidental.y-span ) * geometric-scale * 1cm)
         ])
         
       }

@@ -107,15 +107,15 @@ The `geometric-scale` argument can be used to adjust the size:
   row-gutter: 1em,
   align: horizon,
   figure(
-    stave("bass", "F", geometric-scale: 2),
+    stave("bass", "F", notes: ("C#3",), geometric-scale: 2),
     caption: [`geometric-scale: 2`]
   ),
   figure(
-    stave("bass", "F"),
+    stave("bass", "F", notes: ("C#3",)),
     caption: [default (omitted `geometric-scale`)]
   ),
   figure(
-    stave("bass", "F", geometric-scale: 0.5),
+    stave("bass", "F", notes: ("C#3",), geometric-scale: 0.5),
     caption: [`geometric-scale: 0.5`]
   )
 )
@@ -169,3 +169,7 @@ The arguments are:
   arpeggio("bass", "F", 2, num-octaves: 2),
   caption: [F Major Arpeggio]
 )
+
+== Implementation Details
+
+This package uses a `canvas` from the #link("https://typst.app/universe/package/cetz", "CeTZ") package.
