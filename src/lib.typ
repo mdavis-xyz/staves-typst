@@ -226,28 +226,6 @@
   c4-height + (note.octave - 4) * all-notes-from-c.len() * 0.5 + notes-above-c * 0.5
 }
 
-// for some reason
-// x = x + 1
-// does not work in typst
-// so we define a function to calculate the x position of each element
-// calc-x(is-clef: true) gives the (center position of the clef)
-// calc-c(num-accidentals: n) gives the center position of the (n+1)th accidental
-// calc-c(num-accidentals: n, num-notes: m) gives the center position of the (m+1)th note
-#let calc-x(is-clef: false, num-accidentals: 0, num-notes: 0) = {
-  let clef-center-x = 2
-
-  if is-clef {
-    clef-center-x
-  } else {
-    let clef-width = clef-center-x * 2
-    let clef-key-space = 1
-    let accidental-space = 1
-    let note-space = 3
-
-    clef-width + clef-key-space + num-accidentals * accidental-space + num-notes * note-space
-  }
-}
-
 #let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve") = {
 
   // validate arguments
@@ -262,46 +240,46 @@
   let symbol-type = result.symbol-type
 
   
-  
   cetz.canvas(length: geometric-scale * 0.3cm, {
     import cetz.draw: line, content, rect
-
-    let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) 
 
     let leger-line-width = 1.8
     let accidental-offset = leger-line-width / 2 + 0.35 // accidentals are this far left of notes
     let stem-length = 3 + 0.2 // don't make it an integer, it looks bad
-    
-    // draw the 5 stave lines
-    for i in range(5) {
-      line((0, i ), (width, i ))
-    }
-    if notes.len() > 0 {
-      // double bar at end
-      let double-bar-sep = 0.5
-      let double-bar-thick = 0.15
-      line((width, 0), (width, 4 ))
-      line((width - double-bar-sep, 0), (width - double-bar-sep, 4 ))
-      rect((width, 0), (width - double-bar-thick, 4 ), fill: black)
-    }
 
-    let x = calc-x(is-clef: true)
+    
+    // note that x = x + 1
+    // does not work in typst
+    // so we do xs = (1, 2, 1)
+    // and sum that array each time
+    let clef-center-x = 2
+    let xs = (clef-center-x, )
+    
+
     let y = clef-data.at(clef).at("clef").at("y-offset")
   
     // clef
-    content((x , y ), [
+    content((xs.sum(), y ), [
       #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") ) * geometric-scale * 1cm)
     ], anchor: "center")
-  
+
+    xs.push(3)
+    
     // sharps or flats
     for i in range(num-accidentals) {
       assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-accidentals) + " " + symbol-type)
       let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
-      let x = calc-x(num-accidentals: i - 1)
-      content((x , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
+      
+      content((xs.sum() , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
         #image(symbol-data.at(symbol-type).at("image"), 
                height: (symbol-data.at(symbol-type).at("y-span") ) * geometric-scale * 1cm)
       ])
+      xs.push(1)
+    }
+
+    // if there were any sharps or flats, add some extra space
+    if num-accidentals > 0 {
+      xs.push(1)
     }
 
     // draw our notes
@@ -313,7 +291,7 @@
 
       let image-path = note-duration-data.at(note-duration).at("image")
     
-      let x = calc-x(num-accidentals: num-accidentals, num-notes: i)
+      let x = xs.sum()
       let y = note-height + note-duration-data.at(note-duration).at("y-offset")
       let y-span = note-duration-data.at(note-duration).at("y-span")
 
@@ -385,9 +363,30 @@
         ])
         
       }
+
+      xs.push(3) // space between notes
       
     }
-  
+
+    
+    
+    if notes.len() > 0 {
+      // double bar at end
+      let double-bar-sep = 0.5
+      let double-bar-thick = 0.15
+      let x = xs.sum()
+      line((x, 0), (x, 4 ))
+      xs.push(double-bar-sep + double-bar-thick)
+      let x = xs.sum()
+      rect((x, 0), (x - double-bar-thick, 4 ), fill: black)
+    }
+
+    // draw the 5 stave lines
+    // left until last because only now do we know the total width
+    let x = xs.sum()
+    for i in range(5) {
+      line((0, i ), (x, i ))
+    }
     
   })
 }
