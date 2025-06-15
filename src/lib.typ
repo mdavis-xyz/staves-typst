@@ -237,7 +237,7 @@
   }
 }
 
-#let stave(clef, key, notes: (), scale: 1) = {
+#let stave(clef, key, notes: (), geometric-scale: 1) = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
@@ -252,7 +252,7 @@
   cetz.canvas(length: 3cm, {
     import cetz.draw: line, content, rect
 
-    let line-sep = 0.1  * scale
+    let line-sep = 0.1  * geometric-scale
 
     let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) * line-sep
 

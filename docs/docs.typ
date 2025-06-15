@@ -12,7 +12,7 @@ This package cannot (easily) be used for writing whole songs, which require mult
 
 #figure(
   stave("treble", "c", notes: ("C5", "D5", "E5", "F5", "G5", "An5", "Bn5", "C6", "Bb5", "Ab5", "G5", "F5", "E5", "D5", 
-  "C5"), scale: 0.8),
+  "C5"), geometric-scale: 0.8),
   caption: [C Minor]
 )
 
@@ -37,7 +37,7 @@ The arguments are:
   
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
   
-/ scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
+/ geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
 
 == Examples
 
@@ -82,7 +82,7 @@ For the example of F major, the key contains B flat. A "B" note will be drawn wi
 )
 
 
-The `scale` argument can be used to adjust the size:
+The `geometric-scale` argument can be used to adjust the size:
 
 
 #grid(
@@ -91,15 +91,15 @@ The `scale` argument can be used to adjust the size:
   row-gutter: 1em,
   align: horizon,
   figure(
-    stave("bass", "F", scale: 2),
-    caption: [`scale: 2`]
+    stave("bass", "F", geometric-scale: 2),
+    caption: [`geometric-scale: 2`]
   ),
   figure(
     stave("bass", "F"),
-    caption: [default (omitted `scale`)]
+    caption: [default (omitted `geometric-scale`)]
   ),
   figure(
-    stave("bass", "F", scale: 0.5),
-    caption: [`scale: 0.5`]
+    stave("bass", "F", geometric-scale: 0.5),
+    caption: [`geometric-scale: 0.5`]
   )
 )
