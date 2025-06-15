@@ -349,3 +349,87 @@
     
   })
 }
+
+#let increment-note(letter, octave, steps: 1) = {
+  if letter != upper(letter) {
+    increment-note(upper(letter))
+  }
+  
+  if letter == all-notes-from-c.at(-1) {
+    let next-note = (
+      letter: all-notes-from-c.at(0),
+      octave: octave + 1
+    )
+    if steps > 1 {
+      return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
+    } else {
+      return next-note
+    }
+  } else{
+    let next-note = (
+      letter: all-notes-from-c.at(all-notes-from-c.position(x => x == letter) + 1),
+      octave: octave
+    )
+    if steps > 1 {
+      return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
+    } else {
+      return next-note
+    }
+  }
+
+  // typst is strange. It doesn't seem to understand when variables are defined in different branches of if statements
+  // so copy-paste this part instead of factoring it out
+  // if steps > 1 {
+  //   return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
+  // } else {
+  //   return next-note
+  // }
+}
+
+#let arpegio(clef, key, start-octave, num-octaves: 1, geometric-scale: 1) = {
+  // remove flat/sharp from key, append octave number
+  let notes = ()
+  let root-letter = upper(key.at(0))
+
+  // ascent
+  for ov in range(start-octave, start-octave + num-octaves) {
+    // root
+    notes.push(
+      root-letter + str(ov)
+    )
+    // third
+    let third-note = increment-note(root-letter, ov, steps: 2)
+    notes.push(third-note.letter + str(third-note.octave))
+
+    // fifth
+    let fifth-note = increment-note(root-letter, ov, steps: 4)
+    notes.push(fifth-note.letter + str(fifth-note.octave))
+  }
+
+  // peak
+  notes.push(
+   root-letter + str(start-octave + num-octaves)
+  )
+
+  // descent
+  for ov in range(start-octave + num-octaves - 1, start-octave - 1, step: -1) {
+   
+    // fifth
+    let fifth-note = increment-note(root-letter, ov, steps: 4)
+    notes.push(fifth-note.letter + str(fifth-note.octave))
+
+    // third
+    let third-note = increment-note(root-letter, ov, steps: 2)
+    notes.push(third-note.letter + str(third-note.octave))
+
+    // root
+    notes.push(
+      root-letter + str(ov)
+    )
+    
+  }
+  
+  let start-note = key.at(0) + str(start-octave)
+  let end-note = key.at(0) + str(start-octave + num-octaves)
+  stave(clef, key, notes: notes, geometric-scale: geometric-scale)
+}

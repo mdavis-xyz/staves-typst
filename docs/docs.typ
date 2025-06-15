@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, clef-data, symbol-data
+#import "/src/lib.typ": stave, clef-data, symbol-data, arpegio
 
 
 = Staves
@@ -17,9 +17,11 @@ This package cannot (easily) be used for writing whole songs, which require mult
 )
 
 
-== Usage
+== Stave
 
-The main function is called `stave`.
+=== Usage
+
+The foundational function is called `stave`.
 
 The arguments are:
 
@@ -39,7 +41,7 @@ The arguments are:
   
 / geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
 
-== Examples
+=== Examples
 
 To draw just a key signature, omit the `notes` argument
 
@@ -103,3 +105,27 @@ The `geometric-scale` argument can be used to adjust the size:
     caption: [`geometric-scale: 0.5`]
   )
 )
+
+== Arpegio
+
+There is an `arpegio` function for writing arpegios.
+
+=== Usage
+
+The arguments are:
+
+
+/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
+/ key: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ start-octave: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ num-octaves: Optional, defaults to 1.
+/ geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales. (Same as for `stave`.)
+
+
+=== Example
+
+```typst
+#arpegio("bass", "F", 2, num-octaves: 2)
+```
+
+#arpegio("bass", "F", 2, num-octaves: 2)
