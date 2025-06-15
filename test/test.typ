@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, clef-data, symbol-data, symbol-map, key-data
+#import "/src/lib.typ": stave, arpeggio, clef-data, symbol-data, symbol-map, key-data
 
 = Key Signature Tests
 
@@ -84,3 +84,19 @@ Using numbers
   stave(clef, "C", notes: ("C2", "C3", "C4", "C5", "C6"))
 }
 
+= Arpeggios
+
+#arpeggio(
+  "treble",
+  "D",
+  5
+)
+
+
+#arpeggio(
+  "treble",
+  "D",
+  5,
+  geometric-scale: 1.2,
+  note-duration: "crotchet"
+)

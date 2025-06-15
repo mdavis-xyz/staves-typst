@@ -103,14 +103,25 @@
 )
 
 
-#let note-symbol-data = (
+#let note-duration-data = (
   whole: (
     image: "/assets/notes/whole.svg",
     y-offset: 0, 
     y-span: 8,
-    width: 2,
+    stem: false
+  ),
+  quarter: (
+    image: "/assets/notes/crotchet-head.svg",
+    y-offset: 0, 
+    y-span: 8,
+    width: 1.1,
+    stem: true
   )
 )
+
+// add aliases
+#note-duration-data.insert("semibreve", note-duration-data.at("whole"))
+#note-duration-data.insert("crotchet", note-duration-data.at("quarter"))
 
 #let is-integer(char) = {
  let digits = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
@@ -237,12 +248,15 @@
   }
 }
 
-#let stave(clef, key, notes: (), geometric-scale: 1) = {
+#let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve") = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
         message: "Invalid clef argument. Must be " + clef-data.keys().map(str).join(", "))
 
+  assert(note-duration in note-duration-data.keys(),
+         message: "Invalid note-duration argument. Must be " + note-duration-data.keys().map(str).join(", "))
+        
   let result = determine-key(key)
   let num-accidentals = result.num-accidentals
   let symbol-type = result.symbol-type
@@ -258,6 +272,7 @@
 
     let leger-line-width = 1.8
     let accidental-offset = leger-line-width / 2 + 0.35 // accidentals are this far left of notes
+    let stem-length = 3 + 0.2 // don't make it an integer, it looks bad
     
     // draw the 5 stave lines
     for i in range(5) {
@@ -291,9 +306,6 @@
       ])
     }
 
-    // only one option for now
-    let note-symbol = "whole"
-    
     // draw our notes
     for (i, note-str) in notes.enumerate() {
       
@@ -301,11 +313,11 @@
       let note-height = calc-note-height(clef, note)
 
 
-      let image-path = note-symbol-data.at(note-symbol)
+      let image-path = note-duration-data.at(note-duration).at("image")
     
       let x = calc-x(num-accidentals: num-accidentals, num-notes: i)
-      let y = note-height + note-symbol-data.at(note-symbol).at("y-offset")
-      let y-span = note-symbol-data.at(note-symbol).at("y-span")
+      let y = note-height + note-duration-data.at(note-duration).at("y-offset")
+      let y-span = note-duration-data.at(note-duration).at("y-span")
 
 
       // leger lines
@@ -326,11 +338,43 @@
           line((left-x * line-sep, h * line-sep), (right-x * line-sep, h * line-sep))
         }
       }
-      
+
+      // note head
       content((x * line-sep, y * line-sep), [
-        #image("../assets/notes/whole.svg", 
+        #image(image-path, 
                height: (y-span * line-sep) * 1em)
       ])
+
+      // stem
+      if note-duration-data.at(note-duration).at("stem") {
+        let head-width = note-duration-data.at(note-duration).at("width")
+        if y < 2 {
+          // stem up on right
+          line(
+            (
+              (x + head-width * 0.5) * line-sep, 
+              y * line-sep
+            ), 
+            (
+              (x + head-width * 0.5)  * line-sep, 
+              (y + stem-length) * line-sep
+            )
+          )
+        } else {
+          // stem down on left
+          line(
+            (
+              (x - head-width * 0.5) * line-sep, 
+              y * line-sep
+            ), 
+            (
+              (x - head-width * 0.5)  * line-sep, 
+              (y - stem-length) * line-sep
+            )
+          )
+        }
+        
+      }
 
       // accidentals
       if note.accidental != none {
@@ -386,7 +430,7 @@
   // }
 }
 
-#let arpegio(clef, key, start-octave, num-octaves: 1, geometric-scale: 1) = {
+#let arpeggio(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
   // remove flat/sharp from key, append octave number
   let notes = ()
   let root-letter = upper(key.at(0))
@@ -431,5 +475,5 @@
   
   let start-note = key.at(0) + str(start-octave)
   let end-note = key.at(0) + str(start-octave + num-octaves)
-  stave(clef, key, notes: notes, geometric-scale: geometric-scale)
+  stave(clef, key, notes: notes, ..kwargs)
 }

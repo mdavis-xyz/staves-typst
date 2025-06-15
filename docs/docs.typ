@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, clef-data, symbol-data, arpegio
+#import "/src/lib.typ": stave, arpeggio, clef-data, symbol-data, note-duration-data
 
 
 = Staves
@@ -14,6 +14,11 @@ This package cannot (easily) be used for writing whole songs, which require mult
   stave("treble", "c", notes: ("C5", "D5", "E5", "F5", "G5", "An5", "Bn5", "C6", "Bb5", "Ab5", "G5", "F5", "E5", "D5", 
   "C5"), geometric-scale: 0.8),
   caption: [C Minor]
+)
+
+#figure(
+  arpeggio("bass", "g", 2, note-duration: "crotchet", geometric-scale: 0.8),
+  caption: [G Minor Arpeggio]
 )
 
 
@@ -40,6 +45,8 @@ The arguments are:
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
   
 / geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
+/ note-duration: Allowed values are "#note-duration-data.keys().map(str).join("\", \"")". Default is "whole" note. All notes are the same duration.
+
 
 === Examples
 
@@ -65,18 +72,25 @@ Here is an example of including `notes`. Legerlines are supported.
 ```typst
 #figure(
   stave("treble", "F", notes: ("F4", "A4", "C5", "F5", "C5", "A4", "F4")),
-  caption: [F Major Arpegio]
+  caption: [F Major Arpeggio]
 )
 ```
 
 #figure(
   stave("treble", "F", notes: ("F4", "A4", "C5", "F5", "A5", "C6", "F6", "C6", "A5", "F5", "C5", "A4", "F4")),
-  caption: [F Major Arpegio]
+  caption: [F Major Arpeggio]
 )
 
 Note that accidentals are independent of the key signature. 
 For the example of F major, the key contains B flat. A "B" note will be drawn with no accidental, so it is flattenned by the key signature. A "Bb" will have a redundant flat accidental drawn. "Bn" will have a natural accidental.
 
+
+```typst
+#figure(
+  stave("bass", "F", notes: ("C2", "B2", "Bb2", "Bn2")),
+  caption: [Lack of interaction between accidentals and key signature]
+)
+```
 
 #figure(
   stave("bass", "F", notes: ("C2", "B2", "Bb2", "Bn2")),
@@ -106,9 +120,30 @@ The `geometric-scale` argument can be used to adjust the size:
   )
 )
 
-== Arpegio
+The `note-duration` can be used to change the note symbol.
 
-There is an `arpegio` function for writing arpegios.
+#let canvases = ()
+#for note-duration in note-duration-data.keys() {
+  canvases.push([
+    #figure(
+      stave("treble", "C", notes: ("C5", "B4", "A4"), note-duration: note-duration),
+      caption: [`note-duration`: #note-duration]
+    )
+  ])
+}
+
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 1em,
+  row-gutter: 1em,
+  align: horizon,
+  ..canvases
+)
+
+== Arpeggio
+
+The `arpeggio` function is for writing arpeggios.
 
 === Usage
 
@@ -119,13 +154,18 @@ The arguments are:
 / key: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
 / start-octave: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / num-octaves: Optional, defaults to 1.
-/ geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales. (Same as for `stave`.)
-
+/ geometric-scale: Same as for `stave`.
+/ note-duration: Same as for `stave`.
 
 === Example
 
 ```typst
-#arpegio("bass", "F", 2, num-octaves: 2)
+#figure(
+  arpeggio("bass", "F", 2, num-octaves: 2),
+  caption: [F Major Arpeggio]
+)
 ```
-
-#arpegio("bass", "F", 2, num-octaves: 2)
+#figure(
+  arpeggio("bass", "F", 2, num-octaves: 2),
+  caption: [F Major Arpeggio]
+)
