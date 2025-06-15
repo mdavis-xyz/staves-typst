@@ -2,5 +2,5 @@
 
 #set page(width: auto, height: auto, margin: 1pt)
 
-#stave("treble", "3#", notes: ("C4", "E4", "F4", "C5", "C6"), scale: 2)
+#stave("treble", "3#", notes: ("C4", "E4", "F#4", "Cn5", "Cb6"), scale: 2)
 

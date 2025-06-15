@@ -34,8 +34,13 @@ Using numbers
 #for clef in clef-data.keys() {
   for num-symbols in range(0, 7) {
     for symbol-char in symbol-map.keys() {
-      let key = str(num-symbols) + symbol-char
-      canvases.push(stave(clef, key))
+      if symbol-char != "n" {
+        let key = str(num-symbols) + symbol-char
+        canvases.push([
+          stave(#clef,#key)
+          #stave(clef, key)
+        ])
+      }
     }
   }
 }

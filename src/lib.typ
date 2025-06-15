@@ -69,6 +69,11 @@
     image: "/assets/accidental/flat.svg",
     y-offset: 0.4,
     y-span: 15
+  ),
+  natural: (
+    image: "/assets/accidental/natural.svg",
+    y-offset: 0,
+    y-span: 15
   )
 )
 
@@ -94,6 +99,7 @@
  "#": "sharp",
  "s": "sharp",
  "b": "flat",
+ "n": "natural",
 )
 
 
@@ -180,7 +186,7 @@
   let accidental = if note.len() == 3 {
     note.at(1)
   } else {
-    "n" // default to natural
+    none
   }
   
   (
@@ -197,8 +203,7 @@
 // e.g. for clef: "treble", note-letter: "B4", height is +2
 // Note that the integer changes at C, not A
 // e.e.g B4, C5, D5 are consecutive
-#let calc-note-height(clef, note-str) = {
-  let note = parse-note-string(note-str)
+#let calc-note-height(clef, note) = {
 
   // find difference in letters above/below C
   // typst is zero-index based
@@ -226,7 +231,7 @@
     let clef-width = clef-center-x * 2
     let clef-key-space = 1
     let accidental-space = 1
-    let note-space = 2.4
+    let note-space = 3
 
     clef-width + clef-key-space + num-accidentals * accidental-space + num-notes * note-space
   }
@@ -245,17 +250,26 @@
   
   
   cetz.canvas(length: 3cm, {
-    import cetz.draw: line, content
+    import cetz.draw: line, content, rect
 
     let line-sep = 0.1  * scale
 
     let width = calc-x(num-accidentals: num-accidentals, num-notes: notes.len()) * line-sep
 
     let leger-line-width = 1.8
+    let accidental-offset = leger-line-width / 2 + 0.35 // accidentals are this far left of notes
     
     // draw the 5 stave lines
     for i in range(5) {
       line((0, i * line-sep), (width, i * line-sep))
+    }
+    if notes.len() > 0 {
+      // double bar at end
+      let double-bar-sep = 0.05
+      let double-bar-thick = 0.01
+      line((width, 0), (width, 4 * line-sep))
+      line((width - double-bar-sep, 0), (width - double-bar-sep, 4 * line-sep))
+      rect((width, 0), (width - double-bar-thick, 4 * line-sep), fill: black)
     }
 
     let x = calc-x(is-clef: true)
@@ -268,6 +282,7 @@
   
     // sharps or flats
     for i in range(num-accidentals) {
+      assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-accidentals) + " " + symbol-type)
       let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
       let x = calc-x(num-accidentals: i - 1)
       content((x * line-sep, (y + symbol-data.at(symbol-type).at("y-offset")) * line-sep), [
@@ -281,7 +296,9 @@
     
     // draw our notes
     for (i, note-str) in notes.enumerate() {
-      let note-height = calc-note-height(clef, note-str)
+      
+      let note = parse-note-string(note-str)
+      let note-height = calc-note-height(clef, note)
 
 
       let image-path = note-symbol-data.at(note-symbol)
@@ -314,6 +331,18 @@
         #image("../assets/notes/whole.svg", 
                height: (y-span * line-sep) * 1em)
       ])
+
+      // accidentals
+      if note.accidental != none {
+        let accidental = symbol-data.at(symbol-map.at(note.accidental))
+        let a-x = x - accidental-offset
+
+        content(((x - accidental-offset) * line-sep, (y + accidental.y-offset) * line-sep), [
+            #image(accidental.image, 
+                   height: (accidental.y-span * line-sep) * 1em)
+        ])
+        
+      }
       
     }
   
