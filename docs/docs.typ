@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data, symbol-data, note-duration-data
+#import "/src/lib.typ": stave, major-scale, arpeggio, chromatic-scale, clef-data, symbol-data, note-duration-data
 
 
 = Staves
@@ -12,18 +12,18 @@ This package cannot (easily) be used for writing whole songs, which require mult
 
 
 #figure(
-  major-scale("treble", "D", 4, note-sep: 2),
+  major-scale("treble", "D", 4),
   caption: [D Major Scale]
 )
 
 #figure(
-  arpeggio("bass", "g", 2, note-duration: "crotchet", geometric-scale: 0.8),
+  arpeggio("bass", "g", 2, note-duration: "crotchet"),
   caption: [G Minor Arpeggio]
 )
 
 
 #figure(
-  stave("alto", "c", notes: ("C3", "D#4", "F3"), geometric-scale: 0.8),
+  stave("alto", "c", notes: ("C3", "D#4", "F3")),
   caption: [Custom Notes]
 )
 
@@ -242,6 +242,51 @@ The arguments are the same as for `major-scale`.
 #figure(
   arpeggio("bass", "F", 2, num-octaves: 2),
   caption: [F Major Arpeggio]
+)
+
+== Chromatic Scales
+
+`chromatic-scale` is used to write chromatic scales (every semitone between two notes).
+The arguments are:
+
+=== Usage
+
+/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
+/ start-note: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
+/ num-octaves: Optional, defaults to 1.
+/ side: "sharps" or "flats"
+/ geometric-scale: Same as for `stave`.
+/ note-duration: Same as for `stave`.
+/ note-sep: Same as for `stave`.
+
+These scales tend to be quite long, so you probably want to use `note-sep` and `geometric-scale`, and perhaps a landscape page.
+
+=== Examples
+
+```typst
+#import "./lib.typ": chromatic-scale
+
+#figure(
+  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.8),
+  caption: [D Chromatic Scale]
+)
+```
+
+#figure(
+  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.8),
+  caption: [D Chromatic Scale]
+)
+
+```typst
+#figure(
+  chromatic-scale("bass", "F2", side: "flats", geometric-scale: 0.7, note-duration: "crotchet"),
+  caption: [F Chromatic Scale]
+)
+```
+
+#figure(
+  chromatic-scale("bass", "F2", side: "flats", geometric-scale: 0.7, note-duration: "crotchet"),
+  caption: [F Chromatic Scale]
 )
 
 == Implementation Details

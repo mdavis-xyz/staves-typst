@@ -1,10 +1,12 @@
-#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data
+#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data, chromatic-scale
 
 #set page(width: auto, height: auto, margin: 1pt)
 
+#chromatic-scale("treble", "C#4", side: "sharp", num-octaves: 2)
+
 Normal scale:
 
-#major-scale("treble", "D", 4, num-octaves: 2)
+#major-scale("treble", "C", 4, num-octaves: 3, note-sep: 0.8, geometric-scale: 0.5)
 
 #stave("bass", "D", notes: ("C3", "D#3", "C3"), note-duration: "whole")
 #stave("treble", "D", notes: ("C4", "C#4", "C5"), note-duration: "whole")

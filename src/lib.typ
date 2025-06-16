@@ -401,6 +401,8 @@
   })
 }
 
+// ignore accents
+// just letters and octaves
 #let increment-note(letter, octave, steps: 1) = {
   if letter != upper(letter) {
     increment-note(upper(letter))
@@ -509,6 +511,94 @@
 
   let start-note = key.at(0) + str(start-octave)
   let end-note = key.at(0) + str(start-octave + num-octaves)
-  // [#notes]
+
   stave(clef, key, notes: notes, ..kwargs)
+}
+
+// A -> B -> C ... G -> A
+#let increment-letter(letter) = {
+  let start-index = all-notes-from-c.position(x => x == letter)
+  let next-index = calc.rem-euclid(start-index + 1, all-notes-from-c.len())
+  return all-notes-from-c.at(next-index)
+}
+
+#let add-semitones(start-letter, start-accidental, start-octave, steps: 1, side: "sharps") = {
+  if steps == 0 {
+    return (
+      letter: start-letter,
+      accidental: start-accidental,
+      octave: start-octave
+    )
+  } else if steps >= 12 {
+    // skip a whole octave at a time
+    // for performance reasons
+    return add-semitones(start-letter, start-accidental, start-octave + 1, steps: steps - 12, side: side)
+  } else if steps < 0 {
+    panic("Decrementing by semitone not supported")
+  } else if start-letter == "B" {
+    // increment octave number when going from B to C
+    return add-semitones("C", none, start-octave + 1, steps: steps - 1, side: side)
+  } else if start-accidental == "b" {
+    // remove the flat
+    assert(side == "flats", message: "Cannot start with flats for sharp incrementing")
+    return add-semitones(start-letter, none, start-octave, steps: steps - 1, side: side)
+    
+  } else if start-accidental in ("n", "", none) {
+    if start-letter in ("B", "E") {
+        // this note has no sharp, go to next white note
+        return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
+    } else if side == "sharps" {
+      // sharpen this note
+      return add-semitones(start-letter, "s", start-octave, steps: steps - 1, side: side)
+    } else { // flats
+      assert(side == "flats", message: "unknown side: " + side)
+      // flatten the next note
+      return add-semitones(increment-letter(start-letter), "b", start-octave, steps: steps - 1, side: side)
+    }
+  } else {
+    assert(start-accidental in ("s", "#"), message: "Unknown accidental: " + start-accidental)
+    assert(side == "sharps", message: "Cannot mix sharp notes and not sharp side")
+
+    return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
+  }
+}
+
+
+#let chromatic-scale(clef, start-note, num-octaves: 1, side: "sharps", ..kwargs) = {
+  if side == "sharp" {
+    return chromatic-scale(clef, start-note, num-octaves: num-octaves, side: "sharps", ..kwargs)
+  } else if side == "flat" {
+    return chromatic-scale(clef, start-note, num-octaves: num-octaves, side: "flats", ..kwargs)
+  }
+  assert(side in ("sharps", "flats"), message: "side argument must be either sharps or flats")
+  let start-note-parsed = parse-note-string(start-note)
+  let notes = ()
+
+  // ascent
+  for i in range(12 * num-octaves + 1) {
+    let note = add-semitones(start-note-parsed.letter, start-note-parsed.accidental, start-note-parsed.octave, steps: i, side: side)
+    let a = if note.accidental == none {
+      ""
+    } else {
+      note.accidental
+    }
+    notes.push(
+      note.letter + a + str(note.octave)
+    )
+  }
+
+  // descent
+  for i in range(12 * num-octaves - 1 , 0 - 1, step: -1) {
+    let note = add-semitones(start-note-parsed.letter, start-note-parsed.accidental, start-note-parsed.octave, steps: i, side: side)
+    let a = if note.accidental == none {
+      ""
+    } else {
+      note.accidental
+    }
+    notes.push(
+      note.letter + a + str(note.octave)
+    )
+  }
+  
+  stave(clef, "C", notes: notes, ..kwargs)
 }
