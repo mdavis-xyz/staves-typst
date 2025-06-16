@@ -1,9 +1,10 @@
-#import "/src/lib.typ": stave, arpeggio, clef-data
+#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data
 
 #set page(width: auto, height: auto, margin: 1pt)
 
 Normal scale:
 
+#major-scale("treble", "D", 4, num-octaves: 2)
 
 #stave("bass", "D", notes: ("C3", "D#3", "C3"), note-duration: "whole")
 #stave("treble", "D", notes: ("C4", "C#4", "C5"), note-duration: "whole")

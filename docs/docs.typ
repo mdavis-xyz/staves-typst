@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, arpeggio, clef-data, symbol-data, note-duration-data
+#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data, symbol-data, note-duration-data
 
 
 = Staves
@@ -10,10 +10,10 @@ For now this is restricted to only one stave (set of lines).
 This is useful mostly for writing scales.
 This package cannot (easily) be used for writing whole songs, which require multiple staves.
 
+
 #figure(
-  stave("treble", "c", notes: ("C5", "D5", "E5", "F5", "G5", "An5", "Bn5", "C6", "Bb5", "Ab5", "G5", "F5", "E5", "D5", 
-  "C5"), geometric-scale: 0.8),
-  caption: [C Minor]
+  major-scale("treble", "D", 4, note-sep: 2),
+  caption: [D Major Scale]
 )
 
 #figure(
@@ -22,11 +22,18 @@ This package cannot (easily) be used for writing whole songs, which require mult
 )
 
 
+#figure(
+  stave("alto", "c", notes: ("C3", "D#4", "F3"), geometric-scale: 0.8),
+  caption: [Custom Notes]
+)
+
+
 == Stave
 
-=== Usage
-
 The foundational function is called `stave`.
+This is for writing just clefs, clefs and key signatures, or clefs, key signatures and custom notes.
+
+=== Usage
 
 The arguments are:
 
@@ -45,8 +52,8 @@ The arguments are:
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
   
 / geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
-/ note-duration: Allowed values are "#note-duration-data.keys().map(str).join("\", \"")". Default is "whole" note. All notes are the same duration.
-
+/ note-duration: (optional) Allowed values are "#note-duration-data.keys().map(str).join("\", \"")". Default is "whole" note. All notes are the same duration.
+/ note-sep: (optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.
 
 === Examples
 
@@ -102,7 +109,7 @@ The `geometric-scale` argument can be used to adjust the size:
 
 
 #grid(
-  columns: (1fr, 1fr, 1fr),
+  columns: (2fr, 1fr, 1fr),
   column-gutter: 1em,
   row-gutter: 1em,
   align: horizon,
@@ -119,6 +126,24 @@ The `geometric-scale` argument can be used to adjust the size:
     caption: [`geometric-scale: 0.5`]
   )
 )
+
+`note-sep` can be used to adjust the horizontal separation between notes, whilst keeping the height of the stave the same:
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 1em,
+  row-gutter: 1em,
+  align: horizon,
+  figure(
+    stave("bass", "G", notes: ("C3", "D3", "C3")),
+    caption: [default (omitted `note-sep`)]
+  ),
+  figure(
+    stave("bass", "G", notes: ("C3", "D3", "C3"), note-sep: 0.6),
+    caption: [`note-sep: 0.7`]
+  )
+)
+
 
 The `note-duration` can be used to change the note symbol.
 
@@ -141,13 +166,59 @@ The `note-duration` can be used to change the note symbol.
   ..canvases
 )
 
+== Major Scales
+
+The `major-scale` function is for writing major scales.
+
+=== Usage
+
+/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
+/ key: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ start-octave: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ num-octaves: Optional, defaults to 1.
+/ geometric-scale: Same as for `stave`.
+/ note-duration: Same as for `stave`.
+/ note-sep: Same as for `stave`.
+
+=== Examples
+
+```typst
+#import "./lib.typ": major-scale
+
+#figure(
+  major-scale("treble", "D", 4),
+  caption: [D Major scale]
+)
+```
+
+#figure(
+  major-scale("treble", "D", 4),
+  caption: [D Major scale]
+)
+
+You can write a 2 octave scale with `num-octaves: 2`.
+This is probably too wide for your page. Shrink it horizontally with `note-sep`, or shrink in both dimensions with `geometric-scale`.
+
+```typst
+#figure(
+  major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7),
+  caption: [F Major scale]
+)
+```
+
+#figure(
+  major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7),
+  caption: [F Major scale]
+)
+
+
 == Arpeggio
 
 The `arpeggio` function is for writing arpeggios.
 
 === Usage
 
-The arguments are:
+The arguments are the same as for `major-scale`.
 
 
 / clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
@@ -156,10 +227,13 @@ The arguments are:
 / num-octaves: Optional, defaults to 1.
 / geometric-scale: Same as for `stave`.
 / note-duration: Same as for `stave`.
+/ note-sep: Same as for `stave`.
 
 === Example
 
 ```typst
+#import "./lib.typ": arpeggio
+
 #figure(
   arpeggio("bass", "F", 2, num-octaves: 2),
   caption: [F Major Arpeggio]

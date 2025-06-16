@@ -226,7 +226,7 @@
   c4-height + (note.octave - 4) * all-notes-from-c.len() * 0.5 + notes-above-c * 0.5
 }
 
-#let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve") = {
+#let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve", note-sep: 1) = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
@@ -290,7 +290,13 @@
 
 
       let image-path = note-duration-data.at(note-duration).at("image")
-    
+
+
+      // extra space if this is the first note and has an accidental
+      if (note.accidental != none) and (i == 0) {
+        xs.push(1)
+      }
+      
       let x = xs.sum()
       let y = note-height + note-duration-data.at(note-duration).at("y-offset")
       let y-span = note-duration-data.at(note-duration).at("y-span")
@@ -364,9 +370,13 @@
         
       }
 
-      xs.push(3) // space between notes
-      
+      if (i <= notes.len() - 2) {
+        xs.push(note-sep * 3) // space between notes
+      }
+
     }
+
+    xs.push(2)
 
     
     
@@ -395,36 +405,40 @@
   if letter != upper(letter) {
     increment-note(upper(letter))
   }
-  
+
+  if steps == 0 {
+    return (
+      letter: letter,
+      octave: octave
+    )
+  }else if steps < 0 {
+    panic("Decrementing notes not supported")
+  } else if steps >= 7 {
+    // skip a whole octave at a time
+    // for performance reasons
+    return increment-note(letter, octave + 1, steps: steps - 7)
+  }
+
+  let next-note = none
   if letter == all-notes-from-c.at(-1) {
-    let next-note = (
+    next-note = (
       letter: all-notes-from-c.at(0),
       octave: octave + 1
     )
-    if steps > 1 {
-      return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
-    } else {
-      return next-note
-    }
+    
   } else{
-    let next-note = (
+    next-note = (
       letter: all-notes-from-c.at(all-notes-from-c.position(x => x == letter) + 1),
       octave: octave
     )
-    if steps > 1 {
-      return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
-    } else {
-      return next-note
-    }
   }
 
-  // typst is strange. It doesn't seem to understand when variables are defined in different branches of if statements
-  // so copy-paste this part instead of factoring it out
-  // if steps > 1 {
-  //   return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
-  // } else {
-  //   return next-note
-  // }
+  if steps > 1 {
+    return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
+  } else {
+    return next-note
+  }
+
 }
 
 #let arpeggio(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
@@ -472,5 +486,29 @@
   
   let start-note = key.at(0) + str(start-octave)
   let end-note = key.at(0) + str(start-octave + num-octaves)
+  stave(clef, key, notes: notes, ..kwargs)
+}
+
+#let major-scale(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
+  // remove flat/sharp from key, append octave number
+  let notes = ()
+  let root-letter = upper(key.at(0))
+
+  // ascent
+  for steps in range(7 * num-octaves + 1) {
+    let note = increment-note(root-letter, start-octave, steps: steps)
+    notes.push(note.letter + str(note.octave))
+  }
+
+  // descent
+  for steps in range(7 * num-octaves - 1, 0 - 1, step: -1) {
+    let note = increment-note(root-letter, start-octave, steps: steps)
+    notes.push(note.letter + str(note.octave))
+  }
+
+
+  let start-note = key.at(0) + str(start-octave)
+  let end-note = key.at(0) + str(start-octave + num-octaves)
+  // [#notes]
   stave(clef, key, notes: notes, ..kwargs)
 }
