@@ -1,4 +1,6 @@
-#import "/src/lib.typ": stave, arpeggio, all-clefs, _all-symbols, _key-data
+#import "/src/lib.typ": stave, arpeggio, all-clefs, _all-symbols, _key-data, _unit-test
+
+#_unit-test()
 
 = Key Signature Tests
 

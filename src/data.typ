@@ -2,11 +2,10 @@
 // clef-data contains information about clefs:
 // the symbols, as well as which line is which
 // and where the key signature symbols go
-
+//
 // reference for key order:
 // sharps: https://music-theory-practice.com/images/order-of-sharps-staves.png
 // flats: https://music-theory-practice.com/images/order-of-flats-staves.jpeg
-
 #let clef-data = (
   treble: (
     clef: (
@@ -14,7 +13,7 @@
       y-offset: 2,
       y-span: 2,
     ),
-    c4: -1, // where is middle C?
+    middle-c: -1,
     accidentals: (
       sharp: (4, 2.5, 3.5, 2, 3, 1.5, 2.5),
       flat: (2, 3.5, 1.5, 3, 1, 2.5, 0.5)
@@ -26,7 +25,7 @@
       y-offset: 2.4,
       y-span: 1,
     ),
-    c4: 5, // where is middle C?
+    middle-c: 5,
     accidentals: (
       sharp: (3, 1.5, 3.5, 2, 4, 2.5, 4.5),
       flat: (1, 2.5, 0.5, 2, 0, 1.5, -0.5)
@@ -38,7 +37,7 @@
       y-offset: 2,
       y-span: 1.2,
     ),
-    c4: 2,
+    middle-c: 2,
     accidentals: (
       sharp: (3.5, 2, 4, 2.5, 1, 3, 1.5),
       flat: (1.5, 3, 1, 2.5, 0.5, 2, 0)
@@ -50,7 +49,7 @@
       y-offset: 3,
       y-span: 1.2,
     ),
-    c4: 3,
+    middle-c: 3,
     accidentals: (
       sharp: (1, 3, 1.5, 3.5, 2, 4, 2.5),
       flat: (2.5, 4, 2, 3.5, 1.5, 3, 1)
@@ -125,8 +124,15 @@
 #note-duration-data.insert("semibreve", note-duration-data.at("whole"))
 #note-duration-data.insert("crotchet", note-duration-data.at("quarter"))
 
+#let semitones-per-octave = 12
 
-#let all-notes-from-c = ("C", "D", "E", "F", "G", "A", "B")
+#let middle-c-octave = 4
+#let middle-c-index = 60
+#let all-notes-from-c = (
+  sharp: ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"),
+  flat:  ("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B")
+)
+#let all-letters-from-c = ("C", "D", "E", "F", "G", "A", "B")
 
 // export some dict keys for documentation and testing
 #let all-clefs = clef-data.keys()

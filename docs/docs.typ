@@ -292,3 +292,10 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 == Implementation Details
 
 This package uses a `canvas` from the #link("https://typst.app/universe/package/cetz", "CeTZ") package.
+
+== License Details
+
+This library uses SVG images for clefs, accidentals etc.
+These files came from Wikipedia, and are in the public domain.
+They are not covered by the same license as the rest of the package.
+Source URLs for these SVGs are listed in #link("https://github.com/mdavis-xyz/staves-typst/tree/master/assets", `/assets/README.md`)

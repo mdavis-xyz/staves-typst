@@ -3,10 +3,6 @@
 #import "data.typ": *
 #import "utils.typ": *
 
-// y height is defined as 0 = bottom line
-// y=1, second-bottom line
-// y=1.5 between 2nd-bottom and middle line
-
 
 #let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve", note-sep: 1) = {
 

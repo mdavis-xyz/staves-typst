@@ -18,8 +18,12 @@ keywords = [
   "Accidental",
   "Score",
   "Stave",
-  "Chord"
+  "Chord",
+  "Chromatic",
+  "Major",
+  "Minor"
 ]
 categories = [ "components", "visualization", "fun" ]
 disciplines = [ "music" ]
-exclude = [ "examples/", "examples/*", "docs/", "docs/*" ]
+exclude = [ "/examples/*", "/docs/*.pdf" ]
+repository = "https://github.com/mdavis-xyz/staves-typst"

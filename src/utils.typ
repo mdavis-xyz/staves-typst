@@ -10,6 +10,7 @@
 // Bb -> Bb Major
 // a# -> A# Minor
 // bb -> Bb Minor
+// none -> C Major
 // "" (empty) -> C Major
 // "3b" -> 3 flats (Eb Major)
 #let determine-key(key) = {
@@ -54,11 +55,30 @@
  }
 }
 
+
+#let letter-note(letter, octave, accidental: none) = {
+  assert(type(octave) == int, message: "octave must be an integer. Did you mix up argument order for letter-note?")
+  (
+    type: "letter-note",
+    letter: letter,
+    accidental: accidental,
+    octave: octave
+  )
+}
+
+#let index-note(index, side) = {
+  (
+    type: "index-note",
+    index: index,
+    side: side
+  )
+}
+
 // takes in a string
-// returns a dictionary
+// returns a dictionary (letter-based note)
 // e.g. "Cb5" => {"letter": "C", "accidental": "b", octave: 5}
 // e.g. "A6" => {"letter": "C", "accidental": "n", octave: 5}
-// accidental defaults to n, for "natural"
+// accidental defaults to none (distinct from "n" for natural)
 #let parse-note-string(note) = {
   if note.len() < 2 or note.len() > 3 {
     panic("Invalid note format: " + note)
@@ -76,30 +96,113 @@
   } else {
     none
   }
-  
+
+  if accidental != none {
+    assert(accidental in symbol-map.keys(), message: "Unable to parse note: " + note + ", unknown accidental " + accidental)
+  }
+
+  return letter-note(letter, octave, accidental: accidental)
   (
+    type: "letter-note",
     letter: letter,
     accidental: accidental,
     octave: octave
   )
 }
 
+// from letter-note to string
+#let serialise-note(note, suppress-natural: false) = {
+  let a = if note.accidental == none {
+    ""
+  } else if suppress-natural and note.accidental == "n" {
+    ""
+  } else {
+    note.accidental
+  }
+  return note.letter + a + str(note.octave)
+}
 
+// concats letter and accidental
+// handling case where accidental: none
+// and optionally converting "n" -> ""
+#let accidental-string(letter, accidental, suppress-natural: false) = {
+  if (accidental == "n") and suppress-natural {
+    return accidental-string(letter, none)
+  } else if accidental == none {
+    return letter
+  } else if accidental == "s" {
+    // change from "s" to "#"
+    return accidental-string(letter, "#")
+  } else {
+    assert(accidental in symbol-map.keys(), message: "Unable to parse note: " + letter + ", unknown accidental " + accidental)
+    return letter + accidental
+  }
+}
+
+// convert from letter-note type to index-note type
+#let letter-to-index(note, side) = {
+  if note.at("type") == "index-note" {
+    // already the type we want
+    return note
+  }
+  assert(note.at("type") == "letter-note", message: "Unknown data type when converting to index-note")
+
+  let octaves-above-middle-c = note.octave - middle-c-octave
+
+  let a-s = accidental-string(note.letter, note.accidental, suppress-natural: true)
+
+  assert(side in all-notes-from-c, message: "unknown side: " + side)
+  assert(a-s in all-notes-from-c.at(side), message: "unable to calculate index of " + a-s + " above C")
+  
+  let semitones-above-c = all-notes-from-c.at(side).position(s => s == a-s)
+
+  let index = middle-c-index + semitones-above-c + semitones-per-octave * octaves-above-middle-c
+
+  return index-note(index, side)
+  
+}
+
+// convert from index-note type to letter-note type
+#let index-to-letter(note) = {
+  if note.at("type") == "letter-note" {
+    return note
+  }
+  assert(note.at("type") == "index-note", message: "unknown type for index-to-letter, type: " + str(type(note)))
+
+  let semitones-above-middle-c = note.index - middle-c-index
+  let octaves-above-middle-c = calc.div-euclid(semitones-above-middle-c, semitones-per-octave)
+  let semitones-above-c = calc.rem-euclid(semitones-above-middle-c, semitones-per-octave)
+  let octave = middle-c-octave + octaves-above-middle-c
+  
+  let a-s = all-notes-from-c.at(note.side).at(semitones-above-c)
+  let letter = a-s.at(0)
+  let accidental = if a-s.len() == 1 {
+    none
+  } else {
+    a-s.at(2 - 1)
+  }
+
+  return letter-note(letter, octave, accidental: accidental)
+  
+}
+
+// takes in a 
 // e.g. for clef: "treble", note-letter: "C4", height is -1
 // e.g. for clef: "treble", note-letter: "F4", height is +0.5
 // e.g. for clef: "treble", note-letter: "B4", height is +2
 // Note that the integer changes at C, not A
 // e.e.g B4, C5, D5 are consecutive
 #let calc-note-height(clef, note) = {
-
+  assert(type(note) != type(""), message: "calc-note-height expects letter-note data type, not raw string")
+  assert(note.at("type") == "letter-note", message: "unsupported note type in calc-note-height")
   // find difference in letters above/below C
   // typst is zero-index based
-  let notes-above-c = all-notes-from-c.position(n => n == note.letter)
+  let notes-above-c = all-letters-from-c.position(n => n == note.letter)
   
-  let c4-height = clef-data.at(clef).at("c4")
+  let mid-c-height = clef-data.at(clef).at("middle-c")
 
   // now calculate height
-  c4-height + (note.octave - 4) * all-notes-from-c.len() * 0.5 + notes-above-c * 0.5
+  mid-c-height + (note.octave - 4) * all-letters-from-c.len() * 0.5 + notes-above-c * 0.5
 }
 
 
@@ -124,15 +227,15 @@
   }
 
   let next-note = none
-  if letter == all-notes-from-c.at(-1) {
+  if letter == all-letters-from-c.at(-1) {
     next-note = (
-      letter: all-notes-from-c.at(0),
+      letter: all-letters-from-c.at(0),
       octave: octave + 1
     )
     
   } else{
     next-note = (
-      letter: all-notes-from-c.at(all-notes-from-c.position(x => x == letter) + 1),
+      letter: all-letters-from-c.at(all-letters-from-c.position(x => x == letter) + 1),
       octave: octave
     )
   }
@@ -148,22 +251,22 @@
 
 // A -> B -> C ... G -> A
 #let increment-letter(letter) = {
-  let start-index = all-notes-from-c.position(x => x == letter)
-  let next-index = calc.rem-euclid(start-index + 1, all-notes-from-c.len())
-  return all-notes-from-c.at(next-index)
+  let start-index = all-letters-from-c.position(x => x == letter)
+  let next-index = calc.rem-euclid(start-index + 1, all-letters-from-c.len())
+  return all-letters-from-c.at(next-index)
 }
 
-#let add-semitones(start-letter, start-accidental, start-octave, steps: 1, side: "sharps") = {
+#let add-semitones(start-letter, start-accidental, start-octave, steps: 1, side: "sharp") = {
   if steps == 0 {
     return (
       letter: start-letter,
       accidental: start-accidental,
       octave: start-octave
     )
-  } else if steps >= 12 {
+  } else if steps >= semitones-per-octave {
     // skip a whole octave at a time
     // for performance reasons
-    return add-semitones(start-letter, start-accidental, start-octave + 1, steps: steps - 12, side: side)
+    return add-semitones(start-letter, start-accidental, start-octave + 1, steps: steps - semitones-per-octave, side: side)
   } else if steps < 0 {
     panic("Decrementing by semitone not supported")
   } else if start-letter == "B" {
@@ -171,24 +274,24 @@
     return add-semitones("C", none, start-octave + 1, steps: steps - 1, side: side)
   } else if start-accidental == "b" {
     // remove the flat
-    assert(side == "flats", message: "Cannot start with flats for sharp incrementing")
+    assert(side == "flat", message: "Cannot start with flat for sharp incrementing")
     return add-semitones(start-letter, none, start-octave, steps: steps - 1, side: side)
     
   } else if start-accidental in ("n", "", none) {
     if start-letter in ("B", "E") {
         // this note has no sharp, go to next white note
         return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
-    } else if side == "sharps" {
+    } else if side == "sharp" {
       // sharpen this note
       return add-semitones(start-letter, "s", start-octave, steps: steps - 1, side: side)
     } else { // flats
-      assert(side == "flats", message: "unknown side: " + side)
+      assert(side == "flat", message: "unknown side: " + side)
       // flatten the next note
       return add-semitones(increment-letter(start-letter), "b", start-octave, steps: steps - 1, side: side)
     }
   } else {
     assert(start-accidental in ("s", "#"), message: "Unknown accidental: " + start-accidental)
-    assert(side == "sharps", message: "Cannot mix sharp notes and not sharp side")
+    assert(side == "sharp", message: "Cannot mix sharp notes and not sharp side")
 
     return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
   }
