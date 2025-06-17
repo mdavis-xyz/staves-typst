@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, arpeggio, clef-data, chromatic-scale
+#import "/src/lib.typ": stave, major-scale, arpeggio, chromatic-scale
 
 #set page(width: auto, height: auto, margin: 1pt)
 

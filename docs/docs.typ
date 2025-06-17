@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, arpeggio, chromatic-scale, clef-data, symbol-data, note-duration-data
+#import "/src/lib.typ": stave, major-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations
 
 
 = Staves
@@ -37,12 +37,12 @@ This is for writing just clefs, clefs and key signatures, or clefs, key signatur
 
 The arguments are:
 
-/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
 
-/ key: Two possible forms. 
+/ `key`: Two possible forms. 
   - Letter based: Uppercase for major, lowercase for minor, with `#` or `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
   - Number based, with a symbol: "5\#" (or "5s") for 5 sharps, "2b" for 2 flats
-/ notes: An (optional) array of strings representing notes to play sequentially. Chords are not supported. e.g.
+/ `notes`: An (optional) array of strings representing notes to play sequentially. Chords are not supported. e.g.
   - "C4" is middle C
   - "C5" is the C an octave above middle C. 
   - "Db4" or "C\#4" is a semitone above middle C
@@ -51,9 +51,9 @@ The arguments are:
   
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
   
-/ geometric-scale: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
-/ note-duration: (optional) Allowed values are "#note-duration-data.keys().map(str).join("\", \"")". Default is "whole" note. All notes are the same duration.
-/ note-sep: (optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.
+/ `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
+/ `note-duration`: (optional) Allowed values are "#all-note-durations.join("\", \"")". Default is "whole" note. All notes are the same duration.
+/ `note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.
 
 === Examples
 
@@ -148,7 +148,7 @@ The `geometric-scale` argument can be used to adjust the size:
 The `note-duration` can be used to change the note symbol.
 
 #let canvases = ()
-#for note-duration in note-duration-data.keys() {
+#for note-duration in all-note-durations {
   canvases.push([
     #figure(
       stave("treble", "C", notes: ("C5", "B4", "A4"), note-duration: note-duration),
@@ -172,13 +172,13 @@ The `major-scale` function is for writing major scales.
 
 === Usage
 
-/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
-/ key: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
-/ start-octave: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
-/ num-octaves: Optional, defaults to 1.
-/ geometric-scale: Same as for `stave`.
-/ note-duration: Same as for `stave`.
-/ note-sep: Same as for `stave`.
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `num-octaves`: Optional, defaults to 1.
+/ `geometric-scale`: Same as for `stave`.
+/ `note-duration`: Same as for `stave`.
+/ `note-sep`: Same as for `stave`.
 
 === Examples
 
@@ -221,13 +221,13 @@ The `arpeggio` function is for writing arpeggios.
 The arguments are the same as for `major-scale`.
 
 
-/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
-/ key: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
-/ start-octave: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
-/ num-octaves: Optional, defaults to 1.
-/ geometric-scale: Same as for `stave`.
-/ note-duration: Same as for `stave`.
-/ note-sep: Same as for `stave`.
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `num-octaves`: Optional, defaults to 1.
+/ `geometric-scale`: Same as for `stave`.
+/ `note-duration`: Same as for `stave`.
+/ `note-sep`: Same as for `stave`.
 
 === Example
 
@@ -251,13 +251,13 @@ The arguments are:
 
 === Usage
 
-/ clef: Allowed values are "#clef-data.keys().map(str).join("\", \"")". (Same as for `stave`.)
-/ start-note: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
-/ num-octaves: Optional, defaults to 1.
-/ side: "sharps" or "flats"
-/ geometric-scale: Same as for `stave`.
-/ note-duration: Same as for `stave`.
-/ note-sep: Same as for `stave`.
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `start-note`: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
+/ `num-octaves`: Optional, defaults to 1.
+/ `side`: "sharps" or "flats"
+/ `geometric-scale`: Same as for `stave`.
+/ `note-duration`: Same as for `stave`.
+/ `note-sep`: Same as for `stave`.
 
 These scales tend to be quite long, so you probably want to use `note-sep` and `geometric-scale`, and perhaps a landscape page.
 

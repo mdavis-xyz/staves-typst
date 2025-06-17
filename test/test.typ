@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, arpeggio, clef-data, symbol-data, symbol-map, key-data
+#import "/src/lib.typ": stave, arpeggio, all-clefs, _all-symbols, _key-data
 
 = Key Signature Tests
 
@@ -14,7 +14,7 @@ Major vs minor
 #stave("treble", "f")
 
 All symbols
-#for clef in clef-data.keys() {
+#for clef in all-clefs {
   stave(clef, "C#")
   stave(clef, "Cb")
 }
@@ -31,9 +31,9 @@ Using numbers
 === Numbers
 
 #let canvases = ()
-#for clef in clef-data.keys() {
+#for clef in all-clefs {
   for num-symbols in range(0, 7) {
-    for symbol-char in symbol-map.keys() {
+    for symbol-char in _all-symbols {
       if symbol-char != "n" {
         let key = str(num-symbols) + symbol-char
         canvases.push([
@@ -56,9 +56,9 @@ Using numbers
 === Letters
 
 #let canvases = ()
-#for clef in clef-data.keys() {
+#for clef in all-clefs {
   for tonality in ("major", "minor") {
-    for key in key-data.at(tonality) {
+    for key in _key-data.at(tonality) {
         canvases.push([
           #stave(clef, key)
           #clef #key #tonality
@@ -80,7 +80,7 @@ Using numbers
 
 #let canvases = ()
 
-#for clef in clef-data.keys() {
+#for clef in all-clefs {
   stave(clef, "C", notes: ("C2", "C3", "C4", "C5", "C6"))
 }
 
