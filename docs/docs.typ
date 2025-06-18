@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides
+#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types
 
 
 = Staves
@@ -211,10 +211,10 @@ This is probably too wide for your page. Shrink it horizontally with `note-sep`,
   caption: [F Major scale]
 )
 
-== Harmonic Minor Scale
+== Minor Scale
 
-The `minor-scale` function is for writing harmonic minor scales.
-The usage is the same as for `major-scale`.
+The `minor-scale` function is for writing natural and harmonic minor scales.
+The usage is the same as for `major-scale`, plus an additional `minor-type` argument.
 
 
 === Usage
@@ -223,6 +223,7 @@ The usage is the same as for `major-scale`.
 / `key`: e.g. "A", "Bb", "c\#". Uppercase or lowercase.
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
+/ `minor-type`: Defaults to "harmonic". Allowed values are "#_minor-types.join("\", \"")". Melodic minor scales are not yet supported.
 / `geometric-scale`: Same as for `stave`.
 / `note-duration`: Same as for `stave`.
 / `note-sep`: Same as for `stave`.
@@ -243,6 +244,22 @@ The usage is the same as for `major-scale`.
   minor-scale("treble", "D", 4),
   caption: [D Harmonic Minor scale]
 )
+
+
+```typst
+#import "./lib.typ": minor-scale
+
+#figure(
+  minor-scale("bass", "Bb", 2, minor-type: "natural"),
+  caption: [Bb Natural Minor scale]
+)
+```
+
+#figure(
+  minor-scale("bass", "Bb", 2, minor-type: "natural"),
+  caption: [Bb Natural Minor scale]
+)
+
 
 Note that for keys with a sharp, the raised 7th is written with a natural, not a double sharp. (This behavior may change in future versions.)
 

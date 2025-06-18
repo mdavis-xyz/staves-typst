@@ -229,15 +229,21 @@
 }
 
 
+#let minor-types = ("natural", "harmonic")
 // harmonic minor by default
-#let minor-scale(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
+// let the key signature handle sharps/flats
+// just increment letters
+// then handle the 7th based on the root note, not the key
+#let minor-scale(clef, key, start-octave, num-octaves: 1, minor-type: "harmonic", ..kwargs) = {
   // remove flat/sharp from key, increment letters and octaves
   // assume the key signature will handle flats/sharps for us
   
+  assert(minor-type in minor-types, message: "minor-type must be one of " + minor-types.join(", "))
+
   if key.at(0) == upper(key.at(0)) {
     // set first character to uppercase
     let new-key = lower(key.at(0)) + key.slice(1)
-    return minor-scale(clef, new-key, start-octave, num-octaves: 1, ..kwargs)
+    return minor-scale(clef, new-key, start-octave, num-octaves: 1, minor-type: minor-type, ..kwargs)
   }
 
   let start-note-raw = parse-note-string(key + str(start-octave))
@@ -252,7 +258,7 @@
     notes.push(root-note)
     for i in range(1, num-letters-per-octave) {
       let n = increment-wholenote(notes.at(-1))
-      if calc.rem-euclid(i, num-letters-per-octave) == num-letters-per-octave - 1 {
+      if (minor-type == "harmonic") and (calc.rem-euclid(i, num-letters-per-octave) == num-letters-per-octave - 1) {
         // handle the 7th specially, to flatten it
         if key-accidental in (none, "n") {
           if upper(key.at(0)) in ("C", "F") {
@@ -273,6 +279,7 @@
           notes.push(set-accidental(shift-octave(root-note, 1), "n"))
           start-note = set-accidental(start-note, "#")
         }
+        assert(minor-type == "harmonic", message: "minor-type: " + minor-type) 
       } else {
         notes.push(n)
       }
@@ -284,6 +291,7 @@
   let notes = notes + (peak, ) + notes.rev()
 
   if notes.at(0) != start-note {
+
     // if we have a double-sharp 7th, then accidental for the root
     // add an accidental for the last note 
     // (root, with no prior accidental in that octave)

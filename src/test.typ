@@ -282,8 +282,10 @@ Using numbers
 = Minor Scales
 
 #for key in key-data.at("minor") {
-  figure(
-    minor-scale("treble", key, 4),
-    caption: [#key Minor]
-  )
+  for minor-type in minor-types {
+    figure(
+      minor-scale("treble", key, 4, minor-type: minor-type),
+      caption: [#key #minor-type Minor]
+    )
+  }
 }
