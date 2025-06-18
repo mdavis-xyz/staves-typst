@@ -15,6 +15,8 @@ Flat: https://commons.wikimedia.org/wiki/File:Flat.svg
 
 Sharp: https://commons.wikimedia.org/wiki/File:Sharp.svg
 
+Double Sharp (X): https://commons.wikimedia.org/wiki/File:Llpd%2B2.svg
+
 Natural: https://commons.wikimedia.org/wiki/File:%D0%97%D0%BE%D1%80%D1%8F._%D0%9D%D0%BE%D1%82%D0%B8._1894._08._185._4.svg
 
 Quarter note: https://commons.wikimedia.org/wiki/File:Treblea4.svg
