@@ -66,6 +66,7 @@
   )
 }
 
+
 #let index-note(index, side) = {
   (
     type: "index-note",
@@ -80,11 +81,15 @@
 // e.g. "A6" => {"letter": "C", "accidental": "n", octave: 5}
 // accidental defaults to none (distinct from "n" for natural)
 #let parse-note-string(note) = {
+  if type(note) == dictionary and note.type == "letter-note" {
+    return note
+  }
+  assert(type(note) == str, message: "invalid note data type")
   if note.len() < 2 or note.len() > 3 {
     panic("Invalid note format: " + note)
   }
   
-  let letter = note.at(0)
+  let letter = upper(note.at(0))
   let octave-result = int(note.slice(-1))
   if octave-result == none {
     panic("Unable to parse octave integer from note: " + note)
@@ -137,6 +142,15 @@
     assert(accidental in symbol-map.keys(), message: "Unable to parse note: " + letter + ", unknown accidental " + accidental)
     return letter + accidental
   }
+}
+
+// takes in a letter-note
+// sets it to flat, sharp or natural
+#let set-accidental(note, accidental, overwrite-existing: false) = {
+  if not overwrite-existing {
+    assert(note.accidental == none, message: "would overwrite accidental in set-accidental without overwrite-existing")
+  }
+  return letter-note(note.letter, note.octave, accidental: accidental)
 }
 
 // convert from letter-note type to index-note type
@@ -206,45 +220,43 @@
 }
 
 
-// ignore accents
-// just letters and octaves
-#let increment-note(letter, octave, steps: 1) = {
-  if letter != upper(letter) {
-    increment-note(upper(letter))
+#let shift-octave(note, octaves) = {
+  if type(note) == str {
+    return shift-octave(parse-note-string(note), octaves)
+  } else if note.type == "index-note" {
+    return index-note(note.index + semitones-per-octave * octaves, note.side)
+  } else {
+    assert(note.type == "letter-note")
+    return letter-note(note.letter, note.octave + octaves, accidental: note.accidental)
   }
+}
+
+// increments from one natural to the next
+#let increment-wholenote(note, steps: 1) = {
+  assert(note.type == "letter-note")
+  assert(note.accidental == none)
 
   if steps == 0 {
-    return (
-      letter: letter,
-      octave: octave
-    )
+    return note
   }else if steps < 0 {
     panic("Decrementing notes not supported")
   } else if steps >= 7 {
     // skip a whole octave at a time
     // for performance reasons
-    return increment-note(letter, octave + 1, steps: steps - 7)
+    return increment-wholenote(shift-octave(note, 1), steps: (steps - num-letters-per-octave))
   }
 
-  let next-note = none
-  if letter == all-letters-from-c.at(-1) {
-    next-note = (
-      letter: all-letters-from-c.at(0),
-      octave: octave + 1
-    )
-    
-  } else{
-    next-note = (
-      letter: all-letters-from-c.at(all-letters-from-c.position(x => x == letter) + 1),
-      octave: octave
-    )
-  }
-
-  if steps > 1 {
-    return increment-note(next-note.letter, next-note.octave, steps: steps - 1)
+  let old-letter-index = all-letters-from-c.position(x => x == note.letter)
+  let new-letter-index = calc.rem-euclid(old-letter-index + steps, all-letters-from-c.len())
+  let new-octave = if new-letter-index > old-letter-index {
+    note.octave
   } else {
-    return next-note
+    // we have wrapped around
+    note.octave + 1
   }
+  let new-letter = all-letters-from-c.at(new-letter-index)
+
+  return letter-note(new-letter, new-octave)
 
 }
 
@@ -256,7 +268,18 @@
   return all-letters-from-c.at(next-index)
 }
 
+
+
+// takes in a letter-note
+// removes the sharp/flat/natural
+// replaces with none
+#let remove-accidental(note) = {
+  assert(note.type == "letter-note")
+  return letter-note(note.letter, note.octave)
+}
+
 #let add-semitones(start-letter, start-accidental, start-octave, steps: 1, side: "sharp") = {
+  assert(side in allowed-sides, message: "invalid side: " + side + ", must be one of " + allowed-sides.join(","))
   if steps == 0 {
     return (
       letter: start-letter,
@@ -283,7 +306,7 @@
         return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
     } else if side == "sharp" {
       // sharpen this note
-      return add-semitones(start-letter, "s", start-octave, steps: steps - 1, side: side)
+      return add-semitones(start-letter, "#", start-octave, steps: steps - 1, side: side)
     } else { // flats
       assert(side == "flat", message: "unknown side: " + side)
       // flatten the next note

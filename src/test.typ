@@ -1,4 +1,8 @@
 #import "utils.typ": *
+#import "data.typ": *
+#import "core.typ": *
+
+= Code Tests (Assertions)
 
 #let test-is-integer() = {
   assert(is-integer("0"))
@@ -104,14 +108,6 @@
   assert(calc-note-height("treble", letter-note("B", 4)) == 2)
 }
 
-#let test-increment-note() = {
-  // ignore accents
-// just letters and octaves
-  assert(increment-note("A", 4) == (letter: "B", octave: 4))
-  assert(increment-note("B", 4) == (letter: "C", octave: 5))
-  assert(increment-note("C", 5) == (letter: "D", octave: 5))
-  assert(increment-note("G", 5) == (letter: "A", octave: 5))
-}
 
 #let test-increment-letter() = {
   assert(increment-letter("A") == "B")
@@ -123,8 +119,42 @@
   let actual = add-semitones("C", none, 4, steps: 1, side: "sharp")
   assert(actual.letter == "C")
   assert(actual.accidental != none)
-  assert(actual.accidental == "#", message: "Got " + actual.accidental + "expected #")
+  assert(actual.accidental == "#", message: "Got " + actual.accidental + " expected #")
   assert(actual.octave == 4)
+}
+
+#let test-set-accidental() = {
+  assert(set-accidental(letter-note("C", 4), "#") == letter-note("C", 4, accidental: "#"))
+  assert(set-accidental(letter-note("D", 5), "b") == letter-note("D", 5, accidental: "b"))
+  assert(set-accidental(letter-note("F", 6), "n") == letter-note("F", 6, accidental: "n"))
+}
+
+#let test-increment-wholenote() = {
+  let n = letter-note("C", 4)
+  let expected = letter-note("D", 4)
+  let actual = increment-wholenote(n)
+  assert(expected == actual)
+
+  let expected = letter-note("E", 4)
+  let actual = increment-wholenote(n, steps: 2)
+  assert(expected == actual)
+
+  let expected = letter-note("C", 5)
+  let actual = increment-wholenote(n, steps: 7)
+  assert(expected == actual)
+
+  let expected = letter-note("D", 5)
+  let actual = increment-wholenote(n, steps: 8)
+  assert(expected == actual)
+
+  let expected = letter-note("B", 4)
+  let actual = increment-wholenote(n, steps: 6)
+  assert(expected == actual)
+
+  let n = letter-note("B", 6)
+  let expected = letter-note("D", 7)
+  let actual = increment-wholenote(n, steps: 2)
+  assert(expected == actual)
 }
 
 #let unit-test() = {
@@ -136,8 +166,124 @@
   test-serialise-note()
   test-index-to-letter()
   test-calc-note-height()
-  test-increment-note()
   test-increment-letter()
   test-add-semitones()
+  test-increment-wholenote()
+  test-set-accidental()
 }
 
+
+#unit-test()
+
+= Content Tests
+
+= Key Signature Tests
+
+Generate some staves of each type
+
+No symbols
+#stave("treble", "C")
+#stave("treble", "")
+#stave("treble", none)
+
+Major vs minor
+#stave("treble", "F")
+#stave("treble", "f")
+
+All symbols
+#for clef in all-clefs {
+  stave(clef, "C#")
+  stave(clef, "Cb")
+}
+
+Using numbers
+
+#stave("treble", "1#")
+#stave("treble", "1b")
+#stave("treble", "7#")
+#stave("treble", "7b")
+
+== Full Reference
+
+=== Numbers
+
+#let canvases = ()
+#for clef in all-clefs {
+  for num-symbols in range(0, 7) {
+    for symbol-char in all-symbols {
+      if symbol-char != "n" {
+        let key = str(num-symbols) + symbol-char
+        canvases.push([
+          stave(#clef,#key)
+          #stave(clef, key)
+        ])
+      }
+    }
+  }
+}
+
+#grid(
+  columns: 4,
+  column-gutter: 1em,
+  row-gutter: 1em,
+  ..canvases
+)
+
+
+=== Letters
+
+#let canvases = ()
+#for clef in all-clefs {
+  for tonality in ("major", "minor") {
+    for key in key-data.at(tonality) {
+        canvases.push([
+          #stave(clef, key)
+          #clef #key #tonality
+        ])
+    }    
+  }
+}
+
+#grid(
+  columns: 4,
+  column-gutter: 1em,
+  row-gutter: 1em,
+  ..canvases
+)
+
+= Notes too
+
+#stave("treble", "C", notes: ("C4", "Ds4", "E4", "F4", "G4", "A4", "B4", "C5"))
+
+#let canvases = ()
+
+#for clef in all-clefs {
+  stave(clef, "C", notes: ("C2", "C3", "C4", "C5", "C6"))
+}
+
+= Arpeggios
+
+#arpeggio(
+  "treble",
+  "D",
+  5
+)
+
+
+#arpeggio(
+  "treble",
+  "D",
+  5,
+  geometric-scale: 1.2,
+  note-duration: "crotchet"
+)
+
+
+= Minor Scales
+
+#for key in key-data.at("minor") {
+  figure(
+    minor-scale("treble", key, 4),
+    caption: [#key Minor]
+  )
+}

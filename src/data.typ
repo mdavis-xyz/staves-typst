@@ -133,6 +133,9 @@
   flat:  ("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B")
 )
 #let all-letters-from-c = ("C", "D", "E", "F", "G", "A", "B")
+#let num-letters-per-octave = all-letters-from-c.len()
+
+#let allowed-sides = ("sharp", "flat") // not plural
 
 // export some dict keys for documentation and testing
 #let all-clefs = clef-data.keys()

@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations
+#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides
 
 
 = Staves
@@ -173,7 +173,7 @@ The `major-scale` function is for writing major scales.
 === Usage
 
 / `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
-/ `key`: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `key`: e.g. "A", "Bb", "C\#". Uppercase only.
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 / `geometric-scale`: Same as for `stave`.
@@ -211,6 +211,46 @@ This is probably too wide for your page. Shrink it horizontally with `note-sep`,
   caption: [F Major scale]
 )
 
+== Harmonic Minor Scale
+
+The `minor-scale` function is for writing harmonic minor scales.
+The usage is the same as for `major-scale`.
+
+
+=== Usage
+
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: e.g. "A", "Bb", "c\#". Uppercase or lowercase.
+/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `num-octaves`: Optional, defaults to 1.
+/ `geometric-scale`: Same as for `stave`.
+/ `note-duration`: Same as for `stave`.
+/ `note-sep`: Same as for `stave`.
+
+=== Examples
+
+
+```typst
+#import "./lib.typ": minor-scale
+
+#figure(
+  minor-scale("treble", "D", 4),
+  caption: [D Harmonic Minor scale]
+)
+```
+
+#figure(
+  minor-scale("treble", "D", 4),
+  caption: [D Harmonic Minor scale]
+)
+
+Note that for keys with a sharp, the raised 7th is written with a natural, not a double sharp. (This behavior may change in future versions.)
+
+
+#figure(
+  minor-scale("treble", "F#", 4),
+  caption: [F\# Harmonic Minor scale]
+)
 
 == Arpeggio
 
@@ -254,7 +294,7 @@ The arguments are:
 / `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
 / `start-note`: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
 / `num-octaves`: Optional, defaults to 1.
-/ `side`: "sharps" or "flats"
+/ `side`: "#_allowed-sides.join("\", \"")"
 / `geometric-scale`: Same as for `stave`.
 / `note-duration`: Same as for `stave`.
 / `note-sep`: Same as for `stave`.
@@ -279,13 +319,13 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 
 ```typst
 #figure(
-  chromatic-scale("bass", "F2", side: "flats", geometric-scale: 0.7, note-duration: "crotchet"),
+  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.7, note-duration: "crotchet"),
   caption: [F Chromatic Scale]
 )
 ```
 
 #figure(
-  chromatic-scale("bass", "F2", side: "flats", geometric-scale: 0.7, note-duration: "crotchet"),
+  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.7, note-duration: "crotchet"),
   caption: [F Chromatic Scale]
 )
 

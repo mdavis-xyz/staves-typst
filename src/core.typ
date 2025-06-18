@@ -181,84 +181,120 @@
 
 
 #let arpeggio(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
-  // remove flat/sharp from key, append octave number
+  // remove flat/sharp from key, increment letters and octaves
+  // assume the key signature will handle flats/sharps for us
   let notes = ()
-  let root-letter = upper(key.at(0))
+  let start-note = remove-accidental(parse-note-string(key + str(start-octave)))
 
   // ascent
-  for ov in range(start-octave, start-octave + num-octaves) {
+  for ov in range(num-octaves) {
     // root
-    notes.push(
-      root-letter + str(ov)
-    )
-    // third
-    let third-note = increment-note(root-letter, ov, steps: 2)
-    notes.push(third-note.letter + str(third-note.octave))
+    notes.push(shift-octave(start-note, ov))
 
+    // third
+    notes.push(increment-wholenote(notes.at(-1), steps: 2))
+    
+    
     // fifth
-    let fifth-note = increment-note(root-letter, ov, steps: 4)
-    notes.push(fifth-note.letter + str(fifth-note.octave))
+    notes.push(increment-wholenote(notes.at(-1), steps: 2))
+    
   }
 
   // peak
-  notes.push(
-   root-letter + str(start-octave + num-octaves)
-  )
+  let peak = shift-octave(start-note, num-octaves)
 
-  // descent
-  for ov in range(start-octave + num-octaves - 1, start-octave - 1, step: -1) {
-   
-    // fifth
-    let fifth-note = increment-note(root-letter, ov, steps: 4)
-    notes.push(fifth-note.letter + str(fifth-note.octave))
-
-    // third
-    let third-note = increment-note(root-letter, ov, steps: 2)
-    notes.push(third-note.letter + str(third-note.octave))
-
-    // root
-    notes.push(
-      root-letter + str(ov)
-    )
-    
-  }
+  let notes = notes + (peak, ) + notes.rev()
   
-  let start-note = key.at(0) + str(start-octave)
-  let end-note = key.at(0) + str(start-octave + num-octaves)
   stave(clef, key, notes: notes, ..kwargs)
 }
 
 #let major-scale(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
-  // remove flat/sharp from key, append octave number
-  let notes = ()
-  let root-letter = upper(key.at(0))
+  // remove flat/sharp from key, increment letters and octaves
+  // assume the key signature will handle flats/sharps for us
+  
+  assert(key.at(0) == upper(key.at(0)), message: "key must be uppercase for major-scale")
+  let start-note = remove-accidental(parse-note-string(key + str(start-octave)))
+  let notes = (start-note, )
 
   // ascent
-  for steps in range(7 * num-octaves + 1) {
-    let note = increment-note(root-letter, start-octave, steps: steps)
-    notes.push(note.letter + str(note.octave))
+  for i in range(num-octaves * num-letters-per-octave) {
+    notes.push(increment-wholenote(notes.at(-1)))
   }
 
-  // descent
-  for steps in range(7 * num-octaves - 1, 0 - 1, step: -1) {
-    let note = increment-note(root-letter, start-octave, steps: steps)
-    notes.push(note.letter + str(note.octave))
-  }
+  let peak = notes.pop()
 
-
-  let start-note = key.at(0) + str(start-octave)
-  let end-note = key.at(0) + str(start-octave + num-octaves)
-
+  let notes = notes + (peak, ) + notes.rev()
+  
   stave(clef, key, notes: notes, ..kwargs)
 }
 
-#let chromatic-scale(clef, start-note, num-octaves: 1, side: "sharps", ..kwargs) = {
-  if side == "sharp" {
-    return chromatic-scale(clef, start-note, num-octaves: num-octaves, side: "sharps", ..kwargs)
-  } else if side == "flat" {
-    return chromatic-scale(clef, start-note, num-octaves: num-octaves, side: "flats", ..kwargs)
+
+// harmonic minor by default
+#let minor-scale(clef, key, start-octave, num-octaves: 1, ..kwargs) = {
+  // remove flat/sharp from key, increment letters and octaves
+  // assume the key signature will handle flats/sharps for us
+  
+  if key.at(0) == upper(key.at(0)) {
+    // set first character to uppercase
+    let new-key = lower(key.at(0)) + key.slice(1)
+    return minor-scale(clef, new-key, start-octave, num-octaves: 1, ..kwargs)
   }
-  assert(side in ("sharps", "flats"), message: "side argument must be either sharps or flats")
+
+  let start-note-raw = parse-note-string(key + str(start-octave))
+  let key-accidental = start-note-raw.accidental
+  let start-note = remove-accidental(start-note-raw)
+  let notes = ()
+
+  // ascent
+  for ov in range(num-octaves) {
+    // root
+    let root-note = shift-octave(start-note, ov)
+    notes.push(root-note)
+    for i in range(1, num-letters-per-octave) {
+      let n = increment-wholenote(notes.at(-1))
+      if calc.rem-euclid(i, num-letters-per-octave) == num-letters-per-octave - 1 {
+        // handle the 7th specially, to flatten it
+        if key-accidental in (none, "n") {
+          if upper(key.at(0)) in ("C", "F") {
+            // undo a flat for these special cases
+            notes.push(set-accidental(n, "n"))
+          } else {
+            // 7th note will be a sharp
+            notes.push(set-accidental(n, "#"))
+          }
+        } else if key-accidental == "b" {
+          // 7th note will be a natural accidental, with a flat in the key signature
+          // add it with an explicit natural
+          notes.push(set-accidental(n, "n"))
+        } else {
+          assert(key-accidental in ("s", "#"))
+          // 7th note will be a double-sharp
+          // for now, use the root note with an explicit natural
+          notes.push(set-accidental(shift-octave(root-note, 1), "n"))
+          start-note = set-accidental(start-note, "#")
+        }
+      } else {
+        notes.push(n)
+      }
+    }
+  }
+
+  let peak = shift-octave(start-note, num-octaves)
+
+  let notes = notes + (peak, ) + notes.rev()
+
+  if notes.at(0) != start-note {
+    // if we have a double-sharp 7th, then accidental for the root
+    // add an accidental for the last note 
+    // (root, with no prior accidental in that octave)
+    notes.push(set-accidental(notes.pop(), "#"))
+  }
+  
+  stave(clef, key, notes: notes, ..kwargs)
+}
+
+#let chromatic-scale(clef, start-note, num-octaves: 1, side: "sharp", ..kwargs) = {
+  assert(side in allowed-sides, message: "side argument must be in : " + allowed-sides.join(", "))
   let start-note-parsed = parse-note-string(start-note)
   let notes = ()
 

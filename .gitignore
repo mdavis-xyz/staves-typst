@@ -1,3 +1,4 @@
 *.swp
 stave-library.zip
 stave-library/
+**/*.pdf
