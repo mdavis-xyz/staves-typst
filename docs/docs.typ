@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types, _symbol-data
+#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types, _symbol-data, sharp, flat, natural, double-sharp
 
 
 = Staves Typst Package
@@ -54,7 +54,7 @@ The arguments are:
   - "Db4" or "C\#4" is a semitone above middle C
   - "B3" is a semitone below middle C
   - "Bn3" has an explicit natural accidental infront of it
-  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.8em, image(_symbol-data.double-sharp-x.image))
+  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.8em, image(_symbol-data.double-sharp-x.image)) (Formats like "F\#\#3" to show #box(height: 0.8em, image(_symbol-data.sharp.image)) are not supported yet.)
   - double flats are not yet supported.
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
 #for (k, v) in kwarg_defs.pairs(){
@@ -400,6 +400,18 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
   chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet"),
   caption: [F Chromatic Scale]
 )
+
+== Printing Accidentals Inline
+
+This library also offers the ability to print sharps, flats and naturals inline in text.
+
+Usage:
+
+```typst
+Notes I like include A#flat, F#sharp, G#natural and D#double-sharp
+```
+
+#quote(block: true, [Notes I like include A#flat, F#sharp, G#natural and D#double-sharp])
 
 == Implementation Details
 
