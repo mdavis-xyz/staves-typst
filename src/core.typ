@@ -14,7 +14,7 @@
          message: "Invalid note-duration argument. Must be " + note-duration-data.keys().map(str).join(", "))
         
   let result = determine-key(key)
-  let num-accidentals = result.num-accidentals
+  let num-chromatics = result.num-chromatics
   let symbol-type = result.symbol-type
 
   
@@ -43,9 +43,9 @@
 
     xs.push(3)
     
-    // sharps or flats
-    for i in range(num-accidentals) {
-      assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-accidentals) + " " + symbol-type)
+    // key signature
+    for i in range(num-chromatics) {
+      assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-chromatics) + " " + symbol-type)
       let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
       
       content((xs.sum() , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
@@ -55,8 +55,9 @@
       xs.push(1)
     }
 
-    // if there were any sharps or flats, add some extra space
-    if num-accidentals > 0 {
+    // if there were any sharps or flats (non-empty key signature),
+    // then add some extra space
+    if num-chromatics > 0 {
       xs.push(1)
     }
 
@@ -70,22 +71,19 @@
       let image-path = note-duration-data.at(note-duration).at("image")
 
 
-      // extra space if this is the first note and has an accidental
+      // extra space if this is the first note and it has an accidental
       if (note.accidental != none) and (i == 0) {
         xs.push(1)
       }
 
 
       let y = note-height + note-duration-data.at(note-duration).at("y-offset")
-
-      // if squishing accidentals (equal space between note heads)
-      
-      // it not (equal space from accidental to previous head)
-      
       
       // accidentals
       if note.accidental != none {
-        let accidental = symbol-data.at(symbol-map.at(note.accidental))
+        let symbol-name = symbol-map.at(note.accidental)
+        assert(symbol-name in symbol-data, message: "unknown symbol " + note.accidental + " with name " + symbol-name)
+        let accidental = symbol-data.at(symbol-name)
 
         if equal-note-head-space {
           xs.push(- accidental-offset)
@@ -243,20 +241,22 @@
 
 
 #let minor-types = ("natural", "harmonic")
+#let seventh-types = ("n", "x")
 // harmonic minor by default
 // let the key signature handle sharps/flats
 // just increment letters
 // then handle the 7th based on the root note, not the key
-#let minor-scale(clef, key, start-octave, num-octaves: 1, minor-type: "harmonic", ..kwargs) = {
+#let minor-scale(clef, key, start-octave, num-octaves: 1, minor-type: "harmonic", seventh: "n", ..kwargs) = {
   // remove flat/sharp from key, increment letters and octaves
   // assume the key signature will handle flats/sharps for us
   
   assert(minor-type in minor-types, message: "minor-type must be one of " + minor-types.join(", "))
+  assert(seventh in seventh-types, message: "seventh argument must be one of " + seventh-types.join(", "))
 
   if key.at(0) == upper(key.at(0)) {
     // set first character to uppercase
     let new-key = lower(key.at(0)) + key.slice(1)
-    return minor-scale(clef, new-key, start-octave, num-octaves: 1, minor-type: minor-type, ..kwargs)
+    return minor-scale(clef, new-key, start-octave, num-octaves: 1, minor-type: minor-type, seventh: seventh, ..kwargs)
   }
 
   let start-note-raw = parse-note-string(key + str(start-octave))
@@ -287,10 +287,16 @@
           notes.push(set-accidental(n, "n"))
         } else {
           assert(key-accidental in ("s", "#"))
-          // 7th note will be a double-sharp
-          // for now, use the root note with an explicit natural
-          notes.push(set-accidental(shift-octave(root-note, 1), "n"))
-          start-note = set-accidental(start-note, "#")
+          if seventh == "n" {
+            // 7th note will be a double-sharp
+            // use the root note with an explicit natural
+            notes.push(set-accidental(shift-octave(root-note, 1), "n"))
+            start-note = set-accidental(start-note, "#")
+          } else {
+            assert(seventh == "x")
+            notes.push(set-accidental(n, "x"))
+          }
+          
         }
         assert(minor-type == "harmonic", message: "minor-type: " + minor-type) 
       } else {

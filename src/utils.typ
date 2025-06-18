@@ -17,17 +17,17 @@
  if key == none or key == "" {
    // empty key
    (
-     num-accidentals: 0,
+     num-chromatics: 0,
      symbol-type: "sharp"
    )
  } else if is-integer(key.at(0)) {
    // e.g. "5#"
-   let num-accidentals = int(key.at(0))
+   let num-chromatics = int(key.at(0))
    let symbol-char = key.at(1)
    assert(symbol-char in symbol-map.keys(), message: "number-based key argument must end with " + symbol-data.keys().map(str).join(" or "))
    let symbol-type = symbol-map.at(symbol-char)
    (
-     num-accidentals: num-accidentals,
+     num-chromatics: num-chromatics,
      symbol-type: symbol-type
    )
  } else {
@@ -45,11 +45,11 @@
      panic("Invalid key: " + key)
    }
    
-   let num-accidentals = calc.abs(this-key-index - mid-index)
+   let num-chromatics = calc.abs(this-key-index - mid-index)
    let symbol-type = if this-key-index >= mid-index { "sharp" } else { "flat" }
    
    (
-     num-accidentals: num-accidentals,
+     num-chromatics: num-chromatics,
      symbol-type: symbol-type
    )
  }

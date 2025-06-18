@@ -22,12 +22,12 @@
 // "" (empty) -> C Major
 // "3b" -> 3 flats (Eb Major)
 
-  assert(determine-key("C").num-accidentals == 0)
-  assert(determine-key("").num-accidentals == 0)
-  assert(determine-key(none).num-accidentals == 0)
-  assert(determine-key("Bb") == (num-accidentals: 2, symbol-type: "flat"))
-  assert(determine-key("a#") == (num-accidentals: 7, symbol-type: "sharp"))
-  assert(determine-key("3b") == (num-accidentals: 3, symbol-type: "flat"))
+  assert(determine-key("C").num-chromatics == 0)
+  assert(determine-key("").num-chromatics == 0)
+  assert(determine-key(none).num-chromatics == 0)
+  assert(determine-key("Bb") == (num-chromatics: 2, symbol-type: "flat"))
+  assert(determine-key("a#") == (num-chromatics: 7, symbol-type: "sharp"))
+  assert(determine-key("3b") == (num-chromatics: 3, symbol-type: "flat"))
 }
 
 #let test-parse-note-string() = {
@@ -211,7 +211,7 @@ Using numbers
 #for clef in all-clefs {
   for num-symbols in range(0, 7) {
     for symbol-char in all-symbols {
-      if symbol-char != "n" {
+      if symbol-char not in ("n", "x") {
         let key = str(num-symbols) + symbol-char
         canvases.push([
           stave(#clef,#key)
@@ -283,9 +283,15 @@ Using numbers
 
 #for key in key-data.at("minor") {
   for minor-type in minor-types {
-    figure(
-      minor-scale("treble", key, 4, minor-type: minor-type),
-      caption: [#key #minor-type Minor]
-    )
+    for seventh in seventh-types {
+      figure(
+        minor-scale("treble", key, 4, minor-type: minor-type, seventh: seventh),
+        caption: [#key #minor-type Minor with seventh = #seventh]
+      )
+    }
   }
 }
+
+= Double sharp
+
+#stave("treble", "C", notes: ("C5", "C#5", "Cx5"))

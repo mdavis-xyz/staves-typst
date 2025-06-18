@@ -1,7 +1,7 @@
-#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types
+#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types, _symbol-data
 
 
-= Staves
+= Staves Typst Package
 
 Author: Matthew Davis
 
@@ -54,7 +54,8 @@ The arguments are:
   - "Db4" or "C\#4" is a semitone above middle C
   - "B3" is a semitone below middle C
   - "Bn3" has an explicit natural accidental infront of it
-  
+  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.8em, image(_symbol-data.double-sharp-x.image))
+  - double flats are not yet supported.
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
 #for (k, v) in kwarg_defs.pairs(){
   [
@@ -295,12 +296,28 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 )
 
 
-Note that for keys with a sharp, the raised 7th is written with a natural, not a double sharp. (This behavior may change in future versions.)
+Note that for keys with a sharp, the raised 7th can be written as a double sharp, or a natural of the next note.
 
+```typst
+#figure(
+  minor-scale("treble", "F#", 4, seventh: "n"),
+  caption: [F\# Harmonic Minor scale with 7th written as F natural]
+)
 
 #figure(
-  minor-scale("treble", "F#", 4),
-  caption: [F\# Harmonic Minor scale]
+  minor-scale("treble", "F#", 4, seventh: "x"),
+  caption: [F\# Harmonic Minor scale with 7th written as E double sharp]
+)
+```
+
+#figure(
+  minor-scale("treble", "F#", 4, seventh: "n"),
+  caption: [F\# Harmonic Minor scale with 7th written as F natural]
+)
+
+#figure(
+  minor-scale("treble", "F#", 4, seventh: "x"),
+  caption: [F\# Harmonic Minor scale with 7th written as E double sharp]
 )
 
 == Arpeggio

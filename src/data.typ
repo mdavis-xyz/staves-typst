@@ -73,6 +73,11 @@
     image: "/assets/accidental/natural.svg",
     y-offset: 0,
     y-span: 0.8
+  ),
+  double-sharp-x: (
+    image: "/assets/accidental/double-sharp-x.svg",
+    y-offset: 0,
+    y-span: 0.3
   )
 )
 
@@ -100,6 +105,7 @@
  "s": "sharp",
  "b": "flat",
  "n": "natural",
+ "x": "double-sharp-x",
 )
 
 // for the note (heads) themselves
