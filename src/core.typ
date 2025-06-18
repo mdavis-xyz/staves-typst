@@ -4,7 +4,7 @@
 #import "utils.typ": *
 
 
-#let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve", note-sep: 1) = {
+#let stave(clef, key, notes: (), geometric-scale: 1, note-duration: "semibreve", note-sep: 1, equal-note-head-space: false) = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
@@ -74,9 +74,33 @@
       if (note.accidental != none) and (i == 0) {
         xs.push(1)
       }
-      
-      let x = xs.sum()
+
+
       let y = note-height + note-duration-data.at(note-duration).at("y-offset")
+
+      // if squishing accidentals (equal space between note heads)
+      
+      // it not (equal space from accidental to previous head)
+      
+      
+      // accidentals
+      if note.accidental != none {
+        let accidental = symbol-data.at(symbol-map.at(note.accidental))
+
+        if equal-note-head-space {
+          xs.push(- accidental-offset)
+        }
+        let x = xs.sum()
+
+        content(((x) , (y + accidental.y-offset) ), [
+            #image(accidental.image, 
+                   height: (accidental.y-span ) * geometric-scale * 1cm)
+        ])
+        xs.push(accidental-offset)
+        
+      }
+
+      let x = xs.sum()
       let y-span = note-duration-data.at(note-duration).at("y-span")
 
 
@@ -136,17 +160,6 @@
         
       }
 
-      // accidentals
-      if note.accidental != none {
-        let accidental = symbol-data.at(symbol-map.at(note.accidental))
-        let a-x = x - accidental-offset
-
-        content(((x - accidental-offset) , (y + accidental.y-offset) ), [
-            #image(accidental.image, 
-                   height: (accidental.y-span ) * geometric-scale * 1cm)
-        ])
-        
-      }
 
       if (i <= notes.len() - 2) {
         xs.push(note-sep * 3) // space between notes

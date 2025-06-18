@@ -37,8 +37,14 @@ This is for writing just clefs, clefs and key signatures, or clefs, key signatur
 
 The arguments are:
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
+#let kwarg_defs = (
+  "geometric-scale": [(optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.],
+  "note-duration": [(optional) Allowed values are "#all-note-durations.join("\", \"")". Default is "whole" note. All notes are the same duration.],
+  "note-sep": [(optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.],
+  "equal-note-head-space": [`true` or `false`. Defaults to `true`. If true, note heads will be equally spaced. Some of this space will be taken up with accidentals. If `false`, adding an accidental to a note will shift the note head further right. `true` looks better (in my opinion), but `false` is useful in combination with the other spacing arguments, to avoid accidentals overlapping with previous note heads.]
+)
 
+/ `clef`: Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
 / `key`: Two possible forms. 
   - Letter based: Uppercase for major, lowercase for minor, with `#` or `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
   - Number based, with a symbol: "5\#" (or "5s") for 5 sharps, "2b" for 2 flats
@@ -50,10 +56,11 @@ The arguments are:
   - "Bn3" has an explicit natural accidental infront of it
   
   Notes will be drawn as semibreves (whole notes). Other forms, such as crotchets (quarter notes) are not yet supported.
-  
-/ `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.
-/ `note-duration`: (optional) Allowed values are "#all-note-durations.join("\", \"")". Default is "whole" note. All notes are the same duration.
-/ `note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
 
 === Examples
 
@@ -104,8 +111,30 @@ For the example of F major, the key contains B flat. A "B" note will be drawn wi
   caption: [Lack of interaction between accidentals and key signature]
 )
 
+The `note-duration` can be used to change the note symbol.
 
-The `geometric-scale` argument can be used to adjust the size:
+#let canvases = ()
+#for note-duration in all-note-durations {
+  canvases.push([
+    #figure(
+      stave("treble", "C", notes: ("C5", "B4", "A4"), note-duration: note-duration),
+      caption: [`note-duration`: #note-duration]
+    )
+  ])
+}
+
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 1em,
+  row-gutter: 1em,
+  align: horizon,
+  ..canvases
+)
+
+=== Spacing and Sizing
+
+The `geometric-scale` argument can be used to adjust the overall size:
 
 
 #grid(
@@ -144,17 +173,17 @@ The `geometric-scale` argument can be used to adjust the size:
   )
 )
 
-
-The `note-duration` can be used to change the note symbol.
+`equal-note-head-space` is used to adjust the spacing based on whether there are accidentals.
 
 #let canvases = ()
-#for note-duration in all-note-durations {
-  canvases.push([
-    #figure(
-      stave("treble", "C", notes: ("C5", "B4", "A4"), note-duration: note-duration),
-      caption: [`note-duration`: #note-duration]
+
+#for e in (true, false) {
+  canvases.push(
+    figure(
+      stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: e),
+      caption: [`equal-note-head-space` = #e]
     )
-  ])
+  )
 }
 
 
@@ -166,6 +195,7 @@ The `note-duration` can be used to change the note symbol.
   ..canvases
 )
 
+
 == Major Scales
 
 The `major-scale` function is for writing major scales.
@@ -176,9 +206,11 @@ The `major-scale` function is for writing major scales.
 / `key`: e.g. "A", "Bb", "C\#". Uppercase only.
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
-/ `geometric-scale`: Same as for `stave`.
-/ `note-duration`: Same as for `stave`.
-/ `note-sep`: Same as for `stave`.
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
 
 === Examples
 
@@ -224,9 +256,11 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 / `minor-type`: Defaults to "harmonic". Allowed values are "#_minor-types.join("\", \"")". Melodic minor scales are not yet supported.
-/ `geometric-scale`: Same as for `stave`.
-/ `note-duration`: Same as for `stave`.
-/ `note-sep`: Same as for `stave`.
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
 
 === Examples
 
@@ -282,9 +316,11 @@ The arguments are the same as for `major-scale`.
 / `key`: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
-/ `geometric-scale`: Same as for `stave`.
-/ `note-duration`: Same as for `stave`.
-/ `note-sep`: Same as for `stave`.
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
 
 === Example
 
@@ -312,9 +348,11 @@ The arguments are:
 / `start-note`: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
 / `num-octaves`: Optional, defaults to 1.
 / `side`: "#_allowed-sides.join("\", \"")"
-/ `geometric-scale`: Same as for `stave`.
-/ `note-duration`: Same as for `stave`.
-/ `note-sep`: Same as for `stave`.
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
 
 These scales tend to be quite long, so you probably want to use `note-sep` and `geometric-scale`, and perhaps a landscape page.
 
@@ -324,25 +362,25 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 #import "./lib.typ": chromatic-scale
 
 #figure(
-  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.8),
+  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7),
   caption: [D Chromatic Scale]
 )
 ```
 
 #figure(
-  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.8),
+  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7),
   caption: [D Chromatic Scale]
 )
 
 ```typst
 #figure(
-  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.7, note-duration: "crotchet"),
+  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet"),
   caption: [F Chromatic Scale]
 )
 ```
 
 #figure(
-  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.7, note-duration: "crotchet"),
+  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet"),
   caption: [F Chromatic Scale]
 )
 
