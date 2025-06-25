@@ -25,5 +25,5 @@ keywords = [
 ]
 categories = [ "components", "visualization", "fun" ]
 disciplines = [ "music" ]
-exclude = [ "/examples/*", "/docs/*.pdf" ]
+exclude = [ "/examples/*", "/docs/*.pdf", "src/test*" ]
 repository = "https://github.com/mdavis-xyz/staves-typst"

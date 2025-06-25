@@ -1,7 +1,7 @@
 # Symbol SVGs
 
 This folder contains SVGs of clefs, sharps/flats, and note heads.
-Sharps and flats are available as unicode characters, but they render a bit strangly when blown up. By using SVGs, this means the output of this library will be robust to changes in font size, typeface etc.
+Sharps and flats are available as unicode characters, but they render a bit strangely when blown up. By using SVGs, this means the output of this library will be robust to changes in font size, typeface etc.
 
 These files came from Wikipedia. They are all in the public domain. The license for this package does not apply to these files. For some I edited them to delete the stave lines.
 

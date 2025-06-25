@@ -88,7 +88,7 @@ or Db
 )
 ```
 
-## Scale Arithmatic
+## Scale Arithmetic
 
 For calculating which notes to put into scales, we trust that the key signature handles most accidentals, and generally just increment the letter.
 Accidentals for minor scales are handled based on intervals to the top root note, without explicit consideration of the key signature.
