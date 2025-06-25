@@ -4,10 +4,10 @@
 
 Author: Matthew Davis
 
-This Typst package is used to draw musical key signatures and notes.
+This Typst package is used to draw musical scales.
+
 For now this is restricted to only one stave (set of lines).
-This is useful mostly for writing scales.
-This package cannot (easily) be used for writing whole songs, which require multiple staves.
+This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
 
 #figure(
