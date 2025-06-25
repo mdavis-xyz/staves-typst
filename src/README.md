@@ -4,7 +4,6 @@
 
 * `data.typ` contains config and hard-coded values relating to musical scales and SVG images
 * `core.typ` contains the implementation of the final functions that get exposed (`stave`, `major-scale` etc)
-* `emoji.typ` contains the functions for printing accidentals inline in text.
 * `utils.typ` contains helper functions calculating things, e.g. add N semitones to a given note
 * `lib.typ` is a stub that just selectively imports only what we want to export
 * `test.typ` contains unit tests for calculations in `utils.typ`
@@ -88,3 +87,8 @@ or Db
   side: "flat"
 )
 ```
+
+## Scale Arithmatic
+
+For calculating which notes to put into scales, we trust that the key signature handles most accidentals, and generally just increment the letter.
+Accidentals for minor scales are handled based on intervals to the top root note, without explicit consideration of the key signature.
