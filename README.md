@@ -1,6 +1,6 @@
 # Staves (Typst Package)
 
-This Typst package is used to draw musical key signatures.
+This Typst package is used to draw musical scales.
 
 See `docs.typ` for usage information.
 
