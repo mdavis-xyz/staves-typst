@@ -66,7 +66,7 @@ The arguments are:
 To draw just a key signature, omit the `notes` argument
 
 ```typst
-#import "./lib.typ": stave
+#import "@preview/staves:0.1.0": stave
 
 #figure(
   stave("treble", "D"),
@@ -215,7 +215,7 @@ The `major-scale` function is for writing major scales.
 === Examples
 
 ```typst
-#import "./lib.typ": major-scale
+#import "@preview/staves:0.1.0": major-scale
 
 #figure(
   major-scale("treble", "D", 4),
@@ -266,7 +266,7 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 
 
 ```typst
-#import "./lib.typ": minor-scale
+#import "@preview/staves:0.1.0": minor-scale
 
 #figure(
   minor-scale("treble", "D", 4),
@@ -281,7 +281,7 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 
 
 ```typst
-#import "./lib.typ": minor-scale
+#import "@preview/staves:0.1.0": minor-scale
 
 #figure(
   minor-scale("bass", "Bb", 2, minor-type: "natural"),
@@ -341,7 +341,7 @@ The arguments are the same as for `major-scale`.
 === Example
 
 ```typst
-#import "./lib.typ": arpeggio
+#import "@preview/staves:0.1.0": arpeggio
 
 #figure(
   arpeggio("bass", "F", 2, num-octaves: 2),
@@ -375,7 +375,7 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 === Examples
 
 ```typst
-#import "./lib.typ": chromatic-scale
+#import "@preview/staves:0.1.0": chromatic-scale
 
 #figure(
   chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7),
