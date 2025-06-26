@@ -1,4 +1,4 @@
-#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides, _minor-types, _symbol-data
+#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides as allowed-sides, _minor-types as minor-types, _symbol-data
 
 = Staves Typst Package
 
@@ -53,7 +53,7 @@ The arguments are:
   - "Db4" or "C\#4" is a semitone above middle C
   - "B3" is a semitone below middle C
   - "Bn3" has an explicit natural accidental ♮ infront of it
-  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.7em, image(_symbol-data.double-sharp-x.image)) (Formats such as "F\#\#3" to show ♯♯ are not supported yet.)
+  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.7em, image("/assets/accidental/double-sharp-x.svg")) (Formats such as "F\#\#3" to show ♯♯ are not supported yet.)
   - double flats are not yet supported.
 #for (k, v) in kwarg_defs.pairs(){
   [
@@ -255,7 +255,7 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 / `key`: e.g. "A", "Bb", "c\#". Uppercase or lowercase.
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
-/ `minor-type`: Defaults to "harmonic". Allowed values are "#_minor-types.join("\", \"")". Melodic minor scales are not yet supported.
+/ `minor-type`: Defaults to "harmonic". Allowed values are "#minor-types.join("\", \"")". Melodic minor scales are not yet supported.
 #for (k, v) in kwarg_defs.pairs(){
   [
     / #raw(k): #v
@@ -363,7 +363,7 @@ The arguments are:
 / `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
 / `start-note`: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
 / `num-octaves`: Optional, defaults to 1.
-/ `side`: "#_allowed-sides.join("\", \"")"
+/ `side`: "#allowed-sides.join("\", \"")"
 #for (k, v) in kwarg_defs.pairs(){
   [
     / #raw(k): #v

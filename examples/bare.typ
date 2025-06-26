@@ -1,5 +1,5 @@
-#import "/src/lib.typ": stave, clef-data, symbol-data
+#import "/src/lib.typ": minor-scale
 
 #set page(width: auto, height: auto, margin: 1pt)
 
-#stave("treble", "3#", notes: ("C4", "C5"))
+#minor-scale("treble", "D", 4)
