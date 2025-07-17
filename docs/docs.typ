@@ -11,7 +11,7 @@ For now this is restricted to only one stave (set of 5 lines).
 This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
 #let package-version = "0.1.0"
-#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/"
+#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/"
 #let import-prefix = "@preview/staves:" + package-version
 
 #let example(path, caption, include-code: true, include-import: false) = {
@@ -28,7 +28,7 @@ This package can be used to write arbitrary notes, but is not intended to be use
   }
 
   assert(path.at(0) != "/", message: "Must use relative paths for Pandoc + Github conversion")
-  let image-path = github-prefix + path.split(".").slice(0, -1).join(".") + ".png"
+  let image-path = github-prefix + path.split(".").slice(0, -1).join(".").trim("./", at: start, repeat: false) + ".png"
 
   figure(
     if (sys.inputs.at("render", default: "0") != "1") [

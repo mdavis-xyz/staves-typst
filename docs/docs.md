@@ -15,7 +15,7 @@ used for entire songs.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/D-major.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png" /></p>
 <figcaption><p>D Major Scale</p></figcaption>
 </figure>
 
@@ -26,7 +26,7 @@ src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/G-minor-arpeggio.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-minor-arpeggio.png" /></p>
 <figcaption><p>G Minor Arpeggio</p></figcaption>
 </figure>
 
@@ -37,7 +37,7 @@ src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/custom-notes.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/custom-notes.png" /></p>
 <figcaption><p>Custom Notes</p></figcaption>
 </figure>
 
@@ -134,7 +134,7 @@ To draw just a key signature, omit the `notes` argument
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/D-major-key.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major-key.png" /></p>
 <figcaption><p>D Major Key Signature</p></figcaption>
 </figure>
 
@@ -146,7 +146,7 @@ Here is an example of including `notes`. Legerlines are supported.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/F-major-notes.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-notes.png" /></p>
 <figcaption><p>F Major Fifths</p></figcaption>
 </figure>
 
@@ -162,68 +162,68 @@ natural accidental. This behavior may change in future versions.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/accidentals-and-key.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/accidentals-and-key.png" /></p>
 <figcaption><p>Lack of interaction between accidentals and key
 signature</p></figcaption>
 </figure>
 
 The `note-duration` argument can be used to change the note symbol.
 
-+----------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                         | <figure>                                                                                                                        |
-| <p><img                                                                                                                          | <p><img                                                                                                                         |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-durations-whole.png" /></p>     | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-durations-quarter.png" /></p>  |
-| <figcaption><p>`note-duration`: whole</p></figcaption>                                                                           | <figcaption><p>`note-duration`: quarter</p></figcaption>                                                                        |
-| </figure>                                                                                                                        | </figure>                                                                                                                       |
-+----------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                         | <figure>                                                                                                                        |
-| <p><img                                                                                                                          | <p><img                                                                                                                         |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-durations-semibreve.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-durations-crotchet.png" /></p> |
-| <figcaption><p>`note-duration`: semibreve</p></figcaption>                                                                       | <figcaption><p>`note-duration`: crotchet</p></figcaption>                                                                       |
-| </figure>                                                                                                                        | </figure>                                                                                                                       |
-+----------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
++-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
+| <figure>                                                                                                                            | <figure>                                                                                                                           |
+| <p><img                                                                                                                             | <p><img                                                                                                                            |
+| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-whole.png" /></p>     | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-quarter.png" /></p>  |
+| <figcaption><p>`note-duration`: whole</p></figcaption>                                                                              | <figcaption><p>`note-duration`: quarter</p></figcaption>                                                                           |
+| </figure>                                                                                                                           | </figure>                                                                                                                          |
++-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
+| <figure>                                                                                                                            | <figure>                                                                                                                           |
+| <p><img                                                                                                                             | <p><img                                                                                                                            |
+| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-semibreve.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-crotchet.png" /></p> |
+| <figcaption><p>`note-duration`: semibreve</p></figcaption>                                                                          | <figcaption><p>`note-duration`: crotchet</p></figcaption>                                                                          |
+| </figure>                                                                                                                           | </figure>                                                                                                                          |
++-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Spacing and Sizing
 
 The `geometric-scale` argument can be used to adjust the overall size:
 
-+---------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                  | <figure>                                                                                                                        | <figure>                                                                                                                    |
-| <p><img                                                                                                                   | <p><img                                                                                                                         | <p><img                                                                                                                     |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/geometric-scale-2.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/geometric-scale-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/geometric-scale-0-5.png" /></p> |
-| <figcaption><p>`geometric-scale`: 2</p></figcaption>                                                                      | <figcaption><p>default (omitted `geometric-scale`)</p></figcaption>                                                             | <figcaption><p>`geometric-scale`: 0.5</p></figcaption>                                                                      |
-| </figure>                                                                                                                 | </figure>                                                                                                                       | </figure>                                                                                                                   |
-+---------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------+
++------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| <figure>                                                                                                                     | <figure>                                                                                                                           | <figure>                                                                                                                       |
+| <p><img                                                                                                                      | <p><img                                                                                                                            | <p><img                                                                                                                        |
+| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-2.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-0-5.png" /></p> |
+| <figcaption><p>`geometric-scale`: 2</p></figcaption>                                                                         | <figcaption><p>default (omitted `geometric-scale`)</p></figcaption>                                                                | <figcaption><p>`geometric-scale`: 0.5</p></figcaption>                                                                         |
+| </figure>                                                                                                                    | </figure>                                                                                                                          | </figure>                                                                                                                      |
++------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
 
 `note-sep` can be used to adjust the horizontal separation between
 notes, whilst keeping the height of the stave the same:
 
-+--------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| ``` typ                                                                                                                  | ``` typ                                                                                                              |
-| #stave("bass", "G", notes: ("C3", "D3", "C3"))                                                                           | #stave("bass", "G", notes: ("C3", "D3", "C3"), note-sep: 0.6)                                                        |
-| ```                                                                                                                      | ```                                                                                                                  |
-|                                                                                                                          |                                                                                                                      |
-| <figure>                                                                                                                 | <figure>                                                                                                             |
-| <p><img                                                                                                                  | <p><img                                                                                                              |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-sep-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/note-sep-0-6.png" /></p> |
-| <figcaption><p>default (omitted `note-sep`)</p></figcaption>                                                             | <figcaption><p>`note-sep`: 0.6</p></figcaption>                                                                      |
-| </figure>                                                                                                                | </figure>                                                                                                            |
-+--------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``` typ                                                                                                                     | ``` typ                                                                                                                 |
+| #stave("bass", "G", notes: ("C3", "D3", "C3"))                                                                              | #stave("bass", "G", notes: ("C3", "D3", "C3"), note-sep: 0.6)                                                           |
+| ```                                                                                                                         | ```                                                                                                                     |
+|                                                                                                                             |                                                                                                                         |
+| <figure>                                                                                                                    | <figure>                                                                                                                |
+| <p><img                                                                                                                     | <p><img                                                                                                                 |
+| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-0-6.png" /></p> |
+| <figcaption><p>default (omitted `note-sep`)</p></figcaption>                                                                | <figcaption><p>`note-sep`: 0.6</p></figcaption>                                                                         |
+| </figure>                                                                                                                   | </figure>                                                                                                               |
++-----------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 `equal-note-head-space` is used to adjust the spacing based on whether
 there are accidentals.
 
-+------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-| ``` typ                                                                                                                            | ``` typ                                                                                                                             |
-| #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: true)                                              | #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: false)                                              |
-| ```                                                                                                                                | ```                                                                                                                                 |
-|                                                                                                                                    |                                                                                                                                     |
-| <figure>                                                                                                                           | <figure>                                                                                                                            |
-| <p><img                                                                                                                            | <p><img                                                                                                                             |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/equal-note-head-space-true.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/equal-note-head-space-false.png" /></p> |
-| <figcaption><p>`equal-note-head-space` = true</p></figcaption>                                                                     | <figcaption><p>`equal-note-head-space` = false</p></figcaption>                                                                     |
-| </figure>                                                                                                                          | </figure>                                                                                                                           |
-+------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| ``` typ                                                                                                                               | ``` typ                                                                                                                                |
+| #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: true)                                                 | #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: false)                                                 |
+| ```                                                                                                                                   | ```                                                                                                                                    |
+|                                                                                                                                       |                                                                                                                                        |
+| <figure>                                                                                                                              | <figure>                                                                                                                               |
+| <p><img                                                                                                                               | <p><img                                                                                                                                |
+| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-true.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-false.png" /></p> |
+| <figcaption><p>`equal-note-head-space` = true</p></figcaption>                                                                        | <figcaption><p>`equal-note-head-space` = false</p></figcaption>                                                                        |
+| </figure>                                                                                                                             | </figure>                                                                                                                              |
++---------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Major Scales
 
@@ -293,7 +293,7 @@ The `major-scale` function is for writing major scales.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/D-major.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png" /></p>
 <figcaption><p>D Major Scale</p></figcaption>
 </figure>
 
@@ -307,7 +307,7 @@ shrink in both dimensions with `geometric-scale`.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/F-major-shrunk.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-shrunk.png" /></p>
 <figcaption><p>F Major Scale, shrunken to fit the page</p></figcaption>
 </figure>
 
@@ -391,7 +391,7 @@ scales. The usage is the same as for `major-scale`, plus an additional
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/D-harmonic-minor.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-harmonic-minor.png" /></p>
 <figcaption><p>D Harmonic Minor Scale</p></figcaption>
 </figure>
 
@@ -401,7 +401,7 @@ src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/Bb-natural-minor.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Bb-natural-minor.png" /></p>
 <figcaption><p>Bb Natural Minor Scale</p></figcaption>
 </figure>
 
@@ -414,7 +414,7 @@ double sharp, or a natural of the next note.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/Fs-harmonic-minor-n.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-n.png" /></p>
 <figcaption><p>F# Harmonic Minor scale with 7th written as F
 natural</p></figcaption>
 </figure>
@@ -425,7 +425,7 @@ natural</p></figcaption>
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/Fs-harmonic-minor-x.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-x.png" /></p>
 <figcaption><p>F# Harmonic Minor scale with 7th written as E double
 sharp</p></figcaption>
 </figure>
@@ -500,7 +500,7 @@ The arguments are the same as for `major-scale`.
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/F-major-arpeggio.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-arpeggio.png" /></p>
 <figcaption><p>F Major Arpeggio</p></figcaption>
 </figure>
 
@@ -575,7 +575,7 @@ These scales tend to be quite long, so you probably want to use
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/D-chromatic.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-chromatic.png" /></p>
 <figcaption><p>D Chromatic Scale</p></figcaption>
 </figure>
 
@@ -585,7 +585,7 @@ src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master
 
 <figure>
 <p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/./examples/F-chromatic.png" /></p>
+src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-chromatic.png" /></p>
 <figcaption><p>D Chromatic Scale</p></figcaption>
 </figure>
 
