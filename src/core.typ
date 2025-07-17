@@ -240,8 +240,7 @@
 }
 
 
-#let minor-types = ("natural", "harmonic")
-#let seventh-types = ("n", "x")
+
 // harmonic minor by default
 // let the key signature handle sharps/flats
 // just increment letters

@@ -1,4 +1,5 @@
-#import "/src/lib.typ": stave, major-scale, minor-scale, arpeggio, chromatic-scale, all-clefs, all-note-durations, _allowed-sides as allowed-sides, _minor-types as minor-types, _symbol-data
+
+#import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides
 
 = Staves Typst Package
 
@@ -6,25 +7,45 @@ Author: Matthew Davis
 
 This Typst package is used to draw musical scales.
 
-For now this is restricted to only one stave (set of lines).
+For now this is restricted to only one stave (set of 5 lines).
 This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
+#let package-version = "0.1.0"
+#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/"
+#let import-prefix = "@preview/staves:" + package-version
 
-#figure(
-  major-scale("treble", "D", 4),
-  caption: [D Major Scale]
-)
+#let example(path, caption, include-code: true, include-import: false) = {
+  
+  let code = read(path)
 
-#figure(
-  arpeggio("bass", "g", 2, note-duration: "crotchet"),
-  caption: [G Minor Arpeggio]
-)
+  let search = if include-import {"#import \".*\""} else {"#import \".*"} 
+  let replace = if include-import {"#import \"" + import-prefix + "\""} else {""} 
 
+  let code = code.replace(regex(search), replace).trim(at: start, repeat: true)
 
-#figure(
-  stave("alto", "c", notes: ("C3", "D#4", "F3")),
-  caption: [Custom Notes]
-)
+  if include-code {
+    raw(code, lang: "typ", block: true)
+  }
+
+  assert(path.at(0) != "/", message: "Must use relative paths for Pandoc + Github conversion")
+  let image-path = github-prefix + path.split(".").slice(0, -1).join(".") + ".png"
+
+  figure(
+    if (sys.inputs.at("render", default: "0") != "1") [
+      #image(image-path)
+    ] else [
+      #include path
+    ],
+    caption: [#caption]
+  )
+
+}
+
+#example("./examples/D-major.typ", "D Major Scale", include-import: true)
+
+#example("./examples/G-minor-arpeggio.typ", "G Minor Arpeggio", include-import: true)
+
+#example("./examples/custom-notes.typ", "Custom Notes", include-import: true)
 
 
 == Stave
@@ -61,65 +82,32 @@ The arguments are:
   ]
 }
 
+
 === Examples
 
 To draw just a key signature, omit the `notes` argument
 
-```typst
-#import "@preview/staves:0.1.0": stave
-
-#figure(
-  stave("treble", "D"),
-  caption: [D Major Key Signature]
-)
-```
-
-#figure(
-  stave("treble", "D"),
-  caption: [D Major Key Signature]
-)
-
+#example("./examples/D-major-key.typ", "D Major Key Signature", include-import: true)
 
 Here is an example of including `notes`. Legerlines are supported.
 
-```typst
-#figure(
-  stave("treble", "F", notes: ("F4", "A4", "C5", "F5", "C5", "A4", "F4")),
-  caption: [F Major Arpeggio]
-)
-```
-
-#figure(
-  stave("treble", "F", notes: ("F4", "A4", "C5", "F5", "A5", "C6", "F6", "C6", "A5", "F5", "C5", "A4", "F4")),
-  caption: [F Major Arpeggio]
-)
+#example("./examples/F-major-notes.typ", "F Major Fifths")
 
 Note that accidentals are independent of the key signature. 
 For the example of F major, the key contains B flat. A "B" note will be drawn with no accidental, so it is flattenned by the key signature. A "Bb" will have a redundant flat accidental drawn. "Bn" will have an explicit natural accidental.
 This behavior may change in future versions.
 
+#example("./examples/accidentals-and-key.typ", "Lack of interaction between accidentals and key signature")
 
-```typst
-#figure(
-  stave("bass", "F", notes: ("C2", "B2", "Bb2", "B2", "Bn2")),
-  caption: [Lack of interaction between accidentals and key signature]
-)
-```
-
-#figure(
-  stave("bass", "F", notes: ("C2", "B2", "Bb2", "B2", "Bn2")),
-  caption: [Lack of interaction between accidentals and key signature]
-)
-
-The `note-duration` can be used to change the note symbol.
+The `note-duration` argument can be used to change the note symbol.
 
 #let canvases = ()
 #for note-duration in all-note-durations {
   canvases.push([
-    #figure(
-      stave("treble", "C", notes: ("C5", "B4", "A4"), note-duration: note-duration),
-      caption: [`note-duration`: #note-duration]
-    )
+    #example(
+      "./examples/note-durations-" + note-duration + ".typ", 
+      "`note-duration`: " + note-duration,
+      include-code: false)
   ])
 }
 
@@ -132,6 +120,7 @@ The `note-duration` can be used to change the note symbol.
   ..canvases
 )
 
+
 === Spacing and Sizing
 
 The `geometric-scale` argument can be used to adjust the overall size:
@@ -142,19 +131,14 @@ The `geometric-scale` argument can be used to adjust the overall size:
   column-gutter: 1em,
   row-gutter: 1em,
   align: horizon,
-  figure(
-    stave("bass", "F", notes: ("C#3",), geometric-scale: 2),
-    caption: [`geometric-scale: 2`]
-  ),
-  figure(
-    stave("bass", "F", notes: ("C#3",)),
-    caption: [default (omitted `geometric-scale`)]
-  ),
-  figure(
-    stave("bass", "F", notes: ("C#3",), geometric-scale: 0.5),
-    caption: [`geometric-scale: 0.5`]
-  )
+  example("./examples/geometric-scale-2.typ", "`geometric-scale`: 2",
+    include-code: false),
+  example("./examples/geometric-scale-omitted.typ", "default (omitted `geometric-scale`)",
+    include-code: false),
+  example("./examples/geometric-scale-0-5.typ", "`geometric-scale`: 0.5",
+    include-code: false)
 )
+
 
 `note-sep` can be used to adjust the horizontal separation between notes, whilst keeping the height of the stave the same:
 
@@ -163,25 +147,21 @@ The `geometric-scale` argument can be used to adjust the overall size:
   column-gutter: 1em,
   row-gutter: 1em,
   align: horizon,
-  figure(
-    stave("bass", "G", notes: ("C3", "D3", "C3")),
-    caption: [default (omitted `note-sep`)]
-  ),
-  figure(
-    stave("bass", "G", notes: ("C3", "D3", "C3"), note-sep: 0.6),
-    caption: [`note-sep: 0.7`]
-  )
+  example("./examples/note-sep-omitted.typ", "default (omitted `note-sep`)"),
+  example("./examples/note-sep-0-6.typ", "`note-sep`: 0.6")
 )
 
 `equal-note-head-space` is used to adjust the spacing based on whether there are accidentals.
 
 #let canvases = ()
 
+#let bool-to-string(b) = {
+  ("false", "true").at(int(b))
+}
+
 #for e in (true, false) {
   canvases.push(
-    figure(
-      stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: e),
-      caption: [`equal-note-head-space` = #e]
+    example("./examples/equal-note-head-space-" + bool-to-string(e) + ".typ", "`equal-note-head-space` = " + bool-to-string(e)
     )
   )
 }
@@ -214,34 +194,13 @@ The `major-scale` function is for writing major scales.
 
 === Examples
 
-```typst
-#import "@preview/staves:0.1.0": major-scale
-
-#figure(
-  major-scale("treble", "D", 4),
-  caption: [D Major scale]
-)
-```
-
-#figure(
-  major-scale("treble", "D", 4),
-  caption: [D Major scale]
-)
+#example("./examples/D-major.typ", "D Major Scale", include-import: true)
 
 You can write a 2 octave scale with `num-octaves: 2`.
 This is probably too wide for your page. Shrink it horizontally with `note-sep`, or shrink in both dimensions with `geometric-scale`.
 
-```typst
-#figure(
-  major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7),
-  caption: [F Major scale]
-)
-```
+#example("./examples/F-major-shrunk.typ", "F Major Scale, shrunken to fit the page")
 
-#figure(
-  major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7),
-  caption: [F Major scale]
-)
 
 == Minor Scale
 
@@ -256,6 +215,7 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 / `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 / `minor-type`: Defaults to "harmonic". Allowed values are "#minor-types.join("\", \"")". Melodic minor scales are not yet supported.
+/ `seventh`: Where the raised seventh would be a double sharp, configure how it is shown. Allowed values are "#seventh-types.join("\", \"")". See examples below.
 #for (k, v) in kwarg_defs.pairs(){
   [
     / #raw(k): #v
@@ -264,60 +224,17 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 
 === Examples
 
-
-```typst
-#import "@preview/staves:0.1.0": minor-scale
-
-#figure(
-  minor-scale("treble", "D", 4),
-  caption: [D Harmonic Minor scale]
-)
-```
-
-#figure(
-  minor-scale("treble", "D", 4),
-  caption: [D Harmonic Minor scale]
-)
+#example("./examples/D-harmonic-minor.typ", "D Harmonic Minor Scale", include-import: true)
 
 
-```typst
-#import "@preview/staves:0.1.0": minor-scale
-
-#figure(
-  minor-scale("bass", "Bb", 2, minor-type: "natural"),
-  caption: [Bb Natural Minor scale]
-)
-```
-
-#figure(
-  minor-scale("bass", "Bb", 2, minor-type: "natural"),
-  caption: [Bb Natural Minor scale]
-)
-
+#example("./examples/Bb-natural-minor.typ", "Bb Natural Minor Scale")
 
 Note that for keys with a sharp, the raised 7th can be written as a double sharp, or a natural of the next note.
 
-```typst
-#figure(
-  minor-scale("treble", "F#", 4, seventh: "n"),
-  caption: [F\# Harmonic Minor scale with 7th written as F natural]
-)
+#example("./examples/Fs-harmonic-minor-n.typ", "F# Harmonic Minor scale with 7th written as F natural")
 
-#figure(
-  minor-scale("treble", "F#", 4, seventh: "x"),
-  caption: [F\# Harmonic Minor scale with 7th written as E double sharp]
-)
-```
+#example("./examples/Fs-harmonic-minor-x.typ", "F# Harmonic Minor scale with 7th written as E double sharp")
 
-#figure(
-  minor-scale("treble", "F#", 4, seventh: "n"),
-  caption: [F\# Harmonic Minor scale with 7th written as F natural]
-)
-
-#figure(
-  minor-scale("treble", "F#", 4, seventh: "x"),
-  caption: [F\# Harmonic Minor scale with 7th written as E double sharp]
-)
 
 == Arpeggio
 
@@ -340,18 +257,8 @@ The arguments are the same as for `major-scale`.
 
 === Example
 
-```typst
-#import "@preview/staves:0.1.0": arpeggio
+#example("./examples/F-major-arpeggio.typ", "F Major Arpeggio")
 
-#figure(
-  arpeggio("bass", "F", 2, num-octaves: 2),
-  caption: [F Major Arpeggio]
-)
-```
-#figure(
-  arpeggio("bass", "F", 2, num-octaves: 2),
-  caption: [F Major Arpeggio]
-)
 
 == Chromatic Scales
 
@@ -374,31 +281,9 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 
 === Examples
 
-```typst
-#import "@preview/staves:0.1.0": chromatic-scale
+#example("./examples/D-chromatic.typ", "D Chromatic Scale")
 
-#figure(
-  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7),
-  caption: [D Chromatic Scale]
-)
-```
-
-#figure(
-  chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7),
-  caption: [D Chromatic Scale]
-)
-
-```typst
-#figure(
-  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet"),
-  caption: [F Chromatic Scale]
-)
-```
-
-#figure(
-  chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet"),
-  caption: [F Chromatic Scale]
-)
+#example("./examples/F-chromatic.typ", "D Chromatic Scale")
 
 == Implementation Details
 

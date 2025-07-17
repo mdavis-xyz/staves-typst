@@ -147,3 +147,6 @@
 #let all-clefs = clef-data.keys()
 #let all-note-durations = note-duration-data.keys()
 #let all-symbols = symbol-map.keys()
+
+#let minor-types = ("natural", "harmonic")
+#let seventh-types = ("n", "x")
