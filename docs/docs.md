@@ -13,33 +13,24 @@ used for entire songs.
 #major-scale("treble", "D", 4)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png" /></p>
-<figcaption><p>D Major Scale</p></figcaption>
-</figure>
+![D Major
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png)
 
 ``` typ
 #import "@preview/staves:0.1.0": arpeggio
 #arpeggio("bass", "g", 2, note-duration: "crotchet")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-minor-arpeggio.png" /></p>
-<figcaption><p>G Minor Arpeggio</p></figcaption>
-</figure>
+![G Minor
+Arpeggio](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-minor-arpeggio.png)
 
 ``` typ
 #import "@preview/staves:0.1.0": stave
 #stave("alto", "c", notes: ("C3", "D#4", "F3"))
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/custom-notes.png" /></p>
-<figcaption><p>Custom Notes</p></figcaption>
-</figure>
+![Custom
+Notes](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/custom-notes.png)
 
 ## Stave
 
@@ -51,77 +42,57 @@ notes.
 
 The arguments are:
 
-`clef`
+`clef`: Allowed values are “treble", "bass", "alto", "tenor”. Drawing a treble
+clef above a bass clef, linked as a double-stave (like for a piano) is
+not yet supported.
 
-:   Allowed values are "treble\", \"bass\", \"alto\", \"tenor". Drawing
-    a treble clef above a bass clef, linked as a double-stave (like for
-    a piano) is not yet supported.
+`key`: Two possible forms.
 
-`key`
+- Letter based: Uppercase for major, lowercase for minor, with `#` or
+  `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
 
-:   Two possible forms.
+- Number based, with a symbol: “5#” (or “5s”) for 5 sharps, “2b” for 2
+  flats
 
-    - Letter based: Uppercase for major, lowercase for minor, with `#`
-      or `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
+`notes`: An (optional) array of strings representing notes to play sequentially.
+Chords are not supported. e.g.
 
-    - Number based, with a symbol: "5#" (or "5s") for 5 sharps, "2b" for
-      2 flats
+- “C4” is middle C
 
-`notes`
+- “C5” is the C an octave above middle C.
 
-:   An (optional) array of strings representing notes to play
-    sequentially. Chords are not supported. e.g.
+- “Db4” or “C#4” is a semitone above middle C
 
-    - "C4" is middle C
+- “B3” is a semitone below middle C
 
-    - "C5" is the C an octave above middle C.
+- “Bn3” has an explicit natural accidental ♮ infront of it
 
-    - "Db4" or "C#4" is a semitone above middle C
+- “Fx3” is an F3 with a double sharp, drawn as an 𝄪
 
-    - "B3" is a semitone below middle C
+  (Formats such as “F##3” to show ♯♯ are not supported yet.)
 
-    - "Bn3" has an explicit natural accidental ♮ infront of it
+- double flats are not yet supported.
 
-    - "Fx3" is an F3 with a double sharp, drawn as an
-      [![](/assets/accidental/double-sharp-x.svg)]{.box} (Formats such
-      as "F##3" to show ♯♯ are not supported yet.)
 
-    - double flats are not yet supported.
+`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
+the size. This is about visual scale, not musical scales.
 
-<!-- -->
 
-`geometric-scale`
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
 
-:   (optional) Number e.g. 0.5 or 2 to draw the content at half or
-    double the size. This is about visual scale, not musical scales.
 
-<!-- -->
+`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
+shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
+it’s still too big, use `geometric-scale` as well.
 
-`note-duration`
 
-:   (optional) Allowed values are "whole\", \"quarter\", \"semibreve\",
-    \"crotchet". Default is "whole" note. All notes are the same
-    duration.
-
-<!-- -->
-
-`note-sep`
-
-:   (optional) Used to adjust the horizontal spacing between notes. If
-    you shrink below `note-sep: 0.7`, leger lines will overlap. At that
-    point if it's still too big, use `geometric-scale` as well.
-
-<!-- -->
-
-`equal-note-head-space`
-
-:   `true` or `false`. Defaults to `true`. If true, note heads will be
-    equally spaced. Some of this space will be taken up with
-    accidentals. If `false`, adding an accidental to a note will shift
-    the note head further right. `true` looks better (in my opinion),
-    but `false` is useful in combination with the other spacing
-    arguments, to avoid accidentals overlapping with previous note
-    heads.
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful in
+combination with the other spacing arguments, to avoid accidentals
+overlapping with previous note heads.
 
 ### Examples
 
@@ -132,11 +103,8 @@ To draw just a key signature, omit the `notes` argument
 #stave("treble", "D")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major-key.png" /></p>
-<figcaption><p>D Major Key Signature</p></figcaption>
-</figure>
+![D Major Key
+Signature](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major-key.png)
 
 Here is an example of including `notes`. Legerlines are supported.
 
@@ -144,86 +112,50 @@ Here is an example of including `notes`. Legerlines are supported.
 #stave("treble", "F", notes: ("F4",  "C5", "F5", "C6", "F6", "C6", "F5", "C5", "F4"))
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-notes.png" /></p>
-<figcaption><p>F Major Fifths</p></figcaption>
-</figure>
+![F Major
+Fifths](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-notes.png)
 
 Note that accidentals are independent of the key signature. For the
-example of F major, the key contains B flat. A "B" note will be drawn
-with no accidental, so it is flattenned by the key signature. A "Bb"
-will have a redundant flat accidental drawn. "Bn" will have an explicit
+example of F major, the key contains B flat. A “B” note will be drawn
+with no accidental, so it is flattenned by the key signature. A “Bb”
+will have a redundant flat accidental drawn. “Bn” will have an explicit
 natural accidental. This behavior may change in future versions.
 
 ``` typ
 #stave("bass", "F", notes: ("C2", "B2", "Bb2", "B2", "Bn2"))
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/accidentals-and-key.png" /></p>
-<figcaption><p>Lack of interaction between accidentals and key
-signature</p></figcaption>
-</figure>
+![Lack of interaction between accidentals and key
+signature](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/accidentals-and-key.png)
 
 The `note-duration` argument can be used to change the note symbol.
 
-+-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                            | <figure>                                                                                                                           |
-| <p><img                                                                                                                             | <p><img                                                                                                                            |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-whole.png" /></p>     | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-quarter.png" /></p>  |
-| <figcaption><p>`note-duration`: whole</p></figcaption>                                                                              | <figcaption><p>`note-duration`: quarter</p></figcaption>                                                                           |
-| </figure>                                                                                                                           | </figure>                                                                                                                          |
-+-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                            | <figure>                                                                                                                           |
-| <p><img                                                                                                                             | <p><img                                                                                                                            |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-semibreve.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-crotchet.png" /></p> |
-| <figcaption><p>`note-duration`: semibreve</p></figcaption>                                                                          | <figcaption><p>`note-duration`: crotchet</p></figcaption>                                                                          |
-| </figure>                                                                                                                           | </figure>                                                                                                                          |
-+-------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
+|  |  |
+|----|----|
+| ![\`note-duration\`: whole](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-whole.png) | ![\`note-duration\`: quarter](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-quarter.png) |
+| ![\`note-duration\`: semibreve](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-semibreve.png) | ![\`note-duration\`: crotchet](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-durations-crotchet.png) |
 
 ### Spacing and Sizing
 
 The `geometric-scale` argument can be used to adjust the overall size:
 
-+------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| <figure>                                                                                                                     | <figure>                                                                                                                           | <figure>                                                                                                                       |
-| <p><img                                                                                                                      | <p><img                                                                                                                            | <p><img                                                                                                                        |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-2.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-0-5.png" /></p> |
-| <figcaption><p>`geometric-scale`: 2</p></figcaption>                                                                         | <figcaption><p>default (omitted `geometric-scale`)</p></figcaption>                                                                | <figcaption><p>`geometric-scale`: 0.5</p></figcaption>                                                                         |
-| </figure>                                                                                                                    | </figure>                                                                                                                          | </figure>                                                                                                                      |
-+------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+|  |  |  |
+|----|----|----|
+| ![\`geometric-scale\`: 2](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-2.png) | ![default (omitted \`geometric-scale\`)](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-omitted.png) | ![\`geometric-scale\`: 0.5](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-0-5.png) |
 
 `note-sep` can be used to adjust the horizontal separation between
 notes, whilst keeping the height of the stave the same:
 
-+-----------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``` typ                                                                                                                     | ``` typ                                                                                                                 |
-| #stave("bass", "G", notes: ("C3", "D3", "C3"))                                                                              | #stave("bass", "G", notes: ("C3", "D3", "C3"), note-sep: 0.6)                                                           |
-| ```                                                                                                                         | ```                                                                                                                     |
-|                                                                                                                             |                                                                                                                         |
-| <figure>                                                                                                                    | <figure>                                                                                                                |
-| <p><img                                                                                                                     | <p><img                                                                                                                 |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-omitted.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-0-6.png" /></p> |
-| <figcaption><p>default (omitted `note-sep`)</p></figcaption>                                                                | <figcaption><p>`note-sep`: 0.6</p></figcaption>                                                                         |
-| </figure>                                                                                                                   | </figure>                                                                                                               |
-+-----------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+|  |  |
+|----|----|
+| ![default (omitted \`note-sep\`)](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-omitted.png) | ![\`note-sep\`: 0.6](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-0-6.png) |
 
 `equal-note-head-space` is used to adjust the spacing based on whether
 there are accidentals.
 
-+---------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------+
-| ``` typ                                                                                                                               | ``` typ                                                                                                                                |
-| #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: true)                                                 | #stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: false)                                                 |
-| ```                                                                                                                                   | ```                                                                                                                                    |
-|                                                                                                                                       |                                                                                                                                        |
-| <figure>                                                                                                                              | <figure>                                                                                                                               |
-| <p><img                                                                                                                               | <p><img                                                                                                                                |
-| src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-true.png" /></p> | src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-false.png" /></p> |
-| <figcaption><p>`equal-note-head-space` = true</p></figcaption>                                                                        | <figcaption><p>`equal-note-head-space` = false</p></figcaption>                                                                        |
-| </figure>                                                                                                                             | </figure>                                                                                                                              |
-+---------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+|  |  |
+|----|----|
+| ![\`equal-note-head-space\` = true](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-true.png) | ![\`equal-note-head-space\` = false](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/equal-note-head-space-false.png) |
 
 ## Major Scales
 
@@ -231,58 +163,36 @@ The `major-scale` function is for writing major scales.
 
 ### Usage
 
-`clef`
+`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
+`stave`.)
 
-:   Allowed values are "treble\", \"bass\", \"alto\", \"tenor". (Same as
-    for `stave`.)
+`key`: e.g. “A”, “Bb”, “C#”. Uppercase only.
 
-`key`
+`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
+above that.
 
-:   e.g. "A", "Bb", "C#". Uppercase only.
+`num-octaves`: Optional, defaults to 1.
 
-`start-octave`
 
-:   integer. e.g. 4 is the octave starting from middle C. 5 is the
-    octave above that.
+`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
+the size. This is about visual scale, not musical scales.
 
-`num-octaves`
 
-:   Optional, defaults to 1.
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
 
-<!-- -->
 
-`geometric-scale`
+`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
+shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
+it’s still too big, use `geometric-scale` as well.
 
-:   (optional) Number e.g. 0.5 or 2 to draw the content at half or
-    double the size. This is about visual scale, not musical scales.
 
-<!-- -->
-
-`note-duration`
-
-:   (optional) Allowed values are "whole\", \"quarter\", \"semibreve\",
-    \"crotchet". Default is "whole" note. All notes are the same
-    duration.
-
-<!-- -->
-
-`note-sep`
-
-:   (optional) Used to adjust the horizontal spacing between notes. If
-    you shrink below `note-sep: 0.7`, leger lines will overlap. At that
-    point if it's still too big, use `geometric-scale` as well.
-
-<!-- -->
-
-`equal-note-head-space`
-
-:   `true` or `false`. Defaults to `true`. If true, note heads will be
-    equally spaced. Some of this space will be taken up with
-    accidentals. If `false`, adding an accidental to a note will shift
-    the note head further right. `true` looks better (in my opinion),
-    but `false` is useful in combination with the other spacing
-    arguments, to avoid accidentals overlapping with previous note
-    heads.
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful in
+combination with the other spacing arguments, to avoid accidentals
+overlapping with previous note heads.
 
 ### Examples
 
@@ -291,11 +201,8 @@ The `major-scale` function is for writing major scales.
 #major-scale("treble", "D", 4)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png" /></p>
-<figcaption><p>D Major Scale</p></figcaption>
-</figure>
+![D Major
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png)
 
 You can write a 2 octave scale with `num-octaves: 2`. This is probably
 too wide for your page. Shrink it horizontally with `note-sep`, or
@@ -305,11 +212,8 @@ shrink in both dimensions with `geometric-scale`.
 #major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-shrunk.png" /></p>
-<figcaption><p>F Major Scale, shrunken to fit the page</p></figcaption>
-</figure>
+![F Major Scale, shrunken to fit the
+page](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-shrunk.png)
 
 ## Minor Scale
 
@@ -319,68 +223,42 @@ scales. The usage is the same as for `major-scale`, plus an additional
 
 ### Usage
 
-`clef`
+`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
+`stave`.)
 
-:   Allowed values are "treble\", \"bass\", \"alto\", \"tenor". (Same as
-    for `stave`.)
+`key`: e.g. “A”, “Bb”, “c#”. Uppercase or lowercase.
 
-`key`
+`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
+above that.
 
-:   e.g. "A", "Bb", "c#". Uppercase or lowercase.
+`num-octaves`: Optional, defaults to 1.
 
-`start-octave`
+`minor-type`: Defaults to “harmonic”. Allowed values are “natural", "harmonic”.
+Melodic minor scales are not yet supported.
 
-:   integer. e.g. 4 is the octave starting from middle C. 5 is the
-    octave above that.
+`seventh`: Where the raised seventh would be a double sharp, configure how it is
+shown. Allowed values are “n", "x”. See examples below.
 
-`num-octaves`
 
-:   Optional, defaults to 1.
+`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
+the size. This is about visual scale, not musical scales.
 
-`minor-type`
 
-:   Defaults to "harmonic". Allowed values are "natural\", \"harmonic".
-    Melodic minor scales are not yet supported.
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
 
-`seventh`
 
-:   Where the raised seventh would be a double sharp, configure how it
-    is shown. Allowed values are "n\", \"x". See examples below.
+`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
+shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
+it’s still too big, use `geometric-scale` as well.
 
-<!-- -->
 
-`geometric-scale`
-
-:   (optional) Number e.g. 0.5 or 2 to draw the content at half or
-    double the size. This is about visual scale, not musical scales.
-
-<!-- -->
-
-`note-duration`
-
-:   (optional) Allowed values are "whole\", \"quarter\", \"semibreve\",
-    \"crotchet". Default is "whole" note. All notes are the same
-    duration.
-
-<!-- -->
-
-`note-sep`
-
-:   (optional) Used to adjust the horizontal spacing between notes. If
-    you shrink below `note-sep: 0.7`, leger lines will overlap. At that
-    point if it's still too big, use `geometric-scale` as well.
-
-<!-- -->
-
-`equal-note-head-space`
-
-:   `true` or `false`. Defaults to `true`. If true, note heads will be
-    equally spaced. Some of this space will be taken up with
-    accidentals. If `false`, adding an accidental to a note will shift
-    the note head further right. `true` looks better (in my opinion),
-    but `false` is useful in combination with the other spacing
-    arguments, to avoid accidentals overlapping with previous note
-    heads.
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful in
+combination with the other spacing arguments, to avoid accidentals
+overlapping with previous note heads.
 
 ### Examples
 
@@ -389,21 +267,15 @@ scales. The usage is the same as for `major-scale`, plus an additional
 #minor-scale("treble", "D", 4)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-harmonic-minor.png" /></p>
-<figcaption><p>D Harmonic Minor Scale</p></figcaption>
-</figure>
+![D Harmonic Minor
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-harmonic-minor.png)
 
 ``` typ
 #minor-scale("bass", "Bb", 2, minor-type: "natural")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Bb-natural-minor.png" /></p>
-<figcaption><p>Bb Natural Minor Scale</p></figcaption>
-</figure>
+![Bb Natural Minor
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Bb-natural-minor.png)
 
 Note that for keys with a sharp, the raised 7th can be written as a
 double sharp, or a natural of the next note.
@@ -412,23 +284,15 @@ double sharp, or a natural of the next note.
 #minor-scale("treble", "F#", 4, seventh: "n")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-n.png" /></p>
-<figcaption><p>F# Harmonic Minor scale with 7th written as F
-natural</p></figcaption>
-</figure>
+![F# Harmonic Minor scale with 7th written as F
+natural](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-n.png)
 
 ``` typ
 #minor-scale("treble", "F#", 4, seventh: "x")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-x.png" /></p>
-<figcaption><p>F# Harmonic Minor scale with 7th written as E double
-sharp</p></figcaption>
-</figure>
+![F# Harmonic Minor scale with 7th written as E double
+sharp](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/Fs-harmonic-minor-x.png)
 
 ## Arpeggio
 
@@ -438,59 +302,37 @@ The `arpeggio` function is for writing arpeggios.
 
 The arguments are the same as for `major-scale`.
 
-`clef`
+`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
+`stave`.)
 
-:   Allowed values are "treble\", \"bass\", \"alto\", \"tenor". (Same as
-    for `stave`.)
+`key`: e.g. “A”, “Bb”, “C#”. Uppercase for major, lowercase for minor. Do not
+include a number for the octave.
 
-`key`
+`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
+above that.
 
-:   e.g. "A", "Bb", "C#". Uppercase for major, lowercase for minor. Do
-    not include a number for the octave.
+`num-octaves`: Optional, defaults to 1.
 
-`start-octave`
 
-:   integer. e.g. 4 is the octave starting from middle C. 5 is the
-    octave above that.
+`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
+the size. This is about visual scale, not musical scales.
 
-`num-octaves`
 
-:   Optional, defaults to 1.
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
 
-<!-- -->
 
-`geometric-scale`
+`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
+shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
+it’s still too big, use `geometric-scale` as well.
 
-:   (optional) Number e.g. 0.5 or 2 to draw the content at half or
-    double the size. This is about visual scale, not musical scales.
 
-<!-- -->
-
-`note-duration`
-
-:   (optional) Allowed values are "whole\", \"quarter\", \"semibreve\",
-    \"crotchet". Default is "whole" note. All notes are the same
-    duration.
-
-<!-- -->
-
-`note-sep`
-
-:   (optional) Used to adjust the horizontal spacing between notes. If
-    you shrink below `note-sep: 0.7`, leger lines will overlap. At that
-    point if it's still too big, use `geometric-scale` as well.
-
-<!-- -->
-
-`equal-note-head-space`
-
-:   `true` or `false`. Defaults to `true`. If true, note heads will be
-    equally spaced. Some of this space will be taken up with
-    accidentals. If `false`, adding an accidental to a note will shift
-    the note head further right. `true` looks better (in my opinion),
-    but `false` is useful in combination with the other spacing
-    arguments, to avoid accidentals overlapping with previous note
-    heads.
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful in
+combination with the other spacing arguments, to avoid accidentals
+overlapping with previous note heads.
 
 ### Example
 
@@ -498,11 +340,8 @@ The arguments are the same as for `major-scale`.
 #arpeggio("bass", "F", 2, num-octaves: 2)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-arpeggio.png" /></p>
-<figcaption><p>F Major Arpeggio</p></figcaption>
-</figure>
+![F Major
+Arpeggio](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-arpeggio.png)
 
 ## Chromatic Scales
 
@@ -511,58 +350,36 @@ between two notes). The arguments are:
 
 ### Usage
 
-`clef`
+`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
+`stave`.)
 
-:   Allowed values are "treble\", \"bass\", \"alto\", \"tenor". (Same as
-    for `stave`.)
+`start-note`: e.g. “C4” for middle C, “C5” for the C above that, “Db4” for a semitone
+above middle C
 
-`start-note`
+`num-octaves`: Optional, defaults to 1.
 
-:   e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a
-    semitone above middle C
+`side`: ”sharp", "flat”
 
-`num-octaves`
 
-:   Optional, defaults to 1.
+`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
+the size. This is about visual scale, not musical scales.
 
-`side`
 
-:   "sharp\", \"flat"
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
 
-<!-- -->
 
-`geometric-scale`
+`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
+shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
+it’s still too big, use `geometric-scale` as well.
 
-:   (optional) Number e.g. 0.5 or 2 to draw the content at half or
-    double the size. This is about visual scale, not musical scales.
 
-<!-- -->
-
-`note-duration`
-
-:   (optional) Allowed values are "whole\", \"quarter\", \"semibreve\",
-    \"crotchet". Default is "whole" note. All notes are the same
-    duration.
-
-<!-- -->
-
-`note-sep`
-
-:   (optional) Used to adjust the horizontal spacing between notes. If
-    you shrink below `note-sep: 0.7`, leger lines will overlap. At that
-    point if it's still too big, use `geometric-scale` as well.
-
-<!-- -->
-
-`equal-note-head-space`
-
-:   `true` or `false`. Defaults to `true`. If true, note heads will be
-    equally spaced. Some of this space will be taken up with
-    accidentals. If `false`, adding an accidental to a note will shift
-    the note head further right. `true` looks better (in my opinion),
-    but `false` is useful in combination with the other spacing
-    arguments, to avoid accidentals overlapping with previous note
-    heads.
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful in
+combination with the other spacing arguments, to avoid accidentals
+overlapping with previous note heads.
 
 These scales tend to be quite long, so you probably want to use
 `note-sep` and `geometric-scale`, and perhaps a landscape page.
@@ -573,21 +390,15 @@ These scales tend to be quite long, so you probably want to use
 #chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7)
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-chromatic.png" /></p>
-<figcaption><p>D Chromatic Scale</p></figcaption>
-</figure>
+![D Chromatic
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-chromatic.png)
 
 ``` typ
 #chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet")
 ```
 
-<figure>
-<p><img
-src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-chromatic.png" /></p>
-<figcaption><p>D Chromatic Scale</p></figcaption>
-</figure>
+![D Chromatic
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-chromatic.png)
 
 ## Implementation Details
 

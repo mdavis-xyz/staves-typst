@@ -56,5 +56,20 @@ typst compile $DOC_TYP_PATH $PDF_PATH \
 
 pandoc $DOC_TYP_PATH \
 	-o $MD_PATH \
-	--resource-path=$ROOT_DIR
+	--resource-path=$ROOT_DIR \
+    -f typst \
+    -t gfm
 
+# Pandoc doesn't compile perfectly
+# e.g.
+# / `something`: text
+# converts with undesired newlines before the :
+# Fix it manually with regex
+# perl handles multiline regex better than sed
+
+# if github flavoured markdown output from pandoc
+perl -i -pe 'BEGIN{undef $/;} s/`([^`]+)`  \n/`$1`: /g' $MD_PATH
+# if vanilla markdown
+# perl -i -pe 'BEGIN{undef $/;} s/`([^`]+)`\s*\n\s*:\s*/- `$1`: /g' $MD_PATH
+
+sed -i '/<!-- -->/d' $MD_PATH

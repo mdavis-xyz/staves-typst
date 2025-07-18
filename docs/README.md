@@ -2,7 +2,8 @@
 
 This folder contains the documentation for the package.
 
-This comes from `docs.typ`.
+To view the documentation (e.g. in a browser on GitHub), look at [docs.pdf](docs.pdf) or [docs.md](docs.pdf).
+These are generated from `docs.typ`.
 
 Typst Universe is a bit odd. They require documentation as Markdown, not Typst.
 So I have written `../build-docs.sh` to convert from Typst to markdown.

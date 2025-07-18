@@ -29,16 +29,16 @@ This package can be used to write arbitrary notes, but is not intended to be use
 
   assert(path.at(0) != "/", message: "Must use relative paths for Pandoc + Github conversion")
   let image-path = github-prefix + path.split(".").slice(0, -1).join(".").trim("./", at: start, repeat: false) + ".png"
-
-  figure(
-    if (sys.inputs.at("render", default: "0") != "1") [
-      #image(image-path)
-    ] else [
-      #include path
-    ],
-    caption: [#caption]
-  )
-
+  
+  if (sys.inputs.at("render", default: "0") != "1") [
+    #image(image-path, alt: caption)
+  ] else [
+    #figure(
+      include(path),
+      caption: [#caption]
+    )
+  ]
+    
 }
 
 #example("./examples/D-major.typ", "D Major Scale", include-import: true)
@@ -54,6 +54,14 @@ The foundational function is called `stave`.
 This is for writing just clefs, clefs and key signatures, or clefs, key signatures and custom notes.
 
 === Usage
+
+#let double-sharp-inline = {
+  if (sys.inputs.at("render", default: "0") != "1") [
+    𝄪
+  ] else [
+    #box(height: 0.7em, image("/assets/accidental/double-sharp-x.svg", alt: "double-sharp x"))
+  ]
+}
 
 The arguments are:
 
@@ -74,7 +82,7 @@ The arguments are:
   - "Db4" or "C\#4" is a semitone above middle C
   - "B3" is a semitone below middle C
   - "Bn3" has an explicit natural accidental ♮ infront of it
-  - "Fx3" is an F3 with a double sharp, drawn as an #box(height: 0.7em, image("/assets/accidental/double-sharp-x.svg")) (Formats such as "F\#\#3" to show ♯♯ are not supported yet.)
+  - "Fx3" is an F3 with a double sharp, drawn as an #double-sharp-inline (Formats such as "F\#\#3" to show ♯♯ are not supported yet.)
   - double flats are not yet supported.
 #for (k, v) in kwarg_defs.pairs(){
   [
@@ -147,8 +155,8 @@ The `geometric-scale` argument can be used to adjust the overall size:
   column-gutter: 1em,
   row-gutter: 1em,
   align: horizon,
-  example("./examples/note-sep-omitted.typ", "default (omitted `note-sep`)"),
-  example("./examples/note-sep-0-6.typ", "`note-sep`: 0.6")
+  example("./examples/note-sep-omitted.typ", "default (omitted `note-sep`)", include-code: false),
+  example("./examples/note-sep-0-6.typ", "`note-sep`: 0.6", include-code: false)
 )
 
 `equal-note-head-space` is used to adjust the spacing based on whether there are accidentals.
@@ -161,7 +169,8 @@ The `geometric-scale` argument can be used to adjust the overall size:
 
 #for e in (true, false) {
   canvases.push(
-    example("./examples/equal-note-head-space-" + bool-to-string(e) + ".typ", "`equal-note-head-space` = " + bool-to-string(e)
+    example("./examples/equal-note-head-space-" + bool-to-string(e) + ".typ", "`equal-note-head-space` = " + bool-to-string(e),
+    include-code: false
     )
   )
 }
