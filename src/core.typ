@@ -319,14 +319,14 @@
   stave(clef, key, notes: notes, ..kwargs)
 }
 
-#let chromatic-scale(clef, start-note, num-octaves: 1, side: "sharp", ..kwargs) = {
+#let chromatic-scale(clef, key, start-octave, num-octaves: 1, side: "sharp", ..kwargs) = {
   assert(side in allowed-sides, message: "side argument must be in : " + allowed-sides.join(", "))
-  let start-note-parsed = parse-note-string(start-note)
+  let start-note = parse-note-string(key + str(start-octave))
   let notes = ()
 
   // ascent
   for i in range(12 * num-octaves + 1) {
-    let note = add-semitones(start-note-parsed.letter, start-note-parsed.accidental, start-note-parsed.octave, steps: i, side: side)
+    let note = add-semitones(start-note.letter, start-note.accidental, start-note.octave, steps: i, side: side)
     let a = if note.accidental == none {
       ""
     } else {
@@ -339,7 +339,7 @@
 
   // descent
   for i in range(12 * num-octaves - 1 , 0 - 1, step: -1) {
-    let note = add-semitones(start-note-parsed.letter, start-note-parsed.accidental, start-note-parsed.octave, steps: i, side: side)
+    let note = add-semitones(start-note.letter, start-note.accidental, start-note.octave, steps: i, side: side)
     let a = if note.accidental == none {
       ""
     } else {

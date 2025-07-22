@@ -73,3 +73,11 @@ perl -i -pe 'BEGIN{undef $/;} s/`([^`]+)`  \n/`$1`: /g' $MD_PATH
 # perl -i -pe 'BEGIN{undef $/;} s/`([^`]+)`\s*\n\s*:\s*/- `$1`: /g' $MD_PATH
 
 sed -i '/<!-- -->/d' $MD_PATH
+
+# compile example docs
+for TYP_PATH in examples/*.typ
+do
+    PDF_PATH=${TYP_PATH%.typ}.pdf
+    typst compile $TYP_PATH $PDF_PATH \
+    --root $ROOT_DIR
+done

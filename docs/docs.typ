@@ -72,8 +72,8 @@ The arguments are:
   "equal-note-head-space": [`true` or `false`. Defaults to `true`. If true, note heads will be equally spaced. Some of this space will be taken up with accidentals. If `false`, adding an accidental to a note will shift the note head further right. `true` looks better (in my opinion), but `false` is useful in combination with the other spacing arguments, to avoid accidentals overlapping with previous note heads.]
 )
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
-/ `key`: Two possible forms. 
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
+/ `key`: (Required) Two possible forms. 
   - Letter based: Uppercase for major, lowercase for minor, with `#` or `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
   - Number based, with a symbol: "5\#" (or "5s") for 5 sharps, "2b" for 2 flats
 / `notes`: An (optional) array of strings representing notes to play sequentially. Chords are not supported. e.g.
@@ -191,9 +191,9 @@ The `major-scale` function is for writing major scales.
 
 === Usage
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
-/ `key`: e.g. "A", "Bb", "C\#". Uppercase only.
-/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: (Required) e.g. "A", "Bb", "C\#". Uppercase only.
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 #for (k, v) in kwarg_defs.pairs(){
   [
@@ -219,9 +219,9 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 
 === Usage
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
-/ `key`: e.g. "A", "Bb", "c\#". Uppercase or lowercase.
-/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: (Required) e.g. "A", "Bb", "c\#". Uppercase or lowercase.
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 / `minor-type`: Defaults to "harmonic". Allowed values are "#minor-types.join("\", \"")". Melodic minor scales are not yet supported.
 / `seventh`: Where the raised seventh would be a double sharp, configure how it is shown. Allowed values are "#seventh-types.join("\", \"")". See examples below.
@@ -254,9 +254,9 @@ The `arpeggio` function is for writing arpeggios.
 The arguments are the same as for `major-scale`.
 
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
-/ `key`: e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
-/ `start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: (Required) e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 #for (k, v) in kwarg_defs.pairs(){
   [
@@ -276,8 +276,9 @@ The arguments are:
 
 === Usage
 
-/ `clef`: Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
-/ `start-note`: e.g. "C4" for middle C, "C5" for the C above that, "Db4" for a semitone above middle C
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: (Required) e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the 
 / `num-octaves`: Optional, defaults to 1.
 / `side`: "#allowed-sides.join("\", \"")"
 #for (k, v) in kwarg_defs.pairs(){
