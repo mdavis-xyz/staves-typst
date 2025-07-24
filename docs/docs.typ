@@ -1,5 +1,6 @@
 
-#import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides
+#import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides, key-data, all-notes-from-c, semitones-per-octave, middle-c-octave, all-letters-from-c, num-letters-per-octave
+
 
 = Staves Typst Package
 
@@ -293,7 +294,36 @@ These scales tend to be quite long, so you probably want to use `note-sep` and `
 
 #example("./examples/D-chromatic.typ", "D Chromatic Scale")
 
-#example("./examples/F-chromatic.typ", "D Chromatic Scale")
+#example("./examples/G-chromatic.typ", "G Chromatic Scale")
+
+== Constants
+
+There are some constants which are exposed by the library.
+The structure, value and presence of these should be considered unstable,
+and is likely to change in fugure versions.
+
+`all-clefs`: #all-clefs
+
+`key-data`: #key-data
+
+`all-notes-from-c`: #all-notes-from-c
+
+`semitones-per-octave`: #semitones-per-octave
+
+`middle-c-octave`: #middle-c-octave
+
+`all-letters-from-c`: #all-letters-from-c
+
+`num-letters-per-octave`: #num-letters-per-octave
+
+== Setting Defaults
+
+To set a default, such as the same `note-duration` for your whole document, use #link("https://forum.typst.app/t/how-to-apply-set-rules-to-custom-functions/1657/2?u=mdavis_xyz", "the with approach") (for each different scale type):
+
+```typ
+#let major-scale = major-scale.with(note-duration: "crotchet")
+#let minor-scale = minor-scale.with(note-duration: "crotchet")
+```
 
 == Implementation Details
 

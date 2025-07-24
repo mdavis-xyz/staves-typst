@@ -121,6 +121,17 @@
   assert(actual.accidental != none)
   assert(actual.accidental == "#", message: "Got " + actual.accidental + " expected #")
   assert(actual.octave == 4)
+
+  let actual = add-semitones("B", "b", 4, steps: 1, side: "flat")
+  assert(actual.letter == "B", message: "Incrementing Bb gave " + serialise-note(actual))
+  assert(actual.accidental == none)
+  assert(actual.octave == 4)
+
+  let actual = add-semitones("B", "b", 4, steps: 1, side: "sharp")
+  assert(actual.letter == "B", message: "Incrementing Bb gave " + serialise-note(actual))
+  assert(actual.accidental == none)
+  assert(actual.octave == 4)
+
 }
 
 #let test-set-accidental() = {

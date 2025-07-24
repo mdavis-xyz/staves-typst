@@ -59,10 +59,10 @@ Here we generate a random list of scales, across keys and scale types.
 }
 
 
-#let rng = gen-rng-f(1901)
+#let rng = gen-rng-f(1902)
 #let (rng, scales) = shuffle-f(rng, scales)
 
-#let num-scales = 10
+#let num-scales = 20
 
 #for scale in scales.slice(0, num-scales) {
   scale

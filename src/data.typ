@@ -15,7 +15,9 @@
     ),
     middle-c: -1,
     accidentals: (
-      sharp: (4, 2.5, 3.5, 2, 3, 1.5, 2.5),
+      // wrong?
+      // Fat Cats Go Down Alleys Eating Beans
+      sharp: (4, 2.5, 4.5, 3, 1.5, 3.5, 2),
       flat: (2, 3.5, 1.5, 3, 1, 2.5, 0.5)
     )
   ),
@@ -27,7 +29,7 @@
     ),
     middle-c: 5,
     accidentals: (
-      sharp: (3, 1.5, 3.5, 2, 4, 2.5, 4.5),
+      sharp: (3, 1.5, 3.5, 2, 0.5, 2.5, 1),
       flat: (1, 2.5, 0.5, 2, 0, 1.5, -0.5)
     )
   ),

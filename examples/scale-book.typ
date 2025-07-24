@@ -10,6 +10,7 @@
 
 == Major Scales
 
+
 #for k in key-data.at("major") {
   [#k Major]
   major-scale("treble", k, 4, geometric-scale: geometric-scale, note-duration: "crotchet")

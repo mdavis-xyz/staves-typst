@@ -5,6 +5,12 @@ set -x
 
 ROOT_DIR=$(pwd)
 
+# Run unit tests
+typst compile src/test.typ src/test.pdf \
+  --root $ROOT_DIR \
+  --input render=1
+rm src/test.pdf 
+
 cd docs/examples
 
 TEMP_SRC=$(pwd)/tmp.typ

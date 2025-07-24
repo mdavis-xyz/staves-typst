@@ -328,7 +328,11 @@
   for i in range(12 * num-octaves + 1) {
     let note = add-semitones(start-note.letter, start-note.accidental, start-note.octave, steps: i, side: side)
     let a = if note.accidental == none {
-      ""
+      if (side == "flat") and (note.letter not in ("C", "F")) {
+        "n" // undo the flat
+      } else {
+        ""
+      }
     } else {
       note.accidental
     }
@@ -341,7 +345,11 @@
   for i in range(12 * num-octaves - 1 , 0 - 1, step: -1) {
     let note = add-semitones(start-note.letter, start-note.accidental, start-note.octave, steps: i, side: side)
     let a = if note.accidental == none {
-      ""
+      if (side == "sharp") and (note.letter not in ("B", "E")) {
+        "n" // undo the sharp
+      } else {
+        ""
+      }
     } else {
       note.accidental
     }

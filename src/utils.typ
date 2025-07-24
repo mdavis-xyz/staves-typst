@@ -279,6 +279,7 @@
 }
 
 #let add-semitones(start-letter, start-accidental, start-octave, steps: 1, side: "sharp") = {
+  assert(start-letter.len() == 1, message: "Argument start-letter to add-semitone is more than 1 char: " + start-letter)
   assert(side in allowed-sides, message: "invalid side: " + side + ", must be one of " + allowed-sides.join(","))
   if steps == 0 {
     return (
@@ -292,12 +293,11 @@
     return add-semitones(start-letter, start-accidental, start-octave + 1, steps: steps - semitones-per-octave, side: side)
   } else if steps < 0 {
     panic("Decrementing by semitone not supported")
-  } else if start-letter == "B" {
+  } else if (start-letter == "B") and (start-accidental in (none, "n", "")) {
     // increment octave number when going from B to C
     return add-semitones("C", none, start-octave + 1, steps: steps - 1, side: side)
   } else if start-accidental == "b" {
     // remove the flat
-    assert(side == "flat", message: "Cannot start with flat for sharp incrementing")
     return add-semitones(start-letter, none, start-octave, steps: steps - 1, side: side)
     
   } else if start-accidental in ("n", "", none) {

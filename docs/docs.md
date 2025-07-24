@@ -42,11 +42,11 @@ notes.
 
 The arguments are:
 
-`clef`: Allowed values are “treble", "bass", "alto", "tenor”. Drawing a treble
-clef above a bass clef, linked as a double-stave (like for a piano) is
-not yet supported.
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. Drawing
+a treble clef above a bass clef, linked as a double-stave (like for a
+piano) is not yet supported.
 
-`key`: Two possible forms.
+`key`: (Required) Two possible forms.
 
 - Letter based: Uppercase for major, lowercase for minor, with `#` or
   `b` appended. e.g. `"C"`, `"Db"`, `"f#"`
@@ -163,13 +163,13 @@ The `major-scale` function is for writing major scales.
 
 ### Usage
 
-`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
-`stave`.)
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. (Same
+as for `stave`.)
 
-`key`: e.g. “A”, “Bb”, “C#”. Uppercase only.
+`key`: (Required) e.g. “A”, “Bb”, “C#”. Uppercase only.
 
-`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
-above that.
+`start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
+the octave above that.
 
 `num-octaves`: Optional, defaults to 1.
 
@@ -223,13 +223,13 @@ scales. The usage is the same as for `major-scale`, plus an additional
 
 ### Usage
 
-`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
-`stave`.)
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. (Same
+as for `stave`.)
 
-`key`: e.g. “A”, “Bb”, “c#”. Uppercase or lowercase.
+`key`: (Required) e.g. “A”, “Bb”, “c#”. Uppercase or lowercase.
 
-`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
-above that.
+`start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
+the octave above that.
 
 `num-octaves`: Optional, defaults to 1.
 
@@ -302,14 +302,14 @@ The `arpeggio` function is for writing arpeggios.
 
 The arguments are the same as for `major-scale`.
 
-`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
-`stave`.)
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. (Same
+as for `stave`.)
 
-`key`: e.g. “A”, “Bb”, “C#”. Uppercase for major, lowercase for minor. Do not
-include a number for the octave.
+`key`: (Required) e.g. “A”, “Bb”, “C#”. Uppercase for major, lowercase for
+minor. Do not include a number for the octave.
 
-`start-octave`: integer. e.g. 4 is the octave starting from middle C. 5 is the octave
-above that.
+`start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
+the octave above that.
 
 `num-octaves`: Optional, defaults to 1.
 
@@ -350,11 +350,14 @@ between two notes). The arguments are:
 
 ### Usage
 
-`clef`: Allowed values are “treble", "bass", "alto", "tenor”. (Same as for
-`stave`.)
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. (Same
+as for `stave`.)
 
-`start-note`: e.g. “C4” for middle C, “C5” for the C above that, “Db4” for a semitone
-above middle C
+`key`: (Required) e.g. “A”, “Bb”, “C#”. Uppercase for major, lowercase for
+minor. Do not include a number for the octave.
+
+`start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
+the
 
 `num-octaves`: Optional, defaults to 1.
 
@@ -387,18 +390,54 @@ These scales tend to be quite long, so you probably want to use
 ### Examples
 
 ``` typ
-#chromatic-scale("treble", "D4", note-sep: 0.8, geometric-scale: 0.7)
+#chromatic-scale("treble", "D", 4, note-sep: 0.8, geometric-scale: 0.7)
 ```
 
 ![D Chromatic
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-chromatic.png)
 
 ``` typ
-#chromatic-scale("bass", "F2", side: "flat", geometric-scale: 0.6, note-duration: "crotchet")
+#chromatic-scale("bass", "G", 2, side: "flat", geometric-scale: 0.6, note-duration: "crotchet")
 ```
 
-![D Chromatic
-Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-chromatic.png)
+![G Chromatic
+Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-chromatic.png)
+
+## Constants
+
+There are some constants which are exposed by the library. The
+structure, value and presence of these should be considered unstable,
+and is likely to change in fugure versions.
+
+`all-clefs`: ("treble", "bass", "alto", "tenor")
+
+`key-data`: (major: ("Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G",
+"D", "A", "E", "B", "F#", "C#"), minor: ("ab", "eb", "bb", "f", "c",
+"g", "d", "a", "e", "b", "f#", "c#", "g#", "d#", "a#"))
+
+`all-notes-from-c`: (sharp: ("C", "C#", "D", "D#", "E", "F", "F#", "G",
+"G#", "A", "A#", "B"), flat: ("C", "Db", "D", "Eb", "E", "F", "Gb", "G",
+"Ab", "A", "Bb", "B"))
+
+`semitones-per-octave`: 12
+
+`middle-c-octave`: 4
+
+`all-letters-from-c`: ("C", "D", "E", "F", "G", "A", "B")
+
+`num-letters-per-octave`: 7
+
+## Setting Defaults
+
+To set a default, such as the same `note-duration` for your whole
+document, use [the with
+approach](https://forum.typst.app/t/how-to-apply-set-rules-to-custom-functions/1657/2?u=mdavis_xyz)
+(for each different scale type):
+
+``` typ
+#let major-scale = major-scale.with(note-duration: "crotchet")
+#let minor-scale = minor-scale.with(note-duration: "crotchet")
+```
 
 ## Implementation Details
 
