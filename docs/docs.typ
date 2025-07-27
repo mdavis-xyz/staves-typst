@@ -67,6 +67,7 @@ This is for writing just clefs, clefs and key signatures, or clefs, key signatur
 The arguments are:
 
 #let kwarg_defs = (
+  "notes-per-stave": [(Optional) Used to break a long scale over multiple lines. Line breaks will be inserted after every group of this many notes. If omitted, all notes will be placed on the first stave. Page breaks are blocked between staves of the same scale.],
   "geometric-scale": [(optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.],
   "note-duration": [(optional) Allowed values are "#all-note-durations.join("\", \"")". Default is "whole" note. All notes are the same duration.],
   "note-sep": [(optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.],
@@ -131,6 +132,10 @@ The `note-duration` argument can be used to change the note symbol.
 
 
 === Spacing and Sizing
+
+The `notes-per-stave` argument can be used to split up long scales into multiple lines.
+
+#example("./examples/scale-long.typ", "2-octave scale scale with `notes-per-stave`: `num-letters-per-octave`")
 
 The `geometric-scale` argument can be used to adjust the overall size:
 

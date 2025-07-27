@@ -74,6 +74,12 @@ Chords are not supported. e.g.
 - double flats are not yet supported.
 
 
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
+
+
 `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
 the size. This is about visual scale, not musical scales.
 
@@ -137,6 +143,16 @@ The `note-duration` argument can be used to change the note symbol.
 
 ### Spacing and Sizing
 
+The `notes-per-stave` argument can be used to split up long scales into
+multiple lines.
+
+``` typ
+#major-scale("treble", "D", 4, num-octaves: 2, notes-per-stave: 2 * num-letters-per-octave)
+```
+
+![2-octave scale scale with \`notes-per-stave\`:
+\`num-letters-per-octave\`](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/scale-long.png)
+
 The `geometric-scale` argument can be used to adjust the overall size:
 
 |  |  |  |
@@ -172,6 +188,12 @@ as for `stave`.)
 the octave above that.
 
 `num-octaves`: Optional, defaults to 1.
+
+
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
 
 
 `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
@@ -238,6 +260,12 @@ Melodic minor scales are not yet supported.
 
 `seventh`: Where the raised seventh would be a double sharp, configure how it is
 shown. Allowed values are “n", "x”. See examples below.
+
+
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
 
 
 `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
@@ -314,6 +342,12 @@ the octave above that.
 `num-octaves`: Optional, defaults to 1.
 
 
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
+
+
 `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
 the size. This is about visual scale, not musical scales.
 
@@ -362,6 +396,12 @@ the
 `num-octaves`: Optional, defaults to 1.
 
 `side`: ”sharp", "flat”
+
+
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
 
 
 `geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double

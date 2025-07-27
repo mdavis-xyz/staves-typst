@@ -168,6 +168,23 @@
   assert(expected == actual)
 }
 
+#let test-first-last() = {
+  let arr = ("a", )
+  let expected = ((true, true, "a"), )
+  let actual = first-last(arr)
+  assert(expected == actual)
+
+  let arr = ("a", "b")
+  let expected = ((true, false, "a"), (false, true, "b"))
+  let actual = first-last(arr)
+  assert(expected == actual)
+
+  let arr = ("a", "b", "c")
+  let expected = ((true, false, "a"), (false, false, "b"), (false, true, "c"))
+  let actual = first-last(arr)
+  assert(expected == actual)
+}
+
 #let unit-test() = {
   test-is-integer()
   test-determine-key()
@@ -181,6 +198,7 @@
   test-add-semitones()
   test-increment-wholenote()
   test-set-accidental()
+  test-first-last()
 }
 
 

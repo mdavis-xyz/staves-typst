@@ -319,3 +319,18 @@
     return add-semitones(increment-letter(start-letter), none, start-octave, steps: steps - 1, side: side)
   }
 }
+
+
+
+// takes in an array
+// returns (bool, bool, any)
+// (first, last, value)
+#let first-last(arr) = {
+  let new-arr = ()
+  for (i, val) in arr.enumerate() {
+    let first = i == 0
+    let last = i == arr.len() - 1
+    new-arr.push((first, last, val))
+  }
+  return new-arr
+}
