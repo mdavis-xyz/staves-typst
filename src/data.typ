@@ -10,8 +10,8 @@
   treble: (
     clef: (
       image: "/assets/clefs/treble.svg",
-      y-offset: 2,
-      y-span: 2,
+      y-offset: 1.8,
+      y-span: 7,
     ),
     middle-c: -1,
     accidentals: (
@@ -24,8 +24,8 @@
   bass: (
     clef: (
       image: "/assets/clefs/bass.svg",
-      y-offset: 2.4,
-      y-span: 1,
+      y-offset: 2.2,
+      y-span: 3.7,
     ),
     middle-c: 5,
     accidentals: (
@@ -37,7 +37,7 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 2,
-      y-span: 1.2,
+      y-span: 4,
     ),
     middle-c: 2,
     accidentals: (
@@ -49,7 +49,7 @@
     clef: (
       image: "/assets/clefs/alto.svg",
       y-offset: 3,
-      y-span: 1.2,
+      y-span: 4,
     ),
     middle-c: 3,
     accidentals: (
@@ -64,22 +64,22 @@
   sharp: (
     image: "/assets/accidental/sharp.svg",
     y-offset: 0,
-    y-span: 0.8
+    y-span: 2.9
   ),
   flat: (
     image: "/assets/accidental/flat.svg",
-    y-offset: 0.4,
-    y-span: 0.6
+    y-offset: 0.5,
+    y-span: 2.1
   ),
   natural: (
     image: "/assets/accidental/natural.svg",
     y-offset: 0,
-    y-span: 0.8
+    y-span: 2.6
   ),
   double-sharp-x: (
     image: "/assets/accidental/double-sharp-x.svg",
     y-offset: 0,
-    y-span: 0.3
+    y-span: 1
   )
 )
 
@@ -115,14 +115,14 @@
   whole: (
     image: "/assets/notes/whole.svg",
     y-offset: 0, 
-    y-span: 0.3,
+    y-span: 1,
     stem: false
   ),
   quarter: (
     // without stem
     image: "/assets/notes/crotchet-head.svg",
     y-offset: 0, 
-    y-span: 0.3,
+    y-span: 1,
     width: 1.08,
     stem: true
   )

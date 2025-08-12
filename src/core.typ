@@ -3,7 +3,7 @@
 #import "data.typ": *
 #import "utils.typ": *
 
-#let stave(clef, key, notes: (), notes-per-stave: none, width: 20cm, line-sep: 0.3cm, note-duration: "semibreve", equal-note-head-space: false) = {
+#let stave(clef, key, notes: (), notes-per-stave: none, width: auto, line-sep: 0.3cm, note-duration: "semibreve", equal-note-head-space: false) = {
 
   // validate arguments
   assert(clef in clef-data.keys(), 
@@ -22,7 +22,8 @@
 
   // prevent page breaks between multiple staves
   block(breakable: false, [
-    #for (first-stave, last-stave, notes-this-stave) in first-last(notes.chunks(notes-per-stave)) {
+    #let note-chunks = if (notes.len() > 0) { notes.chunks(notes-per-stave) } else { ((), ) }
+    #for (is-first-stave, is-last-stave, notes-this-stave) in first-last(note-chunks) {
       
       // wrap inside a layout so we can measure the page width
       layout(layout-size => {
@@ -34,7 +35,8 @@
           let stem-length = 3 + 0.2 // don't make it an integer, it looks bad
           let double-bar-sep = 0.5
           let double-bar-thick = 0.15
-          let end-space = leger-line-width * 1.5 // space between last note and barline
+          let end-space = leger-line-width // space between last note and barline
+          let key-note-space = 1 // space between key signature and first note (or accidental of first note)
           
           // note that x = x + 1
           // does not work in typst
@@ -48,30 +50,25 @@
         
           // clef
           content((xs.sum(), y ), [
-            #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") ) * 1cm)
+            #image(clef-data.at(clef).at("clef").at("image"), height: (clef-data.at(clef).at("clef").at("y-span") ) * line-sep)
           ], anchor: "center")
 
           xs.push(3)
           
-          if (first-stave) {
-            // key signature, only on first stave
-            for i in range(num-chromatics) {
-              assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-chromatics) + " " + symbol-type)
-              let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
-              
-              content((xs.sum() , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
-                #image(symbol-data.at(symbol-type).at("image"), 
-                      height: (symbol-data.at(symbol-type).at("y-span") ) * 1cm)
-              ])
-              xs.push(1)
-            }
-
-            // if there were any sharps or flats (non-empty key signature),
-            // then add some extra space
-            if num-chromatics > 0 {
-              xs.push(1)
-            }
+          // key signature
+          for i in range(num-chromatics) {
+            assert(symbol-type != "natural", message: "natural in key signature? " + key + " " + str(num-chromatics) + " " + symbol-type)
+            let y = clef-data.at(clef).at("accidentals").at(symbol-type).at(i)
+            
+            content((xs.sum() , (y + symbol-data.at(symbol-type).at("y-offset")) ), [
+              #image(symbol-data.at(symbol-type).at("image"), 
+                    height: (symbol-data.at(symbol-type).at("y-span") ) * line-sep)
+            ])
+            xs.push(1)
           }
+
+
+          xs.push(key-note-space)
 
 
           // calculate the separation between notes
@@ -85,7 +82,8 @@
           // how much space is taken up by stuff other than first note head to last note head
           let non-notes-width = (0,) 
           non-notes-width.push(xs.sum()) // clef, key sig
-          if (parse-note-string(notes-this-stave.at(0)).accidental != none) {
+          non-notes-width.push(key-note-space) // space between key sig and first note
+          if (notes-this-stave.len() > 0) and (parse-note-string(notes-this-stave.at(0)).accidental != none) {
             // extra space for first note if it has an accidental
             non-notes-width.push(accidental-offset)
           }
@@ -99,14 +97,33 @@
             }
           }
           non-notes-width.push(end-space) // space between last note and bar line
-          if last-stave { // double bar
+          if is-last-stave { // double bar
             non-notes-width.push(double-bar-sep + double-bar-thick)
           }
-          let notes-width = width.cm() - non-notes-width.sum() * line-sep.cm()
-          let note-sep = notes-width / (if notes-this-stave.len() == 0 { 1 } else { notes-this-stave.len() -1 } ) / line-sep.cm()
+
+          // if width is passed, use that for the overall width
+          // if width is note passed, try to get the available page width
+          // if that's not available, use a sensible default. Don't bother calculating overall width. Just default for note-sep
+          let default-note-sep = if equal-note-head-space { 3 } else { 2 }
+          let note-sep = if (width == auto) and float.is-infinite(layout-size.width.cm()) {
+            // no width argument passed, and page width is auto
+            default-note-sep
+          } else {
+            let overall-width = if (width == auto) {
+              // no width argument passed, guess from page width
+              layout-size.width
+            } else {
+              // explicit width argument passed
+              width
+            }
+            
+            let notes-width = overall-width.cm() - non-notes-width.sum() * line-sep.cm()
+
+            notes-width / calc.max(notes-this-stave.len() - 1, 1) / line-sep.cm()
+          }
 
           // draw our notes
-          for (i, note-str) in notes-this-stave.enumerate() {
+          for (i, (is-first-note, is-last-note, note-str)) in first-last(notes-this-stave).enumerate() {
             
             let note = parse-note-string(note-str)
             let note-height = calc-note-height(clef, note)
@@ -116,7 +133,7 @@
 
 
             // extra space if this is the first note and it has an accidental
-            if (note.accidental != none) and (i == 0) {
+            if (note.accidental != none) and is-first-note {
               xs.push(accidental-offset)
             }
 
@@ -136,7 +153,7 @@
 
               content(((x) , (y + accidental.y-offset) ), [
                   #image(accidental.image, 
-                        height: (accidental.y-span ) * 1cm)
+                        height: (accidental.y-span ) * line-sep)
               ])
               xs.push(accidental-offset)
               
@@ -168,7 +185,7 @@
             // note head
             content((x , y ), [
               #image(image-path, 
-                    height: (y-span ) * 1cm)
+                    height: (y-span ) * line-sep)
             ])
 
             // stem
@@ -203,7 +220,7 @@
             }
 
 
-            if (i <= notes-this-stave.len() - 2) {
+            if (not is-last-note) {
               xs.push(note-sep) // space between notes
             }
 
@@ -212,7 +229,7 @@
           // space after last note, before bar line
           xs.push(end-space)
           
-          if last-stave {
+          if is-last-stave {
             // double bar at end
             let x = xs.sum()
             line((x, 0), (x, 4 ))

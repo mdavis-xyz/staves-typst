@@ -2,11 +2,9 @@
 
 Author: Matthew Davis
 
-This Typst package is used to draw musical scales.
-
-For now this is restricted to only one stave (set of 5 lines). This
-package can be used to write arbitrary notes, but is not intended to be
-used for entire songs.
+This Typst package is used to draw musical scales. This package can be
+used to write arbitrary notes, but is not intended to be used for entire
+songs.
 
 ``` typ
 #import "@preview/staves:0.1.0": major-scale
@@ -26,7 +24,7 @@ Arpeggio](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/m
 
 ``` typ
 #import "@preview/staves:0.1.0": stave
-#stave("alto", "c", notes: ("C3", "D#4", "F3"))
+#stave("alto", "c", notes: ("C3", "D#4", "F3"), width: 7cm)
 ```
 
 ![Custom
@@ -36,7 +34,10 @@ Notes](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/mast
 
 The foundational function is called `stave`. This is for writing just
 clefs, clefs and key signatures, or clefs, key signatures and custom
-notes.
+notes. Typically as a user you should use the higher-level abstractions
+such as `arpeggio` and `major-scale` (documented further down), if they
+suit your needs. `staves` is exposed for creating custom scales which
+are not yet supported (e.g. broken chords, scales in thirds etc).
 
 ### Usage
 
@@ -80,24 +81,26 @@ notes will be placed on the first stave. Page breaks are blocked between
 staves of the same scale.
 
 
-`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
-the size. This is about visual scale, not musical scales.
-
-
 `note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
 "crotchet”. Default is “whole” note. All notes are the same duration.
 
 
-`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
-shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
-it’s still too big, use `geometric-scale` as well.
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
 
 
 `equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
 equally spaced. Some of this space will be taken up with accidentals. If
 `false`, adding an accidental to a note will shift the note head further
-right. `true` looks better (in my opinion), but `false` is useful in
-combination with the other spacing arguments, to avoid accidentals
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
 overlapping with previous note heads.
 
 ### Examples
@@ -147,24 +150,26 @@ The `notes-per-stave` argument can be used to split up long scales into
 multiple lines.
 
 ``` typ
-#major-scale("treble", "D", 4, num-octaves: 2, notes-per-stave: 2 * num-letters-per-octave)
+#major-scale("treble", "D", 4, num-octaves: 2, notes-per-stave: 16)
 ```
 
 ![2-octave scale scale with \`notes-per-stave\`:
 \`num-letters-per-octave\`](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/scale-long.png)
 
-The `geometric-scale` argument can be used to adjust the overall size:
+The `width` argument can be used to adjust the overall width.
 
-|  |  |  |
-|----|----|----|
-| ![\`geometric-scale\`: 2](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-2.png) | ![default (omitted \`geometric-scale\`)](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-omitted.png) | ![\`geometric-scale\`: 0.5](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/geometric-scale-0-5.png) |
+``` typ
+#stave("treble", "f", width: 7cm)
+```
 
-`note-sep` can be used to adjust the horizontal separation between
-notes, whilst keeping the height of the stave the same:
+![Explcit \`width\`
+argument](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/width.png)
 
-|  |  |
-|----|----|
-| ![default (omitted \`note-sep\`)](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-omitted.png) | ![\`note-sep\`: 0.6](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/note-sep-0-6.png) |
+The `line-sep` argument can be used to adjust the vertical spacing
+between stave lines:
+
+![\`line-sep\`
+argument](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/line-sep.png)
 
 `equal-note-head-space` is used to adjust the spacing based on whether
 there are accidentals.
@@ -196,24 +201,26 @@ notes will be placed on the first stave. Page breaks are blocked between
 staves of the same scale.
 
 
-`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
-the size. This is about visual scale, not musical scales.
-
-
 `note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
 "crotchet”. Default is “whole” note. All notes are the same duration.
 
 
-`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
-shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
-it’s still too big, use `geometric-scale` as well.
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
 
 
 `equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
 equally spaced. Some of this space will be taken up with accidentals. If
 `false`, adding an accidental to a note will shift the note head further
-right. `true` looks better (in my opinion), but `false` is useful in
-combination with the other spacing arguments, to avoid accidentals
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
 overlapping with previous note heads.
 
 ### Examples
@@ -226,16 +233,7 @@ overlapping with previous note heads.
 ![D Major
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-major.png)
 
-You can write a 2 octave scale with `num-octaves: 2`. This is probably
-too wide for your page. Shrink it horizontally with `note-sep`, or
-shrink in both dimensions with `geometric-scale`.
-
-``` typ
-#major-scale("bass", "F", 2, num-octaves: 2, note-sep: 0.7, geometric-scale: 0.7)
-```
-
-![F Major Scale, shrunken to fit the
-page](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/F-major-shrunk.png)
+You can write a 2 octave scale with `num-octaves: 2`.
 
 ## Minor Scale
 
@@ -268,24 +266,26 @@ notes will be placed on the first stave. Page breaks are blocked between
 staves of the same scale.
 
 
-`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
-the size. This is about visual scale, not musical scales.
-
-
 `note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
 "crotchet”. Default is “whole” note. All notes are the same duration.
 
 
-`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
-shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
-it’s still too big, use `geometric-scale` as well.
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
 
 
 `equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
 equally spaced. Some of this space will be taken up with accidentals. If
 `false`, adding an accidental to a note will shift the note head further
-right. `true` looks better (in my opinion), but `false` is useful in
-combination with the other spacing arguments, to avoid accidentals
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
 overlapping with previous note heads.
 
 ### Examples
@@ -348,24 +348,26 @@ notes will be placed on the first stave. Page breaks are blocked between
 staves of the same scale.
 
 
-`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
-the size. This is about visual scale, not musical scales.
-
-
 `note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
 "crotchet”. Default is “whole” note. All notes are the same duration.
 
 
-`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
-shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
-it’s still too big, use `geometric-scale` as well.
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
 
 
 `equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
 equally spaced. Some of this space will be taken up with accidentals. If
 `false`, adding an accidental to a note will shift the note head further
-right. `true` looks better (in my opinion), but `false` is useful in
-combination with the other spacing arguments, to avoid accidentals
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
 overlapping with previous note heads.
 
 ### Example
@@ -404,40 +406,39 @@ notes will be placed on the first stave. Page breaks are blocked between
 staves of the same scale.
 
 
-`geometric-scale`: (optional) Number e.g. 0.5 or 2 to draw the content at half or double
-the size. This is about visual scale, not musical scales.
-
-
 `note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
 "crotchet”. Default is “whole” note. All notes are the same duration.
 
 
-`note-sep`: (optional) Used to adjust the horizontal spacing between notes. If you
-shrink below `note-sep: 0.7`, leger lines will overlap. At that point if
-it’s still too big, use `geometric-scale` as well.
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
 
 
 `equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
 equally spaced. Some of this space will be taken up with accidentals. If
 `false`, adding an accidental to a note will shift the note head further
-right. `true` looks better (in my opinion), but `false` is useful in
-combination with the other spacing arguments, to avoid accidentals
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
 overlapping with previous note heads.
-
-These scales tend to be quite long, so you probably want to use
-`note-sep` and `geometric-scale`, and perhaps a landscape page.
 
 ### Examples
 
 ``` typ
-#chromatic-scale("treble", "D", 4, note-sep: 0.8, geometric-scale: 0.7)
+#chromatic-scale("treble", "D", 4, notes-per-stave: semitones-per-octave + 1)
 ```
 
 ![D Chromatic
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/D-chromatic.png)
 
 ``` typ
-#chromatic-scale("bass", "G", 2, side: "flat", geometric-scale: 0.6, note-duration: "crotchet")
+#chromatic-scale("bass", "G", 2, side: "flat", note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)
 ```
 
 ![G Chromatic
@@ -470,8 +471,8 @@ and is likely to change in fugure versions.
 ## Setting Defaults
 
 To set a default, such as the same `note-duration` for your whole
-document, use [the with
-approach](https://forum.typst.app/t/how-to-apply-set-rules-to-custom-functions/1657/2?u=mdavis_xyz)
+document, use <u>[the with
+approach](https://forum.typst.app/t/how-to-apply-set-rules-to-custom-functions/1657/2?u=mdavis_xyz)</u>
 (for each different scale type):
 
 ``` typ
@@ -482,7 +483,7 @@ approach](https://forum.typst.app/t/how-to-apply-set-rules-to-custom-functions/1
 ## Implementation Details
 
 This package uses a `canvas` from the
-[CeTZ](https://typst.app/universe/package/cetz) package.
+<u>[CeTZ](https://typst.app/universe/package/cetz)</u> package.
 
 ## License Details
 
@@ -490,4 +491,4 @@ This library uses SVG images for clefs, accidentals etc. These files
 came from Wikipedia, and are in the public domain. They are not covered
 by the same license as the rest of the package. Source URLs for these
 SVGs are listed in
-[`/assets/README.md`](https://github.com/mdavis-xyz/staves-typst/tree/master/assets)
+<u>[`/assets/README.md`](https://github.com/mdavis-xyz/staves-typst/tree/master/assets)</u>

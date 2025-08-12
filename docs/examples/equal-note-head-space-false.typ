@@ -1,3 +1,3 @@
 #import "../../src/lib.typ": stave
 
-#stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: false)
+#stave("treble", "C", notes: ("C5", "C#5", "D5", "D#5"), equal-note-head-space: false, width: 6cm)

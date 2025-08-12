@@ -7,8 +7,6 @@
 Author: Matthew Davis
 
 This Typst package is used to draw musical scales.
-
-For now this is restricted to only one stave (set of 5 lines).
 This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
 #let package-version = "0.1.0"
@@ -53,6 +51,7 @@ This package can be used to write arbitrary notes, but is not intended to be use
 
 The foundational function is called `stave`.
 This is for writing just clefs, clefs and key signatures, or clefs, key signatures and custom notes.
+Typically as a user you should use the higher-level abstractions such as `arpeggio` and `major-scale` (documented further down), if they suit your needs. `staves` is exposed for creating custom scales which are not yet supported (e.g. broken chords, scales in thirds etc).
 
 === Usage
 
@@ -66,12 +65,14 @@ This is for writing just clefs, clefs and key signatures, or clefs, key signatur
 
 The arguments are:
 
+#show link: underline
+
 #let kwarg_defs = (
   "notes-per-stave": [(Optional) Used to break a long scale over multiple lines. Line breaks will be inserted after every group of this many notes. If omitted, all notes will be placed on the first stave. Page breaks are blocked between staves of the same scale.],
-  "geometric-scale": [(optional) Number e.g. 0.5 or 2 to draw the content at half or double the size. This is about visual scale, not musical scales.],
   "note-duration": [(optional) Allowed values are "#all-note-durations.join("\", \"")". Default is "whole" note. All notes are the same duration.],
-  "note-sep": [(optional) Used to adjust the horizontal spacing between notes. If you shrink below `note-sep: 0.7`, leger lines will overlap. At that point if it's still too big, use `geometric-scale` as well.],
-  "equal-note-head-space": [`true` or `false`. Defaults to `true`. If true, note heads will be equally spaced. Some of this space will be taken up with accidentals. If `false`, adding an accidental to a note will shift the note head further right. `true` looks better (in my opinion), but `false` is useful in combination with the other spacing arguments, to avoid accidentals overlapping with previous note heads.]
+  "width": [(Optional) If provided, sets the length of the stave lines. It omitted (or `auto`), the stave lines will be stretched to the available space. If the page width itself is `auto`, a sensible default will be used.],
+  "line-sep": [(Optional) A #link("https://typst.app/docs/reference/layout/length/", "length") used to set the vertical spacing of the 5 stave lines (within a given stave). Note that this is a length with units, e.g. `3cm`, not just `3`.],
+  "equal-note-head-space": [`true` or `false`. Defaults to `true`. If true, note heads will be equally spaced. Some of this space will be taken up with accidentals. If `false`, adding an accidental to a note will shift the note head further right. `true` looks better (in my opinion), but `false` is useful when trying to squish many notes into one stave, to avoid accidentals overlapping with previous note heads.]
 )
 
 / `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". Drawing a treble clef above a bass clef, linked as a double-stave (like for a piano) is not yet supported.
@@ -137,33 +138,13 @@ The `notes-per-stave` argument can be used to split up long scales into multiple
 
 #example("./examples/scale-long.typ", "2-octave scale scale with `notes-per-stave`: `num-letters-per-octave`")
 
-The `geometric-scale` argument can be used to adjust the overall size:
+The `width` argument can be used to adjust the overall width. 
 
+#example("./examples/width.typ", "Explcit `width` argument")
 
-#grid(
-  columns: (2fr, 1fr, 1fr),
-  column-gutter: 1em,
-  row-gutter: 1em,
-  align: horizon,
-  example("./examples/geometric-scale-2.typ", "`geometric-scale`: 2",
-    include-code: false),
-  example("./examples/geometric-scale-omitted.typ", "default (omitted `geometric-scale`)",
-    include-code: false),
-  example("./examples/geometric-scale-0-5.typ", "`geometric-scale`: 0.5",
-    include-code: false)
-)
+The `line-sep` argument can be used to adjust the vertical spacing between stave lines:
 
-
-`note-sep` can be used to adjust the horizontal separation between notes, whilst keeping the height of the stave the same:
-
-#grid(
-  columns: (1fr, 1fr),
-  column-gutter: 1em,
-  row-gutter: 1em,
-  align: horizon,
-  example("./examples/note-sep-omitted.typ", "default (omitted `note-sep`)", include-code: false),
-  example("./examples/note-sep-0-6.typ", "`note-sep`: 0.6", include-code: false)
-)
+#example("./examples/line-sep.typ", "`line-sep` argument", include-code: false)
 
 `equal-note-head-space` is used to adjust the spacing based on whether there are accidentals.
 
@@ -212,9 +193,6 @@ The `major-scale` function is for writing major scales.
 #example("./examples/D-major.typ", "D Major Scale", include-import: true)
 
 You can write a 2 octave scale with `num-octaves: 2`.
-This is probably too wide for your page. Shrink it horizontally with `note-sep`, or shrink in both dimensions with `geometric-scale`.
-
-#example("./examples/F-major-shrunk.typ", "F Major Scale, shrunken to fit the page")
 
 
 == Minor Scale
@@ -292,8 +270,6 @@ The arguments are:
     / #raw(k): #v
   ]
 }
-
-These scales tend to be quite long, so you probably want to use `note-sep` and `geometric-scale`, and perhaps a landscape page.
 
 === Examples
 

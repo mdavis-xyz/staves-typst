@@ -1,3 +1,3 @@
-#import "../../src/lib.typ": chromatic-scale
+#import "../../src/lib.typ": chromatic-scale, semitones-per-octave
 
-#chromatic-scale("treble", "D", 4, note-sep: 0.8, geometric-scale: 0.7)
+#chromatic-scale("treble", "D", 4, notes-per-stave: semitones-per-octave + 1)

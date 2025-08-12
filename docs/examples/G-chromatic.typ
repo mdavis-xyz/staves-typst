@@ -1,3 +1,3 @@
-#import "../../src/lib.typ": chromatic-scale
+#import "../../src/lib.typ": chromatic-scale, semitones-per-octave
 
-#chromatic-scale("bass", "G", 2, side: "flat", geometric-scale: 0.6, note-duration: "crotchet")
+#chromatic-scale("bass", "G", 2, side: "flat", note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)

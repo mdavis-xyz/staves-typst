@@ -1,7 +1,5 @@
 #import "../src/lib.typ": *
 
-#let geometric-scale = 0.8
-
 #let capitalise-first-char(s) = {
   return upper(s.at(0)) + s.slice(1)
 }
@@ -14,7 +12,7 @@
       #k Chromatic (#side)
     ]
 
-    chromatic-scale("treble", k, 4, geometric-scale: 0.6, num-octaves: 1, side: side, note-duration: "crotchet", note-sep: 0.7)
+    chromatic-scale("treble", k, 4, num-octaves: 1, side: side, note-duration: "crotchet")
   }
   
 }

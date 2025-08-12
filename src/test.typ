@@ -303,7 +303,6 @@ Using numbers
   "treble",
   "D",
   5,
-  geometric-scale: 1.2,
   note-duration: "crotchet"
 )
 
