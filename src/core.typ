@@ -329,15 +329,20 @@
   let start-note-raw = parse-note-string(key + str(start-octave))
   let key-accidental = start-note-raw.accidental
   let start-note = remove-accidental(start-note-raw)
+  assert(start-note.accidental == none)
   let notes = ()
 
   // ascent
   for ov in range(num-octaves) {
     // root
+    
     let root-note = shift-octave(start-note, ov)
     notes.push(root-note)
     for i in range(1, num-letters-per-octave) {
-      let n = increment-wholenote(notes.at(-1))
+      // in the case where the 7th is a natural,
+      // the root will have an explicit sharp accidental
+      // that's why we remove the accidental again
+      let n = increment-wholenote(remove-accidental(notes.at(-1)))
       if (minor-type == "harmonic") and (calc.rem-euclid(i, num-letters-per-octave) == num-letters-per-octave - 1) {
         // handle the 7th specially, to flatten it
         if key-accidental in (none, "n") {
@@ -357,8 +362,8 @@
           if seventh == "n" {
             // 7th note will be a double-sharp
             // use the root note with an explicit natural
-            notes.push(set-accidental(shift-octave(root-note, 1), "n"))
-            start-note = set-accidental(start-note, "#")
+            notes.push(set-accidental(shift-octave(root-note, 1), "n", overwrite-existing: true))
+            start-note = set-accidental(start-note, "#", overwrite-existing: true)
           } else {
             assert(seventh == "x")
             notes.push(set-accidental(n, "x"))

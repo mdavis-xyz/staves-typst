@@ -234,7 +234,7 @@
 // increments from one natural to the next
 #let increment-wholenote(note, steps: 1) = {
   assert(note.type == "letter-note")
-  assert(note.accidental == none)
+  assert(note.accidental in (none, "n"), message: "Expected no accidental. Got " + serialise-note(note))
 
   if steps == 0 {
     return note

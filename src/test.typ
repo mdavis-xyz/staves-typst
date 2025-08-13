@@ -185,6 +185,19 @@
   assert(expected == actual)
 }
 
+#let test-remove-accidental() = {
+  for a in symbol-map.keys() + (none,) {
+    let start = (letter: "D", accidental: a, octave: 5, type: "letter-note")
+    let expected = (letter: "D", accidental: none, octave: 5, type: "letter-note")
+    let actual = remove-accidental(start)
+    assert(expected == actual, message: "Did not remove accidental from " + serialise-note(start) + " got " + serialise-note(actual) + " instead of " + serialise-note(expected))
+  }
+
+  let actual = remove-accidental(parse-note-string("F#5"))
+  let expected = parse-note-string("F5")
+  assert(actual == expected)
+}
+
 #let unit-test() = {
   test-is-integer()
   test-determine-key()
@@ -199,7 +212,9 @@
   test-increment-wholenote()
   test-set-accidental()
   test-first-last()
+  test-remove-accidental()
 }
+
 
 
 #unit-test()

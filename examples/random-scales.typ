@@ -2,6 +2,12 @@
 
 #import "@preview/suiji:0.4.0": shuffle-f, gen-rng-f
 
+#let line-sep = 0.2cm
+#let major-scale = major-scale.with(line-sep: line-sep)
+#let minor-scale = minor-scale.with(line-sep: line-sep)
+#let arpeggio = arpeggio.with(line-sep: line-sep)
+#let chromatic-scale = chromatic-scale.with(line-sep: line-sep)
+
 
 #let capitalise-first-char(s) = {
   return upper(s.at(0)) + s.slice(1)
@@ -12,28 +18,29 @@
 Playing C Major, C\# Major, then D Major etc is boring.
 Here we generate a random list of scales, across keys and scale types.
 
+// good for flute's range
+#let start-octave = 4
+
 #let scales = ()
 
-#for start-octave in (4, 5) {
-  for k in key-data.at("major") {
-    scales.push([
-      == #k Major (octave #start-octave)
-      #major-scale("treble", k, start-octave, note-duration: "crotchet")
-    ])
-  }
+#for k in key-data.at("major") {
+  scales.push([
+    == #k Major
+    #major-scale("treble", k, start-octave, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+  ])
+}
 
-  for k in key-data.at("minor") {
-    scales.push([
-      == #capitalise-first-char(k) Harmonic Minor (octave #start-octave)
-      #minor-scale("treble", k, start-octave, minor-type: "harmonic", equal-note-head-space: true, note-duration: "crotchet")
-    ])
-  }
+#for k in key-data.at("minor") {
+  scales.push([
+    == #capitalise-first-char(k) Harmonic Minor
+    #minor-scale("treble", k, start-octave, minor-type: "harmonic", equal-note-head-space: true, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+  ])
 }
 
 #for k in key-data.at("major") {
   scales.push([
     == #k Major Arpeggio
-    #arpeggio("treble", k, 4, num-octaves: 2,note-duration: "crotchet")
+    #arpeggio("treble", k, 4, num-octaves: 2, note-duration: "crotchet")
   ])
 }
 
@@ -45,14 +52,12 @@ Here we generate a random list of scales, across keys and scale types.
   ])
 }
 
-#for start-octave in (4, 5) {
-  for side in allowed-sides {
-    for k in all-notes-from-c.at(side) {
-      scales.push([
-        == #k Chromatic (octave #start-octave)
-        #chromatic-scale("treble", k, start-octave, num-octaves: 1, side: side, note-duration: "crotchet")
-      ])
-    }
+#for side in allowed-sides {
+  for k in all-notes-from-c.at(side) {
+    scales.push([
+      == #k Chromatic
+      #chromatic-scale("treble", k, start-octave, num-octaves: 2, side: side, note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)
+    ])
   }
 }
 
