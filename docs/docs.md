@@ -166,13 +166,20 @@ The `width` argument can be used to adjust the overall width.
 argument](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/width.png)
 
 The `line-sep` argument can be used to adjust the vertical spacing
-between stave lines:
+between stave lines. Note that this must be a
+<u>[`length`](https://typst.app/docs/reference/layout/length/)</u> (i.e.
+includes a unit like “cm”, “inches” etc) not just a
+<u>[`float`](https://typst.app/docs/reference/foundations/float/)</u>.
 
-![\`line-sep\`
-argument](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/line-sep.png)
+|  |  |
+|----|----|
+| ![\`line-sep\` = 0.2cm](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/line-sep-0-2cm.png) | ![\`line-sep\` = 0.5cm](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/line-sep-0-5cm.png) |
 
 `equal-note-head-space` is used to adjust the spacing based on whether
-there are accidentals.
+there are accidentals. `True` means the space between notes is equal
+regardless of whether there is an accidental. `False` means there is an
+equal space between each note and the accidental of the next note. (i.e.
+unequal space between each note head.)
 
 |  |  |
 |----|----|

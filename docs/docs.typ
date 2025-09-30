@@ -142,11 +142,34 @@ The `width` argument can be used to adjust the overall width.
 
 #example("./examples/width.typ", "Explcit `width` argument")
 
-The `line-sep` argument can be used to adjust the vertical spacing between stave lines:
+The `line-sep` argument can be used to adjust the vertical spacing between stave lines.
+Note that this must be a #link("https://typst.app/docs/reference/layout/length/")[`length`] (i.e. includes a unit like "cm", "inches" etc) not just a #link("https://typst.app/docs/reference/foundations/float/")[`float`]. 
 
-#example("./examples/line-sep.typ", "`line-sep` argument", include-code: false)
+// #example("./examples/line-sep.typ", "`line-sep` argument", include-code: false)
+
+#let canvases = ()
+#for line-sep-cm in (0.2, 0.5) {
+  canvases.push(
+    example(
+      "./examples/line-sep-" + str(line-sep-cm).replace(".", "-") + "cm.typ", 
+      "`line-sep` = " + str(line-sep-cm) + "cm", 
+      include-code: false
+    )
+  )
+}
+
+
+#grid(
+  columns: (1fr, 1fr),
+  column-gutter: 1em,
+  row-gutter: 1em,
+  align: horizon,
+  ..canvases
+)
 
 `equal-note-head-space` is used to adjust the spacing based on whether there are accidentals.
+`True` means the space between notes is equal regardless of whether there is an accidental.
+`False` means there is an equal space between each note and the accidental of the next note. (i.e. unequal space between each note head.)
 
 #let canvases = ()
 
