@@ -31,6 +31,9 @@ This package can be used to write arbitrary notes, but is not intended to be use
   
   if (sys.inputs.at("render", default: "0") != "1") [
     #image(image-path, alt: caption)
+
+    Example Figure: #caption
+
   ] else [
     #figure(
       include(path),
