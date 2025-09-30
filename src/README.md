@@ -20,11 +20,14 @@
 
 ## Data Structures
 
+Representing notes is surprisingly hard.
+If you point to a note on the keyboard, or name a frequency in Hz, that could be one of two (or more) notes. e.g. B flat or A sharp.
+
+Sometimes we want specific notes, other times we want untethered ones. e.g. C vs middle C.
+
 We represent notes (at a specific octave) either as letter-based or integer-based.
 
 ### Letter Based
-
-
 
 ```
 (
@@ -47,6 +50,9 @@ Where middle C is:
 ```
 
 The octave boundaries are between each C and the B below it. (Not between A and G).
+
+Middle C is octave 4. The B one semitone below it is octave 3.
+(The B one semitone below it is also a C flat. We say it's Cb4, not Cb3.)
 
 ### Index Based
 
@@ -87,6 +93,7 @@ or Db
   side: "flat"
 )
 ```
+
 
 ## Scale Arithmetic
 

@@ -1,12 +1,13 @@
 #import "../src/lib.typ": *
 
-#import "@preview/suiji:0.4.0": shuffle-f, gen-rng-f
+#import "@preview/suiji:0.4.0": shuffle-f, gen-rng-f, choice
 
 #let line-sep = 0.2cm
 #let major-scale = major-scale.with(line-sep: line-sep)
 #let minor-scale = minor-scale.with(line-sep: line-sep)
 #let arpeggio = arpeggio.with(line-sep: line-sep)
 #let chromatic-scale = chromatic-scale.with(line-sep: line-sep)
+#let mode-by-index = mode-by-index.with(line-sep: line-sep)
 
 
 #let capitalise-first-char(s) = {
@@ -18,55 +19,100 @@
 Playing C Major, C\# Major, then D Major etc is boring.
 Here we generate a random list of scales, across keys and scale types.
 
-// good for flute's range
-#let start-octave = 4
 
-#let scales = ()
+#let scales = (:)
 
+// What I can play on the flute
+// Bn below middle C to C 3 octaves above middle c
+// so scales starting at B or C should be 3 octaves
+// everything else, 2 octaves, starting from octave 4
+// takes in string, e.g. "Bb"
+// returns start-octave and num-octaves
+#let my-range(note) = {
+  if note in ("C", "Cb") {
+    return (middle-c-octave, 3)
+  } else if note in ("B", "Bn", "Bs", "B#") {
+    return (middle-c-octave - 1, 3)
+  } else {
+    return (middle-c-octave, 2)
+  }
+
+}
+
+#scales.insert("major", ())
 #for k in key-data.at("major") {
-  scales.push([
+  let (start-octave, num-octaves) = my-range(k)
+  scales.major.push([
     == #k Major
-    #major-scale("treble", k, start-octave, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+    #major-scale("treble", k, start-octave, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: num-octaves)
   ])
 }
 
+#scales.insert("minor", ())
 #for k in key-data.at("minor") {
-  scales.push([
+  let (start-octave, num-octaves) = my-range(k)
+  scales.minor.push([
     == #capitalise-first-char(k) Harmonic Minor
-    #minor-scale("treble", k, start-octave, minor-type: "harmonic", equal-note-head-space: true, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+    #minor-scale("treble", k, start-octave, minor-type: "harmonic", equal-note-head-space: true, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: num-octaves)
   ])
 }
 
+#scales.insert("major-arpeggio", ())
 #for k in key-data.at("major") {
-  scales.push([
+  let (start-octave, num-octaves) = my-range(k)
+  scales.major-arpeggio.push([
     == #k Major Arpeggio
-    #arpeggio("treble", k, 4, num-octaves: 2, note-duration: "crotchet")
+    #arpeggio("treble", k, start-octave, num-octaves: num-octaves, note-duration: "crotchet")
   ])
 }
 
+#scales.insert("minor-arpeggio", ())
 #for k in key-data.at("minor") {
-  scales.push([
+  let (start-octave, num-octaves) = my-range(k)
+  scales.minor-arpeggio.push([
     == #capitalise-first-char(k) Minor Arpeggio
 
-    #arpeggio("treble", k, 4, num-octaves: 2, note-duration: "crotchet")
+    #arpeggio("treble", k, start-octave, num-octaves: num-octaves, note-duration: "crotchet")
   ])
 }
 
+#scales.insert("chromatic", ())
 #for side in allowed-sides {
   for k in all-notes-from-c.at(side) {
-    scales.push([
+    let (start-octave, num-octaves) = my-range(k)
+    scales.chromatic.push([
       == #k Chromatic
-      #chromatic-scale("treble", k, start-octave, num-octaves: 2, side: side, note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)
+      #chromatic-scale("treble", k, start-octave, num-octaves: num-octaves, side: side, note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)
     ])
   }
 }
 
+#scales.insert("modes", ())
+#for k in key-data.at("major") {
+  // skip mode 1, because we already have major scales
+  for mode-index in range(2, num-letters-per-octave + 1) {
+    let mode-name = capitalise-first-char(mode-names.at(mode-index - 1))
+    scales.modes.push([
+      == Mode #mode-index (#mode-name) of the key matching  #k Major
+      #mode-by-index("treble", k, 4, mode-index, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+    ])
+    
+  }
+}
 
 #let rng = gen-rng-f(1902)
-#let (rng, scales) = shuffle-f(rng, scales)
+#let rngs = (rng,)
 
-#let num-scales = 20
+#let num-scales = 30
 
-#for scale in scales.slice(0, num-scales) {
+// First randomly choose a scale type
+// Then randomly choose a scale of that type
+// Otherwise we mostly get chromatic scales, because there's a lot of them to choose from
+#for i in range(num-scales) {
+  let (rng, scale-type) = choice(rngs.at(-1), scales.keys())
+  rngs.push(rng)
+  // assert(false, message: "Scale type is " + json.encode(scale-type))
+  let (rng, scale) = choice(rngs.at(-1), scales.at(scale-type))
   scale
+  rngs.push(rng)
 }

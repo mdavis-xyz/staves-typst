@@ -39,21 +39,37 @@
   assert(serialise-note(letter-note("C", 5, accidental: "b")) == "Cb5")
   assert(serialise-note(letter-note("C", 5, accidental: "n"), suppress-natural: true) == "C5")
   assert(serialise-note(letter-note("C", 5, accidental: "n"), suppress-natural: false) == "Cn5")
+
+  let actual = serialise-note(letter-note("C", 5), suppress-octave: true)
+  let expected = "C"
+  assert(actual == expected, message: "Expected " + expected + " got " + actual)
+  assert(serialise-note(letter-note("C", 5, accidental: "#"), suppress-octave: true) == "C#")
 }
 
-#let test-accidental-string() = {
-  assert(accidental-string("A", none) == "A")
-  assert(accidental-string("B", "#") == "B#")
-  assert(accidental-string("C", "n", suppress-natural: false) == "Cn")
-  assert(accidental-string("D", "n", suppress-natural: true) == "D")
+#let test-side-from-accidental() = {
+  assert(side-from-accidental("s") == "sharp")
+  assert(side-from-accidental("#") == "sharp")
+  assert(side-from-accidental("b") == "flat")
+}
+
+#let test-letter-and-accidental-str() = {
+  assert(letter-and-accidental-str("A", none) == "A")
+  assert(letter-and-accidental-str("B", "#") == "B#")
+  assert(letter-and-accidental-str("C", "n", suppress-natural: false) == "Cn")
+  assert(letter-and-accidental-str("D", "n", suppress-natural: true) == "D")
 }
 
 #let test-letter-to-index() = {
-  assert(letter-to-index(letter-note("C", 4, accidental: none), "sharp").index == middle-c-index)
-  assert(letter-to-index(letter-note("C", 5, accidental: none), "sharp").index == middle-c-index + semitones-per-octave)
-  assert(letter-to-index(letter-note("C", 3, accidental: none), "sharp").index == middle-c-index - semitones-per-octave)
-  assert(letter-to-index(letter-note("C", 4, accidental: "s"), "sharp").index == middle-c-index + 1)
-  assert(letter-to-index(letter-note("B", 3, accidental: "n"), "sharp").index == middle-c-index - 1)
+  assert(letter-to-index(letter-note("C", 4, accidental: none), side: "sharp").index == middle-c-index)
+  assert(letter-to-index(letter-note("C", 5, accidental: none), side: "sharp").index == middle-c-index + semitones-per-octave)
+  assert(letter-to-index(letter-note("C", 3, accidental: none), side: "sharp").index == middle-c-index - semitones-per-octave)
+  assert(letter-to-index(letter-note("C", 4, accidental: "s"), side: "sharp").index == middle-c-index + 1)
+  assert(letter-to-index(letter-note("C", 4, accidental: "s")).index == middle-c-index + 1)
+  assert(letter-to-index(letter-note("B", 3, accidental: "n"), side: "sharp").index == middle-c-index - 1)
+
+  // Cb4 is one semitone below middle C
+  // even though it's lower than Cn, it's still the 4th octave, not 3rd.
+  assert(letter-to-index(letter-note("C", middle-c-octave, accidental: "b")).index == middle-c-index - 1)
 }
 
 #let test-index-to-letter() = {
@@ -132,6 +148,37 @@
   assert(actual.accidental == none)
   assert(actual.octave == 4)
 
+  // decrementing
+  let actual = add-semitones("D", "#", 4, steps: -1, side: "sharp")
+  assert(actual.letter == "D")
+  assert(actual.accidental == none)
+  assert(actual.octave == 4)
+
+  let actual = add-semitones("D", none, 4, steps: -1, side: "sharp")
+  assert(actual.letter == "C")
+  assert(actual.accidental == "#")
+  assert(actual.octave == 4)
+
+  let actual = add-semitones("D", none, 4, steps: -1, side: "flat")
+  assert(actual.letter == "D")
+  assert(actual.accidental == "b")
+  assert(actual.octave == 4)
+
+  let actual = add-semitones("C", none, 4, steps: -1, side: "sharp")
+  assert(actual.letter == "B")
+  assert(actual.accidental == none)
+  assert(actual.octave == 3)
+
+  let actual = add-semitones("E", none, 5, steps: -3, side: "sharp")
+  assert(actual.letter == "C")
+  assert(actual.accidental == "#")
+  assert(actual.octave == 5)
+
+  let actual = add-semitones("C", "#", 3, steps: -3, side: "flat")
+  assert(actual.letter == "B")
+  assert(actual.accidental == "b")
+  assert(actual.octave == 2)
+
 }
 
 #let test-set-accidental() = {
@@ -198,11 +245,119 @@
   assert(actual == expected)
 }
 
+#let test-is-natural-note-in-major-scale() = {
+  assert(is-natural-note-in-major-scale("C", "C"))
+  assert(not is-natural-note-in-major-scale("C", "C#"))
+  assert(is-natural-note-in-major-scale("C", "Db"))
+}
+
+#let test-flip-side() = {
+  assert(flip-side("sharp") == "flat")
+  assert(flip-side("flat") == "sharp")
+}
+
+#let test-flip-accidental() = {
+  let start = letter-note("C", 5, accidental: "s")
+  let expected = letter-note("D", 5, accidental: "b")
+  let actual = flip-accidental(start)
+  assert(expected == actual)
+
+  let start = letter-note("C", 5, accidental: "b")
+  let expected = letter-note("B", 4)
+  let actual = flip-accidental(start)
+  assert(expected == actual)
+
+  let start = letter-note("B", 5, accidental: "s")
+  let expected = letter-note("C", 6)
+  let actual = flip-accidental(start)
+  assert(expected == actual)
+
+
+  let start = letter-note("F", 5, accidental: "b")
+  let expected = letter-note("E", 5)
+  let actual = flip-accidental(start)
+  assert(expected == actual)
+
+
+}
+
+#let test-all-letters-from() = {
+  assert(all-letters-from("C") == all-letters-from-c)
+
+  let expected = ("B", "C", "D", "E", "F", "G", "A")
+  assert(all-letters-from("B") == expected)
+
+  let expected = ("D", "E", "F", "G", "A", "B", "C")
+  assert(all-letters-from("D") == expected)
+}
+
+#let test-major-scale-notes() = {
+  let expected = all-letters-from-c
+  let actual = major-scale-notes("C")
+  assert(expected == actual, message: "Expected " + expected.join(", ") + " got " + actual.join(", "))
+
+  let expected = ("F", "G", "A", "Bb", "C", "D", "E")
+  let actual = major-scale-notes("F")
+  assert(expected == actual, message: "Expected " + expected.join(", ") + " got " + actual.join(", "))
+
+  let expected = ("G", "A", "B", "C", "D", "E", "F#")
+  let actual = major-scale-notes("G")
+  assert(expected == actual, message: "Expected " + expected.join(", ") + " got " + actual.join(", "))
+}
+
+// #let test-key-from-mode() = {
+
+//   let middle-c = letter-note("C", middle-c-octave)
+
+//   let actual = add-semitones("C", none, middle-c-octave, steps: 0)
+//   let expected = middle-c
+//   assert(actual == expected)
+
+
+//   let root-note = middle-c  
+//   let expected = "C"
+//   let mode-name = "ionian"
+//   let actual = key-from-mode(root-note, mode-name)
+//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
+
+//   let root-note = letter-note("D", middle-c-octave)
+//   let expected = "C"
+//   let mode-name = "dorian"
+//   let actual = key-from-mode(root-note, mode-name)
+//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
+
+//   for (mode-index, (mode-name, root-letter)) in zip(mode-names, all-letters-from-c).enumerate(start: 1) {
+//     let expected = "C"
+//     let root-note = letter-note(root-letter, middle-c-octave)
+//     let actual = key-from-mode(root-note, mode-name)
+//     assert(actual == expected, message: "Expected " + mode-name + " (mode " + str(mode-index) +  ") of " + root-letter + " to be " + expected + " but got " + actual)
+//   }
+
+//   let root-note = letter-note("E", middle-c-octave)
+//   let expected = "D"
+//   let mode-name = "dorian"
+//   let actual = key-from-mode(root-note, mode-name)
+//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
+
+//   let root-note = letter-note("D", middle-c-octave, accidental: "#")
+//   let expected = "C#"
+//   let mode-name = "dorian"
+//   let actual = key-from-mode(root-note, mode-name)
+//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
+
+//   let root-note = letter-note("E", middle-c-octave, accidental: "#")
+//   let expected = "C#"
+//   let mode-name = "phrygian"
+//   let actual = key-from-mode(root-note, mode-name)
+//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
+// }
+
 #let unit-test() = {
   test-is-integer()
   test-determine-key()
   test-parse-note-string() 
-  test-accidental-string()
+  test-letter-and-accidental-str()
+  test-side-from-accidental()
   test-letter-to-index()
   test-serialise-note()
   test-index-to-letter()
@@ -213,6 +368,12 @@
   test-set-accidental()
   test-first-last()
   test-remove-accidental()
+  test-is-natural-note-in-major-scale()
+  test-flip-side()
+  test-flip-accidental()
+  test-all-letters-from()
+  test-major-scale-notes()
+  // test-key-from-mode()
 }
 
 

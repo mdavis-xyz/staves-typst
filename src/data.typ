@@ -83,6 +83,21 @@
   )
 )
 
+// https://pwj-wordpress-content.s3.amazonaws.com/pda-media/pianowithjonny.com/wp-content/uploads/2022/07/Modes-of-the-Major-Scale.png
+// the value in this dict is how many semitones to drop to get the key
+// e.g. D dorian: D - 2 semitones = C. C major has a key with no sharps/flats. D dorian has a key with no sharps/flats
+#let modes = (
+  ionian: 0, // normal
+  dorian: 2,
+  phrygian: 4,
+  lydian: 5,
+  mixolydian: 7,
+  aeolian: 9,
+  locrian: 11,
+)
+
+#let mode-names = modes.keys()
+
 
 // write out the circle of fifths
 // from 7 flats, to C (nothing) to 7 sharps
@@ -101,6 +116,10 @@
     
   )
 )
+
+// Fat Cats Go Down Alleys Eating Beans
+#let sharp-order = ("F", "C", "G", "D", "A", "E", "B")
+// flats are the reverse of this
 
 #let symbol-map = (
  "#": "sharp",

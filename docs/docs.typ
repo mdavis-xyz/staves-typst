@@ -1,5 +1,5 @@
 
-#import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides, key-data, all-notes-from-c, semitones-per-octave, middle-c-octave, all-letters-from-c, num-letters-per-octave
+#import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides, key-data, all-notes-from-c, semitones-per-octave, middle-c-octave, all-letters-from-c, num-letters-per-octave, mode-names, sharp-order
 
 
 = Staves Typst Package
@@ -262,7 +262,7 @@ The arguments are:
 
 / `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
 / `key`: (Required) e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
-/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the 
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that.
 / `num-octaves`: Optional, defaults to 1.
 / `side`: "#allowed-sides.join("\", \"")"
 #for (k, v) in kwarg_defs.pairs(){
@@ -277,11 +277,42 @@ The arguments are:
 
 #example("./examples/G-chromatic.typ", "G Chromatic Scale")
 
+== Modes
+
+`mode-by-index` is used to write modal scales.
+This function takes the key of the corresponding major scale (ionian), and an integer (one-indexed) to specify which mode relative to that ionian.
+
+This function is designed so that users can easily write all modes of a given key signature with a simple for loop.
+If you know the word (e.g. "phrygian") and want to programatically convert that to the relevant integer, use the constant `mode-names` (documented below). Watch out though. Typst indexes lists from 0, whereas this function treats 1 as the first mode (ionian), because musicians tend to count from 1.
+
+=== Usage
+
+/ `clef`: (Required) Allowed values are "#all-clefs.join("\", \"")". (Same as for `stave`.)
+/ `key`: (Required) e.g. "A", "Bb", "C\#". Uppercase for major, lowercase for minor. Do not include a number for the octave.
+/ `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is the octave above that. This refers to the octave of the ionian, not the first note of the mode.
+/ `mode-index`: (Required) integer. one-indexed. 1 is ionian, 0 is dorian etc.
+/ `num-octaves`: Optional, defaults to 1.
+/ `side`: "#allowed-sides.join("\", \"")"
+#for (k, v) in kwarg_defs.pairs(){
+  [
+    / #raw(k): #v
+  ]
+}
+
+=== Examples
+
+#example("./examples/G-dorian.typ", "G Dorian")
+
+
+To write all modes with 2 sharps:
+
+#example("./examples/all-D-modes.typ", "For loop to generate all modes with 2 sharps")
+
+
 == Constants
 
-There are some constants which are exposed by the library.
-The structure, value and presence of these should be considered unstable,
-and is likely to change in fugure versions.
+There are some constants which are exposed by the library. They may make it easier to write scale books. However the structure, value and presence of these should be considered unstable,
+and is likely to change in future versions.
 
 `all-clefs`: #all-clefs
 
@@ -296,6 +327,10 @@ and is likely to change in fugure versions.
 `all-letters-from-c`: #all-letters-from-c
 
 `num-letters-per-octave`: #num-letters-per-octave
+
+`sharp-order`: #sharp-order
+
+`mode-names`: #mode-names
 
 == Setting Defaults
 

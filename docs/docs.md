@@ -393,7 +393,7 @@ as for `stave`.)
 minor. Do not include a number for the octave.
 
 `start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
-the
+the octave above that.
 
 `num-octaves`: Optional, defaults to 1.
 
@@ -444,11 +444,90 @@ Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/mast
 ![G Chromatic
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-chromatic.png)
 
+## Modes
+
+`mode-by-index` is used to write modal scales. This function takes the
+key of the corresponding major scale (ionian), and an integer
+(one-indexed) to specify which mode relative to that ionian.
+
+This function is designed so that users can easily write all modes of a
+given key signature with a simple for loop. If you know the word (e.g.
+“phrygian”) and want to programatically convert that to the relevant
+integer, use the constant `mode-names` (documented below).
+
+### Usage
+
+`clef`: (Required) Allowed values are “treble", "bass", "alto", "tenor”. (Same
+as for `stave`.)
+
+`key`: (Required) e.g. “A”, “Bb”, “C#”. Uppercase for major, lowercase for
+minor. Do not include a number for the octave.
+
+`start-octave`: (Required) integer. e.g. 4 is the octave starting from middle C. 5 is
+the octave above that. This refers to the octave of the ionian, not the
+first note of the mode.
+
+`mode-index`: (Required) integer. one-indexed. 1 is ionian, 0 is dorian etc.
+
+`num-octaves`: Optional, defaults to 1.
+
+`side`: ”sharp", "flat”
+
+
+`notes-per-stave`: (Optional) Used to break a long scale over multiple lines. Line breaks
+will be inserted after every group of this many notes. If omitted, all
+notes will be placed on the first stave. Page breaks are blocked between
+staves of the same scale.
+
+
+`note-duration`: (optional) Allowed values are “whole", "quarter", "semibreve",
+"crotchet”. Default is “whole” note. All notes are the same duration.
+
+
+`width`: (Optional) If provided, sets the length of the stave lines. It omitted
+(or `auto`), the stave lines will be stretched to the available space.
+If the page width itself is `auto`, a sensible default will be used.
+
+
+`line-sep`: (Optional) A
+<u>[length](https://typst.app/docs/reference/layout/length/)</u> used to
+set the vertical spacing of the 5 stave lines (within a given stave).
+Note that this is a length with units, e.g. `3cm`, not just `3`.
+
+
+`equal-note-head-space`: `true` or `false`. Defaults to `true`. If true, note heads will be
+equally spaced. Some of this space will be taken up with accidentals. If
+`false`, adding an accidental to a note will shift the note head further
+right. `true` looks better (in my opinion), but `false` is useful when
+trying to squish many notes into one stave, to avoid accidentals
+overlapping with previous note heads.
+
+### Examples
+
+``` typ
+#mode-by-index("treble", "G", 4, 2)
+```
+
+![G
+Dorian](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/G-dorian.png)
+
+To write all modes with 2 sharps:
+
+``` typ
+#for mode-index in range(1, num-letters-per-octave + 1) {
+mode-by-index("treble", "D", 4, mode-index)
+}
+```
+
+![For loop to generate all modes with 2
+sharps](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/examples/all-D-modes.png)
+
 ## Constants
 
-There are some constants which are exposed by the library. The
-structure, value and presence of these should be considered unstable,
-and is likely to change in fugure versions.
+There are some constants which are exposed by the library. They may make
+it easier to write scale books. However the structure, value and
+presence of these should be considered unstable, and is likely to change
+in future versions.
 
 `all-clefs`: ("treble", "bass", "alto", "tenor")
 
@@ -467,6 +546,11 @@ and is likely to change in fugure versions.
 `all-letters-from-c`: ("C", "D", "E", "F", "G", "A", "B")
 
 `num-letters-per-octave`: 7
+
+`sharp-order`: ("F", "C", "G", "D", "A", "E", "B")
+
+`mode-names`: ("ionian", "dorian", "phrygian", "lydian", "mixolydian",
+"aeolian", "locrian")
 
 ## Setting Defaults
 

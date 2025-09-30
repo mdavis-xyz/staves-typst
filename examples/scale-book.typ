@@ -55,3 +55,15 @@
     chromatic-scale("treble", k, 4, num-octaves: 1, side: side, note-duration: "crotchet")
   }
 }
+
+== Modes (by index)
+
+
+#for k in key-data.at("major") {
+  [=== Modes with the key of #k Major]
+  for mode-index in range(1, num-letters-per-octave + 1) {
+    let mode-name = capitalise-first-char(mode-names.at(mode-index - 1))
+    [Mode #mode-index (#mode-name) of the key matching  #k Major]
+    mode-by-index("treble", k, 4, mode-index, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+  }
+}
