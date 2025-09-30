@@ -87,3 +87,32 @@ do
     typst compile $TYP_PATH $PDF_PATH \
     --root $ROOT_DIR
 done
+
+# now publish
+# this is done by copying a subset of files into the Typst Universe repo.
+# This variable should point to a clone of a fork of the upstream typst/packages 
+UNIVERSE_REPO=../universe/
+
+PUBLISH_DIR=${UNIVERSE_REPO}/packages/preview/staves/${TOML_VERSION}/
+
+echo "Publishing to: " $PUBLISH_DIR
+mkdir -p $PUBLISH_DIR
+
+# rules for what to exclude:
+# https://github.com/typst/packages/blob/main/docs/tips.md#what-to-commit-what-to-exclude
+rsync -av  \
+  --delete \
+  --exclude='*.png' \
+  --exclude='.git' \
+  --exclude='*.sh' \
+  --exclude='src/*.pdf' \
+  --exclude='src/test.*' \
+  --exclude='mwe.*' \
+  --exclude='.gitignore' \
+  --exclude='tmp.*' \
+  --exclude='docs/examples/*' \
+  --exclude='docs/docs.typ' \
+  "$ROOT_DIR/" "$PUBLISH_DIR/"
+
+# move the docs to the main README
+mv ${PUBLISH_DIR}/docs/docs.md ${PUBLISH_DIR}/README.md

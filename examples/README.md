@@ -1,4 +1,4 @@
-= Examples
+# Examples
 
 This folder contains examples which are entire documents.
 i.e. scale books.

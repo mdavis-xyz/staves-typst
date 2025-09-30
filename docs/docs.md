@@ -6,6 +6,8 @@ This Typst package is used to draw musical scales. This package can be
 used to write arbitrary notes, but is not intended to be used for entire
 songs.
 
+## Quickstart Examples
+
 Example: D Major Scale
 
 ``` typ
@@ -36,6 +38,15 @@ Example: Custom Notes
 ![Custom
 Notes](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/custom-notes.png)
 
+Examples of scale books written with this package can be found at
+<https://github.com/mdavis-xyz/staves-typst/tree/0.1.0/examples/>.
+
+## Documentation
+
+A PDF version of this documentation (with slightly better formatting) is
+available [on Github
+(`mdavis/typst-staves`)](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/docs.pdf)
+
 ## Stave
 
 The foundational function is called `stave`. This is for writing just
@@ -43,7 +54,9 @@ clefs, clefs and key signatures, or clefs, key signatures and custom
 notes. Typically as a user you should use the higher-level abstractions
 such as `arpeggio` and `major-scale` (documented further down), if they
 suit your needs. `staves` is exposed for creating custom scales which
-are not yet supported (e.g. broken chords, scales in thirds etc).
+are not yet supported (e.g. broken chords, scales in thirds etc). This
+documentation section also explains parameters which are common to all
+functions.
 
 ### Usage
 

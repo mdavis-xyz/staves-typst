@@ -1,16 +1,31 @@
 
 #import "../src/data.typ": all-note-durations, all-clefs, minor-types, seventh-types, allowed-sides, key-data, all-notes-from-c, semitones-per-octave, middle-c-octave, all-letters-from-c, num-letters-per-octave, mode-names, sharp-order
 
+#let package-version = "0.1.0"
+
+// are we publishing to PDF with `typst compile`
+// or to markdown with Pandoc for the Universe web page
+#let markdown-target = sys.inputs.at("render", default: "0") != "1"
+#let pdf-target = not markdown-target
+
 
 = Staves Typst Package
 
 Author: Matthew Davis
 
+
+#if pdf-target [
+  Package Version: #package-version
+
+  Source Code: #link("https://github.com/mdavis-xyz/staves-typst/tree/" + package-version)
+]
+
 This Typst package is used to draw musical scales.
 This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
-#let package-version = "0.1.0"
-#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/" + package-version + "/docs/"
+#let github-slug = "mdavis-xyz/staves-typst"
+#let github-browser-prefix = "https://github.com/" + github-slug + "/tree/" + package-version + "/"
+#let github-raw-prefix = "https://raw.githubusercontent.com/" + github-slug + "/refs/heads/" + package-version + "/docs/"
 #let import-prefix = "@preview/staves:" + package-version
 
 #let example(path, caption: none, include-code: true, include-import: false, caption-prefix: "Example") = {
@@ -25,7 +40,7 @@ This package can be used to write arbitrary notes, but is not intended to be use
   // due to lack of centering of captions in markdown
   // let's put the caption above the code and image
   // but only for markdown
-  if (sys.inputs.at("render", default: "0") != "1") [
+  if markdown-target [
     #if caption != none [
       #caption-prefix: 
       #caption
@@ -37,9 +52,9 @@ This package can be used to write arbitrary notes, but is not intended to be use
   }
 
   assert(path.at(0) != "/", message: "Must use relative paths for Pandoc + Github conversion")
-  let image-path = github-prefix + path.split(".").slice(0, -1).join(".").trim("./", at: start, repeat: false) + ".png"
+  let image-path = github-raw-prefix + path.split(".").slice(0, -1).join(".").trim("./", at: start, repeat: false) + ".png"
   
-  if (sys.inputs.at("render", default: "0") != "1") [
+  if markdown-target [
 
     #image(image-path, alt: caption)
 
@@ -61,23 +76,34 @@ This package can be used to write arbitrary notes, but is not intended to be use
     
 }
 
+== Quickstart Examples
+
 #example("./examples/D-major.typ", caption: "D Major Scale", include-import: true)
 
 #example("./examples/G-minor-arpeggio.typ", caption: "G Minor Arpeggio", include-import: true)
 
 #example("./examples/custom-notes.typ", caption: "Custom Notes", include-import: true)
 
+Examples of scale books written with this package can be found at #link(github-browser-prefix + "examples/").
+
+#if markdown-target [
+  == Documentation
+
+  A PDF version of this documentation (with slightly better formatting) is available 
+  #link(github-raw-prefix + "docs.pdf")[on Github (`mdavis/typst-staves`)]
+]
 
 == Stave
 
 The foundational function is called `stave`.
 This is for writing just clefs, clefs and key signatures, or clefs, key signatures and custom notes.
 Typically as a user you should use the higher-level abstractions such as `arpeggio` and `major-scale` (documented further down), if they suit your needs. `staves` is exposed for creating custom scales which are not yet supported (e.g. broken chords, scales in thirds etc).
+This documentation section also explains parameters which are common to all functions.
 
 === Usage
 
 #let double-sharp-inline = {
-  if (sys.inputs.at("render", default: "0") != "1") [
+  if markdown-target [
     𝄪
   ] else [
     #box(height: 0.7em, image("/assets/accidental/double-sharp-x.svg", alt: "double-sharp x"))
