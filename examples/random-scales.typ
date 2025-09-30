@@ -87,15 +87,21 @@ Here we generate a random list of scales, across keys and scale types.
   }
 }
 
+
+// skip mode 1, because we already have major scales
+// skip mode 6, because we already have natural minor scales
+#let modes-to-skip = (1, 6)
+
 #scales.insert("modes", ())
 #for k in key-data.at("major") {
-  // skip mode 1, because we already have major scales
-  for mode-index in range(2, num-letters-per-octave + 1) {
-    let mode-name = capitalise-first-char(mode-names.at(mode-index - 1))
-    scales.modes.push([
-      == Mode #mode-index (#mode-name) of the key matching  #k Major
-      #mode-by-index("treble", k, 4, mode-index, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
-    ])
+  for mode-index in range(1, num-letters-per-octave + 1) {
+    if not mode-index in modes-to-skip {
+      let mode-name = capitalise-first-char(mode-names.at(mode-index - 1))
+      scales.modes.push([
+        == Mode #mode-index (#mode-name) of the key matching  #k Major
+        #mode-by-index("treble", k, 4, mode-index, note-duration: "crotchet", notes-per-stave: 2 * num-letters-per-octave + 1, num-octaves: 2)
+      ])
+    }
     
   }
 }
