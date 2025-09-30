@@ -10,7 +10,7 @@ This Typst package is used to draw musical scales.
 This package can be used to write arbitrary notes, but is not intended to be used for entire songs.
 
 #let package-version = "0.1.0"
-#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/master/docs/"
+#let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/" + package-version + "/docs/"
 #let import-prefix = "@preview/staves:" + package-version
 
 #let example(path, caption, include-code: true, include-import: false) = {
