@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4"
+#import "@preview/cetz:0.4.2"
 
 #import "data.typ": *
 #import "utils.typ": *
