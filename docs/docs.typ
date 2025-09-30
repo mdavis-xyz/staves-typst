@@ -13,7 +13,7 @@ This package can be used to write arbitrary notes, but is not intended to be use
 #let github-prefix = "https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/" + package-version + "/docs/"
 #let import-prefix = "@preview/staves:" + package-version
 
-#let example(path, caption, include-code: true, include-import: false) = {
+#let example(path, caption: none, include-code: true, include-import: false, caption-prefix: "Example") = {
   
   let code = read(path)
 
@@ -21,6 +21,16 @@ This package can be used to write arbitrary notes, but is not intended to be use
   let replace = if include-import {"#import \"" + import-prefix + "\""} else {""} 
 
   let code = code.replace(regex(search), replace).trim(at: start, repeat: true)
+
+  // due to lack of centering of captions in markdown
+  // let's put the caption above the code and image
+  // but only for markdown
+  if (sys.inputs.at("render", default: "0") != "1") [
+    #if caption != none [
+      #caption-prefix: 
+      #caption
+    ]
+  ]
 
   if include-code {
     raw(code, lang: "typ", block: true)
@@ -30,24 +40,32 @@ This package can be used to write arbitrary notes, but is not intended to be use
   let image-path = github-prefix + path.split(".").slice(0, -1).join(".").trim("./", at: start, repeat: false) + ".png"
   
   if (sys.inputs.at("render", default: "0") != "1") [
+
     #image(image-path, alt: caption)
 
-    Example Figure: #caption
-
   ] else [
+
+    #let caption-with-prefix = if caption == none { 
+      none 
+    } else { 
+      caption-prefix + ": " + caption
+    }
+
     #figure(
       include(path),
-      caption: [#caption]
+      caption: caption-with-prefix,
+      supplement: caption-prefix,
+      numbering: none
     )
   ]
     
 }
 
-#example("./examples/D-major.typ", "D Major Scale", include-import: true)
+#example("./examples/D-major.typ", caption: "D Major Scale", include-import: true)
 
-#example("./examples/G-minor-arpeggio.typ", "G Minor Arpeggio", include-import: true)
+#example("./examples/G-minor-arpeggio.typ", caption: "G Minor Arpeggio", include-import: true)
 
-#example("./examples/custom-notes.typ", "Custom Notes", include-import: true)
+#example("./examples/custom-notes.typ", caption: "Custom Notes", include-import: true)
 
 
 == Stave
@@ -101,17 +119,17 @@ The arguments are:
 
 To draw just a key signature, omit the `notes` argument
 
-#example("./examples/D-major-key.typ", "D Major Key Signature", include-import: true)
+#example("./examples/D-major-key.typ", include-import: true)
 
 Here is an example of including `notes`. Legerlines are supported.
 
-#example("./examples/F-major-notes.typ", "F Major Fifths")
+#example("./examples/F-major-notes.typ")
 
 Note that accidentals are independent of the key signature. 
 For the example of F major, the key contains B flat. A "B" note will be drawn with no accidental, so it is flattenned by the key signature. A "Bb" will have a redundant flat accidental drawn. "Bn" will have an explicit natural accidental.
 This behavior may change in future versions.
 
-#example("./examples/accidentals-and-key.typ", "Lack of interaction between accidentals and key signature")
+#example("./examples/accidentals-and-key.typ")
 
 The `note-duration` argument can be used to change the note symbol.
 
@@ -120,7 +138,8 @@ The `note-duration` argument can be used to change the note symbol.
   canvases.push([
     #example(
       "./examples/note-durations-" + note-duration + ".typ", 
-      "`note-duration`: " + note-duration,
+      caption: note-duration,
+      caption-prefix: "note-duration",
       include-code: false)
   ])
 }
@@ -139,23 +158,24 @@ The `note-duration` argument can be used to change the note symbol.
 
 The `notes-per-stave` argument can be used to split up long scales into multiple lines.
 
-#example("./examples/scale-long.typ", "2-octave scale scale with `notes-per-stave`: `num-letters-per-octave`")
+#example("./examples/scale-long.typ")
 
 The `width` argument can be used to adjust the overall width. 
 
-#example("./examples/width.typ", "Explcit `width` argument")
+#example("./examples/width.typ")
 
 The `line-sep` argument can be used to adjust the vertical spacing between stave lines.
 Note that this must be a #link("https://typst.app/docs/reference/layout/length/")[`length`] (i.e. includes a unit like "cm", "inches" etc) not just a #link("https://typst.app/docs/reference/foundations/float/")[`float`]. 
 
-// #example("./examples/line-sep.typ", "`line-sep` argument", include-code: false)
+// #example("./examples/line-sep.typ", caption: "`line-sep` argument", include-code: false)
 
 #let canvases = ()
 #for line-sep-cm in (0.2, 0.5) {
   canvases.push(
     example(
       "./examples/line-sep-" + str(line-sep-cm).replace(".", "-") + "cm.typ", 
-      "`line-sep` = " + str(line-sep-cm) + "cm", 
+      caption: str(line-sep-cm) + "cm", 
+      caption-prefix: "line-sep",
       include-code: false
     )
   )
@@ -182,7 +202,9 @@ Note that this must be a #link("https://typst.app/docs/reference/layout/length/"
 
 #for e in (true, false) {
   canvases.push(
-    example("./examples/equal-note-head-space-" + bool-to-string(e) + ".typ", "`equal-note-head-space` = " + bool-to-string(e),
+    example("./examples/equal-note-head-space-" + bool-to-string(e) + ".typ", 
+    caption: bool-to-string(e),
+    caption-prefix: "equal-note-head-space",
     include-code: false
     )
   )
@@ -216,7 +238,7 @@ The `major-scale` function is for writing major scales.
 
 === Examples
 
-#example("./examples/D-major.typ", "D Major Scale", include-import: true)
+#example("./examples/D-major.typ", caption: "D Major Scale", include-import: true)
 
 You can write a 2 octave scale with `num-octaves: 2`.
 
@@ -243,16 +265,22 @@ The usage is the same as for `major-scale`, plus an additional `minor-type` argu
 
 === Examples
 
-#example("./examples/D-harmonic-minor.typ", "D Harmonic Minor Scale", include-import: true)
+#example(
+  "./examples/D-harmonic-minor.typ", 
+  caption: "D Harmonic Minor Scale", 
+  include-import: true)
 
 
-#example("./examples/Bb-natural-minor.typ", "Bb Natural Minor Scale")
+#example(
+  "./examples/Bb-natural-minor.typ", 
+  caption: "Bb Natural Minor Scale"
+)
 
 Note that for keys with a sharp, the raised 7th can be written as a double sharp, or a natural of the next note.
 
-#example("./examples/Fs-harmonic-minor-n.typ", "F# Harmonic Minor scale with 7th written as F natural")
+#example("./examples/Fs-harmonic-minor-n.typ")
 
-#example("./examples/Fs-harmonic-minor-x.typ", "F# Harmonic Minor scale with 7th written as E double sharp")
+#example("./examples/Fs-harmonic-minor-x.typ")
 
 
 == Arpeggio
@@ -276,7 +304,10 @@ The arguments are the same as for `major-scale`.
 
 === Example
 
-#example("./examples/F-major-arpeggio.typ", "F Major Arpeggio")
+#example(
+  "./examples/F-major-arpeggio.typ", 
+  caption: "F Major Arpeggio"
+)
 
 
 == Chromatic Scales
@@ -299,9 +330,15 @@ The arguments are:
 
 === Examples
 
-#example("./examples/D-chromatic.typ", "D Chromatic Scale")
+#example(
+  "./examples/D-chromatic.typ", 
+  caption: "D Chromatic Scale"
+)
 
-#example("./examples/G-chromatic.typ", "G Chromatic Scale")
+#example(
+  "./examples/G-chromatic.typ", 
+  caption: "G Chromatic Scale"
+)
 
 == Modes
 
@@ -327,12 +364,12 @@ If you know the word (e.g. "phrygian") and want to programatically convert that 
 
 === Examples
 
-#example("./examples/G-dorian.typ", "G Dorian")
+#example("./examples/G-dorian.typ", caption: "G Dorian")
 
 
-To write all modes with 2 sharps:
+To write all modes with 2 sharps use a `for` loop:
 
-#example("./examples/all-D-modes.typ", "For loop to generate all modes with 2 sharps")
+#example("./examples/all-D-modes.typ")
 
 
 == Constants

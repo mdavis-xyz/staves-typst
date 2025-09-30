@@ -6,6 +6,8 @@ This Typst package is used to draw musical scales. This package can be
 used to write arbitrary notes, but is not intended to be used for entire
 songs.
 
+Example: D Major Scale
+
 ``` typ
 #import "@preview/staves:0.1.0": major-scale
 #major-scale("treble", "D", 4)
@@ -14,7 +16,7 @@ songs.
 ![D Major
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-major.png)
 
-Figure: D Major Scale
+Example: G Minor Arpeggio
 
 ``` typ
 #import "@preview/staves:0.1.0": arpeggio
@@ -24,7 +26,7 @@ Figure: D Major Scale
 ![G Minor
 Arpeggio](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/G-minor-arpeggio.png)
 
-Figure: G Minor Arpeggio
+Example: Custom Notes
 
 ``` typ
 #import "@preview/staves:0.1.0": stave
@@ -33,8 +35,6 @@ Figure: G Minor Arpeggio
 
 ![Custom
 Notes](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/custom-notes.png)
-
-Figure: Custom Notes
 
 ## Stave
 
@@ -118,10 +118,7 @@ To draw just a key signature, omit the `notes` argument
 #stave("treble", "D")
 ```
 
-![D Major Key
-Signature](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-major-key.png)
-
-Figure: D Major Key Signature
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-major-key.png)
 
 Here is an example of including `notes`. Legerlines are supported.
 
@@ -129,10 +126,7 @@ Here is an example of including `notes`. Legerlines are supported.
 #stave("treble", "F", notes: ("F4",  "C5", "F5", "C6", "F6", "C6", "F5", "C5", "F4"))
 ```
 
-![F Major
-Fifths](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/F-major-notes.png)
-
-Figure: F Major Fifths
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/F-major-notes.png)
 
 Note that accidentals are independent of the key signature. For the
 example of F major, the key contains B flat. A “B” note will be drawn
@@ -144,10 +138,7 @@ natural accidental. This behavior may change in future versions.
 #stave("bass", "F", notes: ("C2", "B2", "Bb2", "B2", "Bn2"))
 ```
 
-![Lack of interaction between accidentals and key
-signature](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/accidentals-and-key.png)
-
-Figure: Lack of interaction between accidentals and key signature
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/accidentals-and-key.png)
 
 The `note-duration` argument can be used to change the note symbol.
 
@@ -158,24 +149,24 @@ The `note-duration` argument can be used to change the note symbol.
 </colgroup>
 <tbody>
 <tr>
-<td><p><img
+<td><p>note-duration: whole</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/note-durations-whole.png"
-alt="`note-duration`: whole" /></p>
-<p>Figure: `note-duration`: whole</p></td>
-<td><p><img
+alt="whole" /></p></td>
+<td><p>note-duration: quarter</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/note-durations-quarter.png"
-alt="`note-duration`: quarter" /></p>
-<p>Figure: `note-duration`: quarter</p></td>
+alt="quarter" /></p></td>
 </tr>
 <tr>
-<td><p><img
+<td><p>note-duration: semibreve</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/note-durations-semibreve.png"
-alt="`note-duration`: semibreve" /></p>
-<p>Figure: `note-duration`: semibreve</p></td>
-<td><p><img
+alt="semibreve" /></p></td>
+<td><p>note-duration: crotchet</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/note-durations-crotchet.png"
-alt="`note-duration`: crotchet" /></p>
-<p>Figure: `note-duration`: crotchet</p></td>
+alt="crotchet" /></p></td>
 </tr>
 </tbody>
 </table>
@@ -189,11 +180,7 @@ multiple lines.
 #major-scale("treble", "D", 4, num-octaves: 2, notes-per-stave: 16)
 ```
 
-![2-octave scale scale with \`notes-per-stave\`:
-\`num-letters-per-octave\`](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/scale-long.png)
-
-Figure: 2-octave scale scale with \`notes-per-stave\`:
-\`num-letters-per-octave\`
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/scale-long.png)
 
 The `width` argument can be used to adjust the overall width.
 
@@ -201,10 +188,7 @@ The `width` argument can be used to adjust the overall width.
 #stave("treble", "f", width: 7cm)
 ```
 
-![Explcit \`width\`
-argument](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/width.png)
-
-Figure: Explcit \`width\` argument
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/width.png)
 
 The `line-sep` argument can be used to adjust the vertical spacing
 between stave lines. Note that this must be a
@@ -219,14 +203,14 @@ includes a unit like “cm”, “inches” etc) not just a
 </colgroup>
 <tbody>
 <tr>
-<td><p><img
+<td><p>line-sep: 0.2cm</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/line-sep-0-2cm.png"
-alt="`line-sep` = 0.2cm" /></p>
-<p>Figure: `line-sep` = 0.2cm</p></td>
-<td><p><img
+alt="0.2cm" /></p></td>
+<td><p>line-sep: 0.5cm</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/line-sep-0-5cm.png"
-alt="`line-sep` = 0.5cm" /></p>
-<p>Figure: `line-sep` = 0.5cm</p></td>
+alt="0.5cm" /></p></td>
 </tr>
 </tbody>
 </table>
@@ -244,14 +228,14 @@ unequal space between each note head.)
 </colgroup>
 <tbody>
 <tr>
-<td><p><img
+<td><p>equal-note-head-space: true</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/equal-note-head-space-true.png"
-alt="`equal-note-head-space` = true" /></p>
-<p>Figure: `equal-note-head-space` = true</p></td>
-<td><p><img
+alt="true" /></p></td>
+<td><p>equal-note-head-space: false</p>
+<p><img
 src="https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/equal-note-head-space-false.png"
-alt="`equal-note-head-space` = false" /></p>
-<p>Figure: `equal-note-head-space` = false</p></td>
+alt="false" /></p></td>
 </tr>
 </tbody>
 </table>
@@ -303,6 +287,8 @@ overlapping with previous note heads.
 
 ### Examples
 
+Example: D Major Scale
+
 ``` typ
 #import "@preview/staves:0.1.0": major-scale
 #major-scale("treble", "D", 4)
@@ -310,8 +296,6 @@ overlapping with previous note heads.
 
 ![D Major
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-major.png)
-
-Figure: D Major Scale
 
 You can write a 2 octave scale with `num-octaves: 2`.
 
@@ -370,6 +354,8 @@ overlapping with previous note heads.
 
 ### Examples
 
+Example: D Harmonic Minor Scale
+
 ``` typ
 #import "@preview/staves:0.1.0": minor-scale
 #minor-scale("treble", "D", 4)
@@ -378,7 +364,7 @@ overlapping with previous note heads.
 ![D Harmonic Minor
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-harmonic-minor.png)
 
-Figure: D Harmonic Minor Scale
+Example: Bb Natural Minor Scale
 
 ``` typ
 #minor-scale("bass", "Bb", 2, minor-type: "natural")
@@ -387,8 +373,6 @@ Figure: D Harmonic Minor Scale
 ![Bb Natural Minor
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/Bb-natural-minor.png)
 
-Figure: Bb Natural Minor Scale
-
 Note that for keys with a sharp, the raised 7th can be written as a
 double sharp, or a natural of the next note.
 
@@ -396,19 +380,13 @@ double sharp, or a natural of the next note.
 #minor-scale("treble", "F#", 4, seventh: "n")
 ```
 
-![F# Harmonic Minor scale with 7th written as F
-natural](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/Fs-harmonic-minor-n.png)
-
-Figure: F# Harmonic Minor scale with 7th written as F natural
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/Fs-harmonic-minor-n.png)
 
 ``` typ
 #minor-scale("treble", "F#", 4, seventh: "x")
 ```
 
-![F# Harmonic Minor scale with 7th written as E double
-sharp](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/Fs-harmonic-minor-x.png)
-
-Figure: F# Harmonic Minor scale with 7th written as E double sharp
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/Fs-harmonic-minor-x.png)
 
 ## Arpeggio
 
@@ -460,14 +438,14 @@ overlapping with previous note heads.
 
 ### Example
 
+Example: F Major Arpeggio
+
 ``` typ
 #arpeggio("bass", "F", 2, num-octaves: 2)
 ```
 
 ![F Major
 Arpeggio](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/F-major-arpeggio.png)
-
-Figure: F Major Arpeggio
 
 ## Chromatic Scales
 
@@ -520,6 +498,8 @@ overlapping with previous note heads.
 
 ### Examples
 
+Example: D Chromatic Scale
+
 ``` typ
 #chromatic-scale("treble", "D", 4, notes-per-stave: semitones-per-octave + 1)
 ```
@@ -527,7 +507,7 @@ overlapping with previous note heads.
 ![D Chromatic
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/D-chromatic.png)
 
-Figure: D Chromatic Scale
+Example: G Chromatic Scale
 
 ``` typ
 #chromatic-scale("bass", "G", 2, side: "flat", note-duration: "crotchet", notes-per-stave: semitones-per-octave + 1)
@@ -535,8 +515,6 @@ Figure: D Chromatic Scale
 
 ![G Chromatic
 Scale](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/G-chromatic.png)
-
-Figure: G Chromatic Scale
 
 ## Modes
 
@@ -600,6 +578,8 @@ overlapping with previous note heads.
 
 ### Examples
 
+Example: G Dorian
+
 ``` typ
 #mode-by-index("treble", "G", 4, 2)
 ```
@@ -607,9 +587,7 @@ overlapping with previous note heads.
 ![G
 Dorian](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/G-dorian.png)
 
-Figure: G Dorian
-
-To write all modes with 2 sharps:
+To write all modes with 2 sharps use a `for` loop:
 
 ``` typ
 #for mode-index in range(1, num-letters-per-octave + 1) {
@@ -617,10 +595,7 @@ mode-by-index("treble", "D", 4, mode-index)
 }
 ```
 
-![For loop to generate all modes with 2
-sharps](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/all-D-modes.png)
-
-Figure: For loop to generate all modes with 2 sharps
+![](https://raw.githubusercontent.com/mdavis-xyz/staves-typst/refs/heads/0.1.0/docs/examples/all-D-modes.png)
 
 ## Constants
 
