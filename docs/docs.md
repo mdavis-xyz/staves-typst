@@ -453,7 +453,9 @@ key of the corresponding major scale (ionian), and an integer
 This function is designed so that users can easily write all modes of a
 given key signature with a simple for loop. If you know the word (e.g.
 “phrygian”) and want to programatically convert that to the relevant
-integer, use the constant `mode-names` (documented below).
+integer, use the constant `mode-names` (documented below). Watch out
+though. Typst indexes lists from 0, whereas this function treats 1 as
+the first mode (ionian), because musicians tend to count from 1.
 
 ### Usage
 

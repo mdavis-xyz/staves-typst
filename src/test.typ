@@ -305,52 +305,6 @@
   assert(expected == actual, message: "Expected " + expected.join(", ") + " got " + actual.join(", "))
 }
 
-// #let test-key-from-mode() = {
-
-//   let middle-c = letter-note("C", middle-c-octave)
-
-//   let actual = add-semitones("C", none, middle-c-octave, steps: 0)
-//   let expected = middle-c
-//   assert(actual == expected)
-
-
-//   let root-note = middle-c  
-//   let expected = "C"
-//   let mode-name = "ionian"
-//   let actual = key-from-mode(root-note, mode-name)
-//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
-
-//   let root-note = letter-note("D", middle-c-octave)
-//   let expected = "C"
-//   let mode-name = "dorian"
-//   let actual = key-from-mode(root-note, mode-name)
-//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
-
-//   for (mode-index, (mode-name, root-letter)) in zip(mode-names, all-letters-from-c).enumerate(start: 1) {
-//     let expected = "C"
-//     let root-note = letter-note(root-letter, middle-c-octave)
-//     let actual = key-from-mode(root-note, mode-name)
-//     assert(actual == expected, message: "Expected " + mode-name + " (mode " + str(mode-index) +  ") of " + root-letter + " to be " + expected + " but got " + actual)
-//   }
-
-//   let root-note = letter-note("E", middle-c-octave)
-//   let expected = "D"
-//   let mode-name = "dorian"
-//   let actual = key-from-mode(root-note, mode-name)
-//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
-
-//   let root-note = letter-note("D", middle-c-octave, accidental: "#")
-//   let expected = "C#"
-//   let mode-name = "dorian"
-//   let actual = key-from-mode(root-note, mode-name)
-//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
-
-//   let root-note = letter-note("E", middle-c-octave, accidental: "#")
-//   let expected = "C#"
-//   let mode-name = "phrygian"
-//   let actual = key-from-mode(root-note, mode-name)
-//   assert(actual == expected, message: "Expected " + mode-name + " of " + serialise-note(root-note) + " to be " + expected + " but got " + actual)
-// }
 
 #let unit-test() = {
   test-is-integer()
@@ -373,7 +327,6 @@
   test-flip-accidental()
   test-all-letters-from()
   test-major-scale-notes()
-  // test-key-from-mode()
 }
 
 

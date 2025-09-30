@@ -457,26 +457,3 @@
   stave(clef, key, notes: notes, ..kwargs)
 }
 
-#let mode-by-name(clef, root, mode-name, start-octave, num-octaves: 1, ..kwargs) = {
-  assert(mode-name in modes.keys(), message: "Unknown mode " + mode-name + ". Must be one of " + modes.keys().join(", "))
-  let root-note = parse-note-string(root + str(start-octave))
-
-  let key = key-from-mode(root-note, mode-name)
-
-  // remove flat/sharp from key, increment letters and octaves
-  // assume the key signature will handle flats/sharps for us
-  
-  let notes = (remove-accidental(root-note), )
-
-  // ascent
-  for i in range(num-octaves * num-letters-per-octave) {
-    notes.push(increment-wholenote(notes.at(-1)))
-  }
-
-  let peak = notes.pop()
-
-  let notes = notes + (peak, ) + notes.rev()
-  
-  stave(clef, key, notes: notes, ..kwargs)
-  
-}
