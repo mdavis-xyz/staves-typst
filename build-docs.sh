@@ -102,6 +102,7 @@ mkdir -p $PUBLISH_DIR
 # https://github.com/typst/packages/blob/main/docs/tips.md#what-to-commit-what-to-exclude
 rsync -av  \
   --delete \
+  --prune-empty-dirs \
   --exclude='*.png' \
   --exclude='.git' \
   --exclude='*.sh' \
@@ -115,4 +116,8 @@ rsync -av  \
   "$ROOT_DIR/" "$PUBLISH_DIR/"
 
 # move the docs to the main README
-mv ${PUBLISH_DIR}/docs/docs.md ${PUBLISH_DIR}/README.md
+mv $PUBLISH_DIR/docs/docs.md $PUBLISH_DIR/README.md
+
+# change imports in examples from relative to absolute, published
+find "$PUBLISH_DIR/examples/" -type f -name "*.typ" -exec sed -i \
+    "s|^#import \"../src/lib.typ\"|#import \"@preview/staves:$TOML_VERSION\"|g" {} +
